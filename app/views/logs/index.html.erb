@@ -1,0 +1,13 @@
+<div id="filter">
+  <%= render :partial => 'filter' -%>
+</div>
+
+<div id="logs">
+  <%= render :partial => 'logs' -%>
+</div>
+
+<script>
+  $( function() {
+     $('a.logs').addClass( 'current' );
+  });     
+</script>

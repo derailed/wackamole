@@ -1,0 +1,38 @@
+== Wackamole
+  Observe your web applications in the wild!
+  
+== DESCRIPTION:
+
+This is a companion rails app for the Rackamole framework which provides for recording
+interactions with your rack applications. Wackamole allows you to view, filter and drilldown 
+on the collected moled information, hence allowing you to observe your
+applications live in the wild...
+
+== PROJECT INFORMATION
+
+* Developer:  Fernand Galiana
+* Site:       http://www.rackamole.com
+* Twitter:    http://twitter.com/rackamole
+* Forum:      http://groups.google.com/group/rackamole
+* Git:        git://github.com/derailed/wackamole.git
+
+== FEATURES:
+
+* View daily activity
+* Search and filter on any collected moles
+* Reports performance and exceptions that might occur in your applications
+
+== REQUIREMENTS:
+
+* MongoDb + mongo ruby adapter
+
+== INSTALL:
+
+* TODO Cap deploy script needed !
+  
+== USAGE:
+
+=== Modify the rackamole initializer
+  
+  In order to use wackamole, you must first tell it where to find the moled information. 
+  You must edit the rackamole initializer in config/initializers and specify your mongodb connection information.    

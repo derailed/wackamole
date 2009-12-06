@@ -1,0 +1,14 @@
+<table class="moled">
+  <thead>
+    <th width="10%">Parameter</th>
+    <th width="80%">Value</th>
+  </thead>
+  <tbody>  
+    <% hash.each_pair do |k,v| -%>
+      <tr>
+        <td class="label"><%=k%></td>
+        <td><%=v%></td>
+      </tr>
+    <% end -%>
+  </tbody>
+</table>

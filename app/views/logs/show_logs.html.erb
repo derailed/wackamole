@@ -1,0 +1,29 @@
+<table>
+  <thead>
+    <th>&nbsp;</th>
+    <th>Type</th>    
+    <th>Context</th>
+    <th>Method</th>
+    <th>IP</th>
+    <th>Server</th>
+    <th>Timing</th>    
+    <th>Date</th>
+    <th>Time</th>    
+  </thead>
+  <tbody>
+    <% @logs.each do |log| -%>
+      <tr>
+        <td><%=log.bro%></td>
+        <td><%=log.typ%></td>
+        <td><%=log.feature.context%></td>
+        <td><%=log.met%></td>
+        <td><%=log.ip%></td>
+        <td><%=log.hos%></td>
+        <td><%=log.hos%></td>
+        <td><%="%4.2f" % log.rti%></td>
+        <td><%=log.did %></td>
+        <td><%=log.tid%></td>     
+      </tr>
+    <% end -%>
+  </bdody>
+</table>

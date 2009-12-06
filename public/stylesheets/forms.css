@@ -1,0 +1,16 @@
+input.search {
+  background:                     white url(/images/search.png) no-repeat 2px 1px;
+  font-size:                      1em;
+  width:                          300px;
+  height:                         17px;
+  padding:                        0px 0px 0px 20px;
+  margin:                         10px 0px 0px 0px;
+  -moz-border-radius-topleft:     7px;
+  -moz-border-radius-topright:    7px;  
+  -moz-border-radius-bottomleft:  7px;  
+  -moz-border-radius-bottomright: 0px;  
+}
+
+.example {
+  color: #666;
+}

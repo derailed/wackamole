@@ -1,0 +1,10 @@
+$('#logs').html( '<%= escape_javascript( render( 'logs' ) ) %>')
+
+<% msg = flash_messages %>
+
+<% unless msg.empty? -%>
+  $('#flash').html( '<%= msg %>' )
+  $('#flash').slideDown( 'slow' );  
+<% else -%>
+  $('#flash').hide( 'fast' );
+<% end-%>

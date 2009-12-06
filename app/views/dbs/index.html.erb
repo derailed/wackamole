@@ -1,0 +1,7 @@
+<h1>Databases</h1>
+
+<ul>
+  <% @dbs.each_pair do |db_name, space| -%>
+    <li><%=db_name %> (<%=space%>)</li>
+  <% end -%>
+</ul>

@@ -1,0 +1,19 @@
+--- 
+javascripts: 
+- home: 
+  - jquery
+  - jquery-ui
+  - jquery.tools.min
+  - jquery_ba-url
+  - jquery.example
+  - jrails
+  - raphael/raphael.min
+  - raphael/g.raphael.min
+  - raphael/g.dot.min
+  - application
+stylesheets: 
+- home:
+  - styles
+  - overlay
+  - forms
+  - dash

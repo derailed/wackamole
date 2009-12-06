@@ -1,0 +1,26 @@
+<div style="width:50%;text-align:right;float:right;font-size:1.0em;font-style:italic;color:#434343;margin:0px 10px 10px 0px">
+  <%= page_entries_info @users, :entry_name => 'users' %>
+</div>
+
+<div id="content" style="clear:both;font-size:0.8em;margin-top:20px;min-height:200px">
+  <table border="0" style="width:99%;border-collapse:collapse;text-align:left;color:#242424;">
+    <thead style="font-weight:bold;font-size:1.2em;border-bottom:1px #434343 solid;padding:.5em .5em;">
+      <tr>
+        <th width="25%">Username</th>
+        <th align='right' width="5%">Totals</th>
+      <tr>
+    </thead>
+    <tbody style="font-size:1.2em;color:#646464;font-weight:normal">
+      <% count=0;@users.each do |row| -%>
+        <% color = count % 2 == 0 ? 'transparent' : 'transparent url(../images/fade.png) repeat-x' %>
+        <tr style="background:<%=color%>">
+          <td><b><%=row[:name]%></b></td>
+          <td align="right" style="color:#646464"><b><%=row[:total]%></b></td>
+        </tr>
+      <% count+=1;end %>
+    </tbody>
+  </table>
+</div>
+<div style="text-align:center;margin-top:30px">
+  <%= will_paginate @users, :previous_label => "&nbsp;&nbsp;", :next_label => "&nbsp;&nbsp;", :params => { :controller => 'users', :action => 'index' } -%>
+</div>

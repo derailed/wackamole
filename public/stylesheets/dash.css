@@ -1,0 +1,63 @@
+div.heat {
+  height: 70px;
+}
+div.heat svg {
+  width:  70%;
+}
+
+div.section ul li {
+  border:                         1px #434343 solid;  
+  -moz-border-radius-topleft:     7px;
+  -moz-border-radius-topright:    7px;  
+  -moz-border-radius-bottomleft:  7px;  
+  -moz-border-radius-bottomright: 0px;
+  margin:                         10px;
+}
+
+div.section ul.summary li {
+  border: none;
+  border-top: 1px #c1c1c1 solid;  
+  margin: 10px;
+}
+
+div.section ul li p {
+  color:        #646464;
+  padding:      2px 10px;
+  text-align:   left;
+  padding-left: 40px;
+}
+div#summary ul li p{
+  -moz-border-radius-bottomright: 7px;
+  padding-left:                   5px;  
+}
+
+p#perfs {
+  background: transparent url(/images/perf_small.png) no-repeat 2px 2px;
+}
+p#faults {
+  background: transparent url(/images/fault_small.png) no-repeat 2px 2px;
+}
+p#users {
+  background: transparent url(/images/users.png) no-repeat 2px 2px;
+}
+p#features {
+  background: transparent url(/images/feature.png) no-repeat 2px 2px;
+}
+
+div.section ul li p.result {
+  font-size:   1em;
+  color:       #434343;
+  text-align:  right;
+  padding-top: 10px;
+}
+
+div.load {
+  height:      30px;
+  width:       50%;
+  float:       right;
+  text-align:  right;
+  padding-top: 10px;
+}
+div.load svg {
+  width: 300px;
+}

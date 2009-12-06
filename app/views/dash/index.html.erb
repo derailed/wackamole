@@ -1,0 +1,115 @@
+<div id="dash" style="text-align:center;margin-top:20px">
+  <div class="section" id="summary">
+    <p class="title">Current status</p>
+    <ul class="summary">
+      <li>
+        <p style="float:left;width:40%">Users</p>
+        <div id="user_load" class="load"></div>
+      </li>
+      <li style="clear:both">
+        <p style="float:left;width:40%">Features</p>
+        <div id="feature_load" class="load"></div>        
+      <li style="clear:both">
+        <p style="float:left;width:40%">Performance</p>
+        <p class="result"><%=pluralize( @perf_load, 'issue' )%></p>        
+      </li>
+      <li style="clear:both">
+        <p style="float:left;width:40%">Uncaught Exceptions</p>
+        <p class="result"><%=pluralize( @fault_load, 'issue' )%></p>
+      </li>
+    </ul>
+  </div>
+
+  <div class="section" id="activity" style="clear:both;margin-top:20px">
+    <p class="title">Today's activities</p>
+    <ul>
+      <li>
+        <p id="faults">Faults</p>
+        <% unless zeroed_series?( @fault_series ) -%>
+          <div class="heat" id="svg_faults"></div>
+        <% else -%>
+          <p style="text-align:center;font-size:1.2em;color:#434343">No Issues reported.</p>
+        <% end -%>
+      </li>
+      <li>
+        <p id="perfs">Performance</p>
+        <% unless zeroed_series?( @fault_series ) -%>        
+          <div class="heat" id="svg_perf"></div>
+        <% else -%>
+          <p style="text-align:center;font-size:1.2em;color:#434343">No Issues reported.</p>
+        <% end -%>
+      </li>
+      <li>
+        <p id="users">Users</p>
+        <div class="heat" id="svg_users"></div>
+      </li>
+      <li>
+        <p id="features">Features</p>
+        <div class="heat" id="svg_features"></div>
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+<%= periodically_call_remote :url => refresh_dash_url, :frequency => 60 -%>
+
+<script>
+  function gen_load( name, value, total )
+  {
+    var p      = Raphael( name, 300, 20 );
+    var range  = Math.ceil( ((value/total)*100)/10 );
+    var x      = 2;
+    var y      = 2;
+    var spacer = 5;
+    
+    // p.rect( 0, 0, 300, 20 );
+    
+    for( var i=1; i <= range; i++ )
+    {
+      var l = p.rect( x, y, 10, 16, 2 );
+      l.attr( 'fill', 'green' );
+      l.attr( 'gradient', '45-#0f0-#fff' );
+      l.attr( 'stroke-width', 0 );
+      x += 10 + spacer;
+
+    }
+    var text = p.text( 230, 10, Math.ceil((value/total)*100) + '% (' + value + " of " + total + ')' );
+    text.attr( 'fill'     , '#434343' );  
+    text.attr( 'font-size', 15 );      
+    
+    // var range = (300*value)/100;    
+  }
+
+  function gen_heat_map( id, series, symbol )
+  {
+    var r = Raphael( id ), 
+      xs = <%= (0..23).to_json -%>,
+      ys = <%= y = [];24.times{ y << 1 };y.to_json-%>,
+      axisy = <%=%w[Mon].to_json%>,
+      axisx = <%= %w[12am 1 2 3 4 5 6 7 8 9 10 11 12 1 2 3 4 5 6 7 8 9 10 11].to_json -%>;
+      
+    r.g.dotchart(0, -10, 620, 60, xs, ys, series, {symbol: symbol, max: 10, heat: true, axis: "0 0 1 0", axisxstep: 23, axisystep: 1, axisxlabels: axisx, axisxtype: " ", axisytype: " ", axisylabels: axisy}).hover(function () {
+      this.tag = this.tag || r.g.tag(this.x, this.y, this.value, 0, this.r + 2).insertBefore(this);
+      this.tag.show();
+    }, function () {
+      this.tag && this.tag.hide();
+    });      
+  }
+    
+  $(document).ready( function() {
+    $('a.dash').addClass( 'current' );
+    // gen_load( 'user_load'   , 100, 100 );    
+    gen_load( 'user_load'   , <%=@user_load%>, <%=@total_users%> );
+    gen_load( 'feature_load', <%=@feature_load%>, <%=@total_features%> );
+      
+    <% unless zeroed_series?( @fault_series ) -%>
+      gen_heat_map( 'svg_faults'  , <%=@fault_series.to_json%>  , 'cross' );
+    <% end -%>
+    <% unless zeroed_series?( @perf_series ) -%>
+      gen_heat_map( 'svg_perf'    , <%=@perf_series.to_json%>   , 'diamond' );
+    <% end -%>
+    gen_heat_map( 'svg_users'   , <%=@user_series.to_json%>   , 'disc' );
+    gen_heat_map( 'svg_features', <%=@feature_series.to_json%>, 'flower' );      
+  });
+</script>

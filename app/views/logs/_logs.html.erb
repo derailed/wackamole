@@ -1,0 +1,61 @@
+<div style="text-align:right;color:#434343;margin-bottom:10px">
+  <%= page_entries_info @logs, :entry_name => 'logs' %>
+</div>
+  
+<table class="logs">
+  <thead>
+    <th width="2%">&nbsp;</th>    
+    <th width="20%">Context</th>
+    <th width="5%">Method</th>
+    <th width="20%">User</th>    
+    <th width="10%">IP</th>
+    <th width="10%">Server</th>
+    <th width="10%">Date</th>
+    <th align="right" width="5%">Timing</th>
+    <th align="right" width="3%">&nbsp;</th>    
+  </thead>
+  <tbody>
+    <% count=0;@logs.each do |log| -%>
+      <tr class="<%=row_class_for log.typ %>" href="<%=log_url( log.id )%>" rel='#details'>
+        <td><%= (log[:recent] ? image_tag('tick.png', :border => 0, :title => "new item" ) : "") -%></td>
+        <td><%=log.feature.context%></td>
+        <td><%=log.met%></td>
+        <td><%=truncate( log.user.una, :length => 30 )%></td>
+        <td><%=log.ip%></td>
+        <td><%=format_host( log.hos )%></td>
+        <td><%=log.timestamp ? log.timestamp.strftime( "%m/%d/%y %H:%M:%S") : "N/A" %></td>
+        <td align="right"><%=request_time( log )%></td>
+        <td align="right"><%=browser_icon( log )%></td>
+      </tr>
+    <% count+=1;end -%>
+  </bdody>
+</table>
+
+<div style="text-align:middle;margin-top:10px">
+  <%= will_paginate @logs, :previous_label => "&nbsp;&nbsp;", :next_label => "&nbsp;&nbsp;", :params => { :controller => 'logs', :action => 'index' } -%>
+</div>
+
+<div class="overlay" id="details">
+  <div class="ov_content"></div>
+</div>
+
+<script>
+ $( function() {
+   $( "tr[rel]").hover( 
+     function() {
+       $(this).addClass( 'highlight' );
+     },
+     function() {
+       $(this).removeClass( 'highlight' );
+     }
+    );
+   $( "tr[rel]" ).overlay( {
+     expose: 'gray',
+     // effect: 'apple',
+     onBeforeLoad: function() {  
+       var wrap = this.getContent().find( '.ov_content' );
+       wrap.load( this.getTrigger().attr( 'href' ) );
+     }
+   });
+ });
+</script>
