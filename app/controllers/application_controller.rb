@@ -18,13 +18,12 @@ class ApplicationController < ActionController::Base
         @filter          = SearchFilter.new
         session[:filter] = @filter
       end
-      load_application_info
+      load_app_info
     end
     
     # -------------------------------------------------------------------------  
     # Retrieve moled app info...
-    def load_application_info
-      # @app_info = { :name => "Bozo", :env => 'test' }      
+    def load_app_info
       @app_info = session[:app_info]
       unless @app_info
         feature = Feature.find( :first, :fields => [:app, :env] )

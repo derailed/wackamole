@@ -195,6 +195,17 @@ div#users {
   margin-bottom:                  10px;
 }
 
+div#features {
+  border:                         1px #242424 solid;    
+  background:                     #c1c1c1 url(../images/fade.png) repeat-x;
+  padding:                        0px 10px 10px 10px;
+  -moz-border-radius-topleft:     7px;
+  -moz-border-radius-topright:    7px;  
+  -moz-border-radius-bottomleft:  7px;  
+  -moz-border-radius-bottomright: 0px;
+  margin-bottom:                  10px;
+}
+
 #filter_form fieldset {
   border:  none;
   display: block;

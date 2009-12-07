@@ -1,6 +1,38 @@
 module LogsHelper
 
   # ---------------------------------------------------------------------------
+  # Change ids to time
+  def timestamp_for( log )
+    begin    
+      date_tokens = log['did'].match( /(\d{4})(\d{2})(\d{2})/ ).captures
+      time_tokens = log['tid'].match( /(\d{2})(\d{2})(\d{2})/ ).captures    
+      time        = Time.utc( date_tokens[0], date_tokens[1], date_tokens[2], time_tokens[0], time_tokens[1], time_tokens[2] )
+      return time.getlocal.strftime( "%m/%d/%y %H:%M:%S")
+    rescue
+      ;
+    end
+    "N/A"
+  end
+
+  
+  # ---------------------------------------------------------------------------
+  # Find user name for log
+  def user_name_for( user_id )
+    user = App.users_cltn.find_one( Mongo::ObjectID.from_string( user_id ) )
+    user['una']
+  end
+  
+  # ---------------------------------------------------------------------------
+  # Find feature context for log entry
+  def context_for( feature_id )
+    feature = App.features_cltn.find_one( Mongo::ObjectID.from_string( feature_id ) )
+    if feature['ctl']
+      return "#{feature['ctl']}##{feature['act']}"
+    end
+    feature['ctx']
+  end
+  
+  # ---------------------------------------------------------------------------
   # Converts mole type to big icon
   def mole_type_icon( type )
     case type
@@ -29,9 +61,9 @@ module LogsHelper
    
   # ---------------------------------------------------------------------------
   # Check if request time is available
-  def request_time( log )
+  def request_time( req_time )
     begin
-      "%4.2f" % log.rti
+      "%4.2f" % req_time
     rescue
       "N/A"
     end
@@ -49,8 +81,8 @@ module LogsHelper
   
   # ---------------------------------------------------------------------------
   # Setup browser icon indicator
-  def browser_icon( log )
-    img_name = log.bro
+  def browser_icon( browser )
+    img_name = browser
     img_name = "unknown_browser" if img_name.nil? or img_name == "N/A"
     image_tag "/images/browsers/#{img_name.to_s.downcase.gsub( /\\/, '')}.png", :size => "20x20"    
   end

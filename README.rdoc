@@ -19,7 +19,7 @@ applications live in the wild...
 == FEATURES:
 
 * View daily activity
-* Search and filter on any collected moles
+* Search and filter on any info collected by the mole
 * Reports performance and exceptions that might occur in your applications
 
 == REQUIREMENTS:
@@ -30,9 +30,16 @@ applications live in the wild...
 
 * TODO Cap deploy script needed !
   
-== USAGE:
-
-=== Modify the rackamole initializer
+== SETUP:
   
+* Configure the app
+
   In order to use wackamole, you must first tell it where to find the moled information. 
-  You must edit the rackamole initializer in config/initializers and specify your mongodb connection information.    
+  In the config directory, rename the default_mongo.yml file to mongo.yml and update the configuration
+  to point to your mongo instance and database.
+
+* Watch your creation live! 
+
+* Please checkout the forum and send us feedback and issues. This is still work in progress so your
+  feedback will be very much appreciated!  
+  

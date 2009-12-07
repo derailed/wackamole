@@ -1,4 +1,5 @@
 require 'chronic'
+require 'core_ext/time'
 
 class SearchFilter
   
@@ -34,12 +35,19 @@ class SearchFilter
   # ---------------------------------------------------------------------------
   # Find all features  
   def features
-    features = Feature.all
-    features = features.map { |f| [f.context, f.id] } 
+    features = App.features_cltn.find().to_a
+    features = features.map { |f| [context_for(f), f['id']] } 
     features.sort! { |a,b| a.first <=> b.first }
     features.insert( 0, ["All", -1] )
   end
 
+  # ---------------------------------------------------------------------------
+  # Retrieves feature context
+  def context_for( f )
+    return "#{f['ctl']}##{f['act']}" if f['ctl']
+    f['ctx']
+  end
+  
   # ---------------------------------------------------------------------------
   # Fetch filter start date id
   def from_date_id
@@ -106,7 +114,7 @@ class SearchFilter
     end
     
     # filter mole_features
-    if feature_id and feature_id != "-1"
+    if feature_id and !feature_id.empty? and feature_id != "-1"
       conds['fid'] = feature_id
     end
                     
@@ -119,23 +127,34 @@ class SearchFilter
       key    = tokens.shift
       if key
         if key == "user"
-          users = User.find( :all, :conditions => { :una => Regexp.new( tokens.first ) }, :fields => ['_id'] )
-          conds[Log.field_map( key )] = { '$in' => users.collect{ |u| u.id.to_s } }
+          users = App.users_cltn.find( { :una => Regexp.new( tokens.first ) }, :fields => ['_id'] )
+          conds[field_map( key )] = { '$in' => users.collect{ |u| u['_id'].to_s } }
         elsif tokens.size == 2
-          conds["#{Log.field_map(key)}.#{tokens.first}"] = Regexp.new( tokens.last )
+          conds["#{field_map(key)}.#{tokens.first}"] = Regexp.new( tokens.last )
         elsif tokens.size == 1
-          conds[Log.field_map(key)] = Regexp.new( tokens.first )
+          conds[field_map(key)] = Regexp.new( tokens.first )
         else
           raise "Unable to evaluate search terms"
         end
       end
     end
-    
-    return conds
+    conds
   end
     
   # ===========================================================================
   private
+  
+    # ---------------------------------------------------------------------------
+    # Search filter key name map
+    def field_map( key )
+      case key.to_sym
+        when :user    : :uid
+        when :host    : :hos
+        when :session : :ses
+        when :params  : :par
+        else            key
+      end
+    end
   
     # Map named type to fixnum value
     def map_mole_types( type )

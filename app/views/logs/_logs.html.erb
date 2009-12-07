@@ -4,7 +4,7 @@
   
 <table class="logs">
   <thead>
-    <th width="2%">&nbsp;</th>    
+    <!-- <th width="2%">&nbsp;</th>     -->
     <th width="20%">Context</th>
     <th width="5%">Method</th>
     <th width="20%">User</th>    
@@ -16,16 +16,16 @@
   </thead>
   <tbody>
     <% count=0;@logs.each do |log| -%>
-      <tr class="<%=row_class_for log.typ %>" href="<%=log_url( log.id )%>" rel='#details'>
-        <td><%= (log[:recent] ? image_tag('tick.png', :border => 0, :title => "new item" ) : "") -%></td>
-        <td><%=log.feature.context%></td>
-        <td><%=log.met%></td>
-        <td><%=truncate( log.user.una, :length => 30 )%></td>
-        <td><%=log.ip%></td>
-        <td><%=format_host( log.hos )%></td>
-        <td><%=log.timestamp ? log.timestamp.strftime( "%m/%d/%y %H:%M:%S") : "N/A" %></td>
-        <td align="right"><%=request_time( log )%></td>
-        <td align="right"><%=browser_icon( log )%></td>
+      <tr class="<%=row_class_for log['typ'] %>" href="<%=log_url( log['_id'] )%>" rel='#details'>
+        <!-- <td><= (log[:recent] ? image_tag('tick.png', :border => 0, :title => "new item" ) : "") -%></td> -->
+        <td><%=context_for log['fid'] %></td>
+        <td><%=log['met']%></td>
+        <td><%=truncate( user_name_for( log['uid'] ), :length => 30 )%></td>
+        <td><%=log['ip']%></td>
+        <td><%=format_host( log['hos'] )%></td>
+        <td><%=timestamp_for log %></td>
+        <td align="right"><%=request_time( log['rti'] )%></td>
+        <td align="right"><%=browser_icon( log['bro'] )%></td>
       </tr>
     <% count+=1;end -%>
   </bdody>

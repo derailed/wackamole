@@ -18,6 +18,11 @@ memcache_options = {
 CACHE = MemCache.new( "localhost", memcache_options )
 
 Rails::Initializer.run do |config|
+  
+  # Skip frameworks you're not going to use. To use Rails without a database,
+  # you must remove the Active Record framework.
+  config.frameworks -= [ :active_record, :active_resource, :action_mailer ]
+  
   config.action_controller.session = {
     :session_key => '_wa_session',
     :cache       => CACHE,

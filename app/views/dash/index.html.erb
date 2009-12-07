@@ -11,11 +11,11 @@
         <div id="feature_load" class="load"></div>        
       <li style="clear:both">
         <p style="float:left;width:40%">Performance</p>
-        <p class="result"><%=pluralize( @perf_load, 'issue' )%></p>        
+        <p class="result"><%=pluralize( @info[:perf_load], 'issue' )%></p>        
       </li>
       <li style="clear:both">
         <p style="float:left;width:40%">Uncaught Exceptions</p>
-        <p class="result"><%=pluralize( @fault_load, 'issue' )%></p>
+        <p class="result"><%=pluralize( @info[:fault_load], 'issue' )%></p>
       </li>
     </ul>
   </div>
@@ -25,7 +25,7 @@
     <ul>
       <li>
         <p id="faults">Faults</p>
-        <% unless zeroed_series?( @fault_series ) -%>
+        <% unless zeroed_series?( @info[:fault_series] ) -%>
           <div class="heat" id="svg_faults"></div>
         <% else -%>
           <p style="text-align:center;font-size:1.2em;color:#434343">No Issues reported.</p>
@@ -33,7 +33,7 @@
       </li>
       <li>
         <p id="perfs">Performance</p>
-        <% unless zeroed_series?( @fault_series ) -%>        
+        <% unless zeroed_series?( @info[:perf_series] ) -%>        
           <div class="heat" id="svg_perf"></div>
         <% else -%>
           <p style="text-align:center;font-size:1.2em;color:#434343">No Issues reported.</p>
@@ -41,11 +41,19 @@
       </li>
       <li>
         <p id="users">Users</p>
-        <div class="heat" id="svg_users"></div>
+        <% unless zeroed_series?( @info[:user_series] ) -%>        
+          <div class="heat" id="svg_users"></div>
+        <% else -%>
+          <p style="text-align:center;font-size:1.2em;color:#434343">No Users reported.</p>
+        <% end -%>
       </li>
       <li>
         <p id="features">Features</p>
-        <div class="heat" id="svg_features"></div>
+        <% unless zeroed_series?( @info[:feature_series] ) -%>
+          <div class="heat" id="svg_features"></div>
+        <% else -%>
+          <p style="text-align:center;font-size:1.2em;color:#434343">No Features reported.</p>
+        <% end -%>
       </li>
     </ul>
   </div>
@@ -100,16 +108,20 @@
   $(document).ready( function() {
     $('a.dash').addClass( 'current' );
     // gen_load( 'user_load'   , 100, 100 );    
-    gen_load( 'user_load'   , <%=@user_load%>, <%=@total_users%> );
-    gen_load( 'feature_load', <%=@feature_load%>, <%=@total_features%> );
+    gen_load( 'user_load'   , <%=@info[:user_load]%>, <%=@info[:total_users]%> );
+    gen_load( 'feature_load', <%=@info[:feature_load]%>, <%=@info[:total_features]%> );
       
-    <% unless zeroed_series?( @fault_series ) -%>
-      gen_heat_map( 'svg_faults'  , <%=@fault_series.to_json%>  , 'cross' );
+    <% unless zeroed_series?( @info[:fault_series] ) -%>
+      gen_heat_map( 'svg_faults'  , <%=@info[:fault_series].to_json%>  , 'cross' );
     <% end -%>
-    <% unless zeroed_series?( @perf_series ) -%>
-      gen_heat_map( 'svg_perf'    , <%=@perf_series.to_json%>   , 'diamond' );
+    <% unless zeroed_series?( @info[:perf_series] ) -%>
+      gen_heat_map( 'svg_perf'    , <%=@info[:perf_series].to_json%>   , 'diamond' );
     <% end -%>
-    gen_heat_map( 'svg_users'   , <%=@user_series.to_json%>   , 'disc' );
-    gen_heat_map( 'svg_features', <%=@feature_series.to_json%>, 'flower' );      
+    <% unless zeroed_series?( @info[:user_series] ) -%>
+      gen_heat_map( 'svg_users'   , <%=@info[:user_series].to_json%>   , 'disc' );
+    <% end -%>
+    <% unless zeroed_series?( @info[:user_series] ) -%>
+      gen_heat_map( 'svg_features', <%=@info[:feature_series].to_json%>, 'flower' );
+    <% end -%>
   });
 </script>

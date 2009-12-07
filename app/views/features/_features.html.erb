@@ -14,7 +14,7 @@
       <% count=0;@features.each do |row| -%>
         <% color = count % 2 == 0 ? 'transparent' : 'transparent url(../images/fade.png) repeat-x' %>
         <tr style="background:<%=color%>">
-          <td><b><%=row[:name]%></b></td>
+          <td><b><%=display_context( row[:name] )%></b></td>
           <td align="right" style="color:#646464"><b><%=row[:total]%></b></td>
         </tr>
       <% count+=1;end %>

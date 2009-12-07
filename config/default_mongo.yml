@@ -1,0 +1,15 @@
+# CHANGE ME - You need to configure this for your particular mongo env setting
+development:
+  database: moled_app_mdb
+  host:     localhost
+  port:     27017
+
+test:
+  database: moled_app_mdb
+  host:     localhost
+  port:     27017
+
+production:
+  database: moled_app_mdb
+  host:     localhost
+  port:     27017
