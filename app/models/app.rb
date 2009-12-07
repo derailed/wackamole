@@ -164,10 +164,6 @@ class App
       info[:perf_series]    << hash[:perf]
       info[:feature_series] << hash[:feature]
     end    
-puts "USER SERIES"    
-puts info[:user_series].inspect 
-puts "FEATURES"
-puts info[:feature_series].inspect   
     info
   end  
   
