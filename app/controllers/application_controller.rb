@@ -26,8 +26,8 @@ class ApplicationController < ActionController::Base
     def load_app_info
       @app_info = session[:app_info]
       unless @app_info
-        feature = Feature.find( :first, :fields => [:app, :env] )
-        @app_info = { :name => feature.app, :env => feature.env }
+        app_name, env = App.get_app_info
+        @app_info = { :name => app_name, :env => env }
         session[:app_info] = @app_info
       end
     end    

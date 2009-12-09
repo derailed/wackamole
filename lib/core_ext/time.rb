@@ -4,6 +4,6 @@ class Time
   end
   
   def to_time_id
-    "%02d%02d" % [self.hour, self.min]
+    "%02d%02d%02d" % [self.hour, self.min, self.sec]
   end
 end

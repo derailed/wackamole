@@ -8,3 +8,9 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 
 require 'tasks/rails'
+
+require 'ostruct'
+
+PROJ = OpenStruct.new
+PROJ.name    = 'wackamole'
+PROJ.version = '0.0.1'

@@ -11,6 +11,14 @@ class App
   def self.default_page_size() @page_size ||= 20; end
 
   # ---------------------------------------------------------------------------
+  # Find the app name and env for the features collection
+  # NOTE: Assumes 1 moled app per db...
+  def self.get_app_info
+    feature = features_cltn.find_one( {}, :fields => [:app, :env] )
+    return feature['app'], feature['env']
+  end
+    
+  # ---------------------------------------------------------------------------
   # Initialize app by reading off mongo configuration parameters if necessary
   def self.config
     unless @config
@@ -167,12 +175,72 @@ class App
     info
   end  
   
+  # ---------------------------------------------------------------------------
+  # Check moled apps status - reports any perf/excep that occurred since the 
+  # last check
+  def self.comb( now )
+    report      = {}
+    check_types = [Rackamole.perf, Rackamole.fault]
+    date_id     = now.to_date_id.to_s
+    time_id     = now.to_time_id
+    conds       = {
+      :did => { '$gte' => date_id },
+      # :tid => { '$gte' => time_id },
+      :typ => { '$in'  => check_types }
+    }
+puts conds.inspect    
+    mole_databases.each do |db_name|
+puts "Checking #{db_name}"      
+      db = connection.db( db_name )      
+      logs = db['logs'].find( conds, :fields => ['typ', 'rti', 'fault', 'fid'] )
+        
+      # Oh dear - someting happened here - report it!
+      if logs.count > 0
+puts "Found something #{logs.count}"
+        feature_id = nil
+        logs.each do |log|
+          unless feature_id
+            feature_id = log['fid'].instance_of?(String) ? Mongo::ObjectID.from_string( log['fid'] ) : log['fid']
+          end
+          feature = db['features'].find_one( { '_id' => feature_id }, :fields => ['app', 'env'] )
+          
+          amend_report( report, feature, log, log['typ'] )
+        end
+      end
+    end
+    report
+  end
+  
   # ===========================================================================
   private
   
+    # -------------------------------------------------------------------------
+    # Report on possible application issues
+    def self.amend_report( report, feature, log, type )
+      app_name         = feature['app']
+      env              = feature['env']
+      info             = { :type => log['typ'], :count => 0 }
+      
+      if report[app_name]
+        if report[app_name][env]
+          report[app_name][env][type] ? report[app_name][env][type] += 1 : report[app_name][env][type] = 1
+        else
+          report[app_name][ env ] = { type => 1 }
+        end
+      else
+        report[app_name] = { env => { type => 1 }  } 
+      end
+    end
+    
+    # ---------------------------------------------------------------------------
+    # Inspect current connection databases and weed out mole_xxx databases
+    def self.mole_databases
+      connection.database_names.select{ |db| db if db =~ /^mole_/ }
+    end
+  
     # Connects to mongo instance if necessary...
     def self.connection
-      @connection ||= Mongo::Connection.new( config['host'], config['port'], :logger => RAILS_DEFAULT_LOGGER )
+      @connection ||= Mongo::Connection.new( config['host'], config['port'] ) #, :logger => RAILS_DEFAULT_LOGGER )
     end
 
     # Fetch database instance    
