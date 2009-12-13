@@ -27,7 +27,7 @@ class LogsController < ApplicationController
   # ---------------------------------------------------------------------------
   # Fecth info about a particular log
   def show
-    @log = App.logs.find_one( params[:id] )
+    @log = App.logs_cltn.find_one( Mongo::ObjectID.from_string( params[:id] ) )
     render :show, :layout => false 
   end
   

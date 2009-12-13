@@ -12,27 +12,13 @@
 
   <body id="body">
     <div id="overall">      
-      <div id="logo">
+      <div id="logo" style="margin-bottom:50px">
         <%= link_to image_tag( 'wackamole_logo.png', :border => 0 ), root_url -%>
       </div>
       <div id="app_info">
-        <% unless @app_info.empty? -%>
-          &lt;<span><%=@app_info[:name]%></span>
-          <span id="env"><%=@app_info[:env]%></span>&gt;
-        <% end -%>
         <p><%=@updated_on.strftime( "%m/%d/%y %H:%M:%S")%></p>
       </div>
       <div id="main">
-        <div id="flash" style="display:none">
-          <%= flash_messages %>
-        </div>
-        <div id='navigation'>
-          <%=link_to "landscape", reports_url , :class => "site_link land" -%>&nbsp;&bull;&nbsp;          
-          <%=link_to "dashboard", apps_url    , :class => "site_link dash" -%>&nbsp;&bull;&nbsp;
-          <%=link_to "logs"     , logs_url    , :class => "site_link logs" -%>&nbsp;&bull;&nbsp;
-          <%=link_to "users"    , users_url   , :class => "site_link users" -%>&nbsp;&bull;&nbsp;
-          <%=link_to "features" , features_url, :class => "site_link features" -%>          
-        </div>
         <%= yield -%>
       </div>
       

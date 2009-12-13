@@ -1,6 +1,6 @@
 require 'benchmark'
 
-class App
+class App < Base
 
   # Collection accessors...
   def self.logs_cltn()     @logs     ||= db.collection( 'logs' );     end
@@ -52,7 +52,7 @@ class App
       offset = (page-1)*default_page_size
       result = features[offset...(offset+default_page_size)]
       result.each do |u|
-        feature = features_cltn.find_one( Mongo::ObjectID.from_string(u[:fid]) )
+        feature = features_cltn.find_one( u[:fid] )
         u[:name] = feature
       end
       pager.replace( result )
@@ -77,7 +77,7 @@ class App
       offset = (page-1)*default_page_size
       result = users[offset...(offset+default_page_size)]
       result.each do |u|
-        user = users_cltn.find_one( Mongo::ObjectID.from_string(u[:uid]), :fields => [:una] )
+        user = users_cltn.find_one( u[:uid], :fields => [:una] )
         u[:name] = user['una']
       end
       pager.replace( result )
@@ -174,75 +174,11 @@ class App
     end    
     info
   end  
-  
-  # ---------------------------------------------------------------------------
-  # Check moled apps status - reports any perf/excep that occurred since the 
-  # last check
-  def self.comb( now )
-    report      = {}
-    check_types = [Rackamole.perf, Rackamole.fault]
-    date_id     = now.to_date_id.to_s
-    time_id     = now.to_time_id
-    conds       = {
-      :did => { '$gte' => date_id },
-      # :tid => { '$gte' => time_id },
-      :typ => { '$in'  => check_types }
-    }
-puts conds.inspect    
-    mole_databases.each do |db_name|
-puts "Checking #{db_name}"      
-      db = connection.db( db_name )      
-      logs = db['logs'].find( conds, :fields => ['typ', 'rti', 'fault', 'fid'] )
         
-      # Oh dear - someting happened here - report it!
-      if logs.count > 0
-puts "Found something #{logs.count}"
-        feature_id = nil
-        logs.each do |log|
-          unless feature_id
-            feature_id = log['fid'].instance_of?(String) ? Mongo::ObjectID.from_string( log['fid'] ) : log['fid']
-          end
-          feature = db['features'].find_one( { '_id' => feature_id }, :fields => ['app', 'env'] )
-          
-          amend_report( report, feature, log, log['typ'] )
-        end
-      end
-    end
-    report
-  end
-  
   # ===========================================================================
   private
-  
-    # -------------------------------------------------------------------------
-    # Report on possible application issues
-    def self.amend_report( report, feature, log, type )
-      app_name         = feature['app']
-      env              = feature['env']
-      info             = { :type => log['typ'], :count => 0 }
       
-      if report[app_name]
-        if report[app_name][env]
-          report[app_name][env][type] ? report[app_name][env][type] += 1 : report[app_name][env][type] = 1
-        else
-          report[app_name][ env ] = { type => 1 }
-        end
-      else
-        report[app_name] = { env => { type => 1 }  } 
-      end
-    end
-    
-    # ---------------------------------------------------------------------------
-    # Inspect current connection databases and weed out mole_xxx databases
-    def self.mole_databases
-      connection.database_names.select{ |db| db if db =~ /^mole_/ }
-    end
-  
-    # Connects to mongo instance if necessary...
-    def self.connection
-      @connection ||= Mongo::Connection.new( config['host'], config['port'] ) #, :logger => RAILS_DEFAULT_LOGGER )
-    end
-
+    # -------------------------------------------------------------------------
     # Fetch database instance    
     def self.db
       return @db if @db
@@ -251,6 +187,7 @@ puts "Found something #{logs.count}"
       @db
     end
   
+    # -------------------------------------------------------------------------
     # Makes sure we have some indexes set
     # BOZO !! Create script to set these up ?
     def self.ensure_indexes
@@ -258,9 +195,19 @@ puts "Found something #{logs.count}"
       logs_cltn.create_index( :uid )
       logs_cltn.create_index( :did )
       logs_cltn.create_index( :tid )
-      logs_cltn.create_index( [ [:did, Mongo::DESCENDING], [:tid, Mongo::DESCENDING] ] )
+      logs_cltn.create_index( 
+        [ 
+          [:did, Mongo::DESCENDING], 
+          [:tid, Mongo::DESCENDING] 
+        ] 
+      )
       users_cltn.create_index( :una )
       features_cltn.create_index( :ctx )
-      features_cltn.create_index( [ [:ctl, Mongo::ASCENDING], [:act, Mongo::ASCENDING] ] )
+      features_cltn.create_index( 
+        [ 
+          [:ctl, Mongo::ASCENDING], 
+          [:act, Mongo::ASCENDING] 
+        ]
+      )
     end
 end

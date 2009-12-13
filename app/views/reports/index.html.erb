@@ -1,0 +1,120 @@
+<style>
+.mission {  
+  margin-top: 30px;
+}
+
+p.app_name {
+  font-style:    4em;
+  font-variant:  small-caps;  
+  border-top:    1px #434343 solid;
+  margin-bottom: 10px;
+}
+
+p.perf {
+  color: #0000ff;
+}
+
+p.fault {
+  color: #ff0000;
+}
+
+span.no_diff {
+  color: #c1c1c1;
+}
+
+span.diff {
+  color: #2fba00;
+}
+
+div.environment {
+  overflow:                       auto;
+  margin:                         20px 10px;
+  padding:                        10px;
+  border:                         1px #c1c1c1 solid;
+  -moz-border-radius-topleft:     7px;
+  -moz-border-radius-topright:    7px;  
+  -moz-border-radius-bottomleft:  7px;  
+  -moz-border-radius-bottomright: 7px;  
+  
+}
+
+div.environment div.env {
+  font-size: 2em;
+  width:     50%;
+  float:     left;
+}
+
+div.environment div.details {
+  float:      right;
+  width:      20%;
+  text-align: right;
+}
+
+td.fault {
+  color:      white;
+  background: red;
+}
+
+td.perf {
+  color:      white;
+  background: blue;
+}
+
+td.active {
+  background: yellow;
+}
+
+td.inactive {
+  color:      #fff;
+  background: #434343;
+}
+
+a.fixed {
+  color: orange;
+  text-decoration: none;
+}
+</style>
+
+<p class="title">Mission Control</p>
+
+<% @reports.each do |report| -%>
+  <div class="mission">
+    <p class="app_name"><%= report['app'] %></p>
+    <% report['envs'].keys.sort.each do |env| -%>
+      <div class="environment">
+        <div class="env">
+          <%= env %>
+        </div>
+        <div class="details">
+          <table border='0' width="100%">
+          <% report['envs'][env].each do |type, count| -%>
+            <% diff = compute_diff( report['app'], env, type, count )%>
+            <tr>
+              <td class="<%=assign_class( type, count, diff )%>" align="left">
+                <%=type.capitalize%>
+              </td> 
+              <td>
+                <%=count%> 
+              </td>
+              <td>
+                (<%= diff == 0 ? content_tag( :span, diff, :class => "no_diff") : content_tag( :span, "+#{diff}", :class => "diff") -%>)
+              </td>
+              <% if type != 'features' and count > 0 -%>
+                <td align='right'>
+                  <%= link_to_remote 'fixed', :url => fixed_url( report['db'], report['app'], env, type ), :html => {:class => "fixed"} -%>
+                </td>
+              <% else -%>
+                <td>
+                  <p style="width:30px"></p>
+                </td>
+              <% end -%>
+            </tr>
+          <% end -%>
+          </table>
+        </div>
+      </div>
+    <% end -%>
+  </div>
+<% end -%>
+
+<%= periodically_call_remote :url => refresh_reports_url, :frequency => 60 -%>

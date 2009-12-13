@@ -35,12 +35,12 @@ Rails::Initializer.run do |config|
   
   # Add additional load paths for your own custom dirs
   config.load_paths += %W( #{RAILS_ROOT}/lib/core_ext )
-
-  config.middleware.use Rack::Reloader
   
   # Specify gems that this application depends on and have them installed with rake gems:install
-  config.gem 'rackamole'
-  config.gem 'mongo_mapper'
+  config.gem "mongo"  
+  # config.gem "mongo_ext", :lib => 'mongo_ext'
+  config.gem "rackamole"
+  config.gem "mislav-will_paginate", :lib => 'will_paginate'
   
   # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
   # Run "rake -D time" for a list of tasks for finding time zone names.  

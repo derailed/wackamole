@@ -1,7 +1,7 @@
 require 'rackamole'
 require 'core_ext/time'
 
-class DashController < ApplicationController
+class AppsController < ApplicationController
   
   layout 'plain'
 
