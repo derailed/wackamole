@@ -49,7 +49,6 @@ module LogsHelper
   # ---------------------------------------------------------------------------
   # Find feature context for log entry
   def context_for( feature_id )
-puts "Looking for #{feature_id.inspect}"    
     feature = Feature.features_cltn.find_one( feature_id )
     if feature['ctl']
       return "#{feature['ctl']}##{feature['act']}"

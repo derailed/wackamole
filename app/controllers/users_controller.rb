@@ -40,6 +40,6 @@ class UsersController < ApplicationController
       @db = session[:mole_db]
       App.current_db( @db )
       User.current_db( @db )
+      load_app_info      
     end
-
 end

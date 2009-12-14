@@ -5,8 +5,7 @@ class ReportsController < ApplicationController
   # ---------------------------------------------------------------------------
   def index
     @old_reports = Report.find( {}, :sort => [ [:app, Mongo::ASCENDING], [:env, Mongo::ASCENDING] ] ).to_a
-    @app_info = {}
-    last_tick = session[:last_tick] || 1.minute.ago.utc    
+    last_tick = session[:last_tick] || 1.minute.ago.utc
     @reports = Report.find_reports( last_tick )
     session[:last_tick] = Time.now.utc
   end

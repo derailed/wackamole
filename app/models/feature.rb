@@ -5,6 +5,15 @@ class Feature
   def self.default_page_size() @page_size ||= 20; end
   
   # ---------------------------------------------------------------------------
+  # Find the app name and env for the features collection
+  # NOTE: Assumes 1 moled app per db...
+  def self.get_app_info
+    feature = features_cltn.find_one( {}, :fields => [:app, :env] )
+    return nil, nil unless feature 
+    return feature['app'], feature['env']
+  end
+  
+  # ---------------------------------------------------------------------------
   # Paginate top features
   def self.paginate_top_features( conds, page=1 )
     tops = logs_cltn.group( [:fid], conds, { :count => 0 }, 'function(obj,prev) { prev.count += 1}', true )

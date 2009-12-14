@@ -38,5 +38,6 @@ class FeaturesController < ApplicationController
     def ensure_db
       @db = session[:mole_db]
       Feature.current_db( @db )
+      load_app_info
     end  
 end

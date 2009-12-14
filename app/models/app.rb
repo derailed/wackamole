@@ -14,26 +14,13 @@ class App
     db( db_name )
     db_name
   end
-  
-  # ---------------------------------------------------------------------------
-  # Find the app name and env for the features collection
-  # NOTE: Assumes 1 moled app per db...
-  def self.get_app_info
-    feature = features_cltn.find_one( {}, :fields => [:app, :env] )
-    return nil, nil unless feature 
-    return feature['app'], feature['env']
-  end
-                          
+                            
   # ---------------------------------------------------------------------------
   # Collect various data points to power up dashboard 
   # TODO - PERF - try just using cursor vs to_a
   def self.collect_dashboard_info( now )    
     info    = {}
-    day_logs = []
-    elapsed = Benchmark::realtime do
-      day_logs = logs_cltn.find( { :did => now.to_date_id.to_s }, :fields => [:typ, :fid, :tid, :did, :uid] ).to_a
-    end
-    puts "Time to find logs - %d -- %4.2f" % [day_logs.size, elapsed]
+    day_logs = logs_cltn.find( { :did => now.to_date_id.to_s }, :fields => [:typ, :fid, :tid, :did, :uid] ).to_a
     
     # Fetch user count for this hour
     users = day_logs.inject( Set.new ) do |set,log| 

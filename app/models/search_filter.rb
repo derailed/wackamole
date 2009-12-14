@@ -8,13 +8,18 @@ class SearchFilter
   # ---------------------------------------------------------------------------
   # Ctor
   def initialize
-    @type         = SearchFilter.mole_types.first
-    @feature_id   = nil
-    @time_frame   = SearchFilter.time_frames.first
-    @context      = 'All'
-    @browser_type = SearchFilter.browser_types.first
+    reset!
   end
 
+  # ---------------------------------------------------------------------------
+  # Reset filter to defaults
+  def reset!
+    @feature_id   = -1
+    @time_frame   = SearchFilter.time_frames.first
+    @browser_type = SearchFilter.browser_types.first
+    @type         = SearchFilter.mole_types.first
+  end
+  
   # ---------------------------------------------------------------------------
   # Available browsers
   def self.browser_types
@@ -115,7 +120,7 @@ class SearchFilter
     end
     
     # filter mole_features
-    if feature_id and !feature_id.empty? and feature_id != "-1"
+    unless feature_id.to_s == "-1"
       conds['fid'] = feature_id
     end
                     

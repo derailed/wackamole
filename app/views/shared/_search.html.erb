@@ -1,6 +1,6 @@
 <div id="search">
   <% form_remote_for @filter,
-      :url      => search_logs_url,
+      :url      => { :action => 'search' },
       :loading  => "$('img#loader' ).show();",
       :complete => "$('img#loader' ).hide()",
       :html     => { :method => 'post', :id => 'search_form', :style => "text-align:right;" } do |f|-%>

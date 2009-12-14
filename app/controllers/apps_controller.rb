@@ -5,6 +5,8 @@ class AppsController < ApplicationController
   
   layout 'base'
   
+  before_filter :ensure_db
+  
   # ---------------------------------------------------------------------------
   # Home sweet home  
   def index
@@ -24,13 +26,15 @@ class AppsController < ApplicationController
     # Stash current db name...
     session[:mole_db] = db_name
     
-    now   = @updated_on.utc  
-    @info = App.collect_dashboard_info( now )
-    
     # Reset app info
     session[:app_info] = nil
     load_app_info
     
+    @filter.reset!
+    
+    now   = @updated_on.utc  
+    @info = App.collect_dashboard_info( now )
+        
     render :index        
   end
   
@@ -42,4 +46,13 @@ class AppsController < ApplicationController
     end
   end
   
+  # ===========================================================================
+  private
+  
+    # Ensure the db sticks
+    def ensure_db
+      @db = session[:mole_db]
+      App.current_db( @db ) if @db
+      load_app_info
+    end
 end

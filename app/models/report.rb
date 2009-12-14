@@ -14,10 +14,7 @@ class Report
   # ---------------------------------------------------------------------------
   # Retrieve reports if any...  
   def self.find_reports( now )
-    reports = comb_applications( now )
-
-puts reports.to_yaml
-    
+    reports = comb_applications( now )    
     reports.each_pair do |app_name, env_info|
       db_name = env_info[:db]
       
@@ -84,14 +81,12 @@ puts reports.to_yaml
 
       mole_databases.each do |db_name|
         db      = connection.db( db_name )
-puts "CHECKING #{db_name} -- #{db.collection_names}"
 
         # Check if this db looks like a mole db if not bail!
         collection_check = 0
         db.collection_names.each do |collection|
           collection_check += 1 if %w[logs features users].include?(collection)
         end        
-puts "Collection checks #{collection_check}"        
         next unless collection_check == 3   
              
         logs    = db['logs'].find( conds, :fields => ['typ', 'rti', 'fault', 'fid'] )
