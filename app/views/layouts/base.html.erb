@@ -16,9 +16,11 @@
         <%= link_to image_tag( 'wackamole_logo.png', :border => 0 ), root_url -%>
       </div>
       <div id="app_info">
-        <% unless @app_info.empty? -%>
-          &lt;<span><%=@app_info[:name]%></span>
-          <span id="env"><%=@app_info[:env]%></span>&gt;
+        <% unless @app_info.empty? -%>        
+          <ul>
+            <li>&lt;<%=@app_info[:name]%>&gt;</li>
+            <li id="env"><%=@app_info[:env]%></li>
+          <ul>
         <% end -%>
         <p><%=@updated_on.strftime( "%m/%d/%y %H:%M:%S")%></p>
       </div>

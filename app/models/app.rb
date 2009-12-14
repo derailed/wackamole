@@ -1,101 +1,29 @@
 require 'benchmark'
 
-class App < Base
-
-  # Collection accessors...
-  def self.logs_cltn()     @logs     ||= db.collection( 'logs' );     end
-  def self.users_cltn()    @users    ||= db.collection( 'users' );    end
-  def self.features_cltn() @features ||= db.collection( 'features' ); end
+class App
+  extend MongoBase
   
-  # Pagination size
-  def self.default_page_size() @page_size ||= 20; end
-
+  # ---------------------------------------------------------------------------
+  # Switch db instance given db_name 
+  # NOTE : This assumes mole db naming convention 
+  # ie mole_{app_name in lower case}_{env}_mdb
+  def self.switch_db!( app_name, env )
+    @db = nil
+    app = app_name.gsub( /\s/, '_' ).downcase
+    db_name = "mole_%s_%s_mdb" % [app, env]
+    db( db_name )
+    db_name
+  end
+  
   # ---------------------------------------------------------------------------
   # Find the app name and env for the features collection
   # NOTE: Assumes 1 moled app per db...
   def self.get_app_info
     feature = features_cltn.find_one( {}, :fields => [:app, :env] )
+    return nil, nil unless feature 
     return feature['app'], feature['env']
   end
-    
-  # ---------------------------------------------------------------------------
-  # Initialize app by reading off mongo configuration parameters if necessary
-  def self.config
-    unless @config
-      begin
-        config_file = File.join( RAILS_ROOT, %w[config mongo.yml] )
-        config      = YAML.load_file( config_file )
-        @config     = config[RAILS_ENV]
-      rescue => boom
-        $stderr.puts "Rackamole init error - #{boom}"
-        raise "Hoy? Unable to locate mongo config file in `#{config_file}. Did you copy and update config/default_mongo.yml?" unless config
-      end
-    end
-    @config
-  end
-
-  # ---------------------------------------------------------------------------
-  # Paginate top features
-  def self.paginate_top_features( conds, page=1 )
-    tops    = []    
-    elapsed = Benchmark::realtime do
-      tops = logs_cltn.group( [:fid], conds, { :count => 0 }, 'function(obj,prev) { prev.count += 1}', true )
-    end
-    puts "PERF - Top features %d -- %3.2f" % [tops.size, elapsed]
-    
-    features = []
-    tops.sort{ |a,b| b['count'] <=> a['count'] }.each do |row|
-      features << { :fid => row['fid'], :total => row['count'].to_i }
-    end
-    
-    WillPaginate::Collection.create( page, default_page_size, features.size ) do |pager|      
-      offset = (page-1)*default_page_size
-      result = features[offset...(offset+default_page_size)]
-      result.each do |u|
-        feature = features_cltn.find_one( u[:fid] )
-        u[:name] = feature
-      end
-      pager.replace( result )
-    end
-  end
-          
-  # ---------------------------------------------------------------------------
-  # Paginate top users
-  def self.paginate_top_users( conds, page=1 )
-    tops    = []    
-    elapsed = Benchmark::realtime do
-      tops = logs_cltn.group( [:uid], conds, { :count => 0 }, 'function(obj,prev) { prev.count += 1}', true )
-    end
-    puts "PERF - Top users %d -- %3.2f" % [tops.size, elapsed]
-    
-    users = []
-    tops.sort{ |a,b| b['count'] <=> a['count'] }.each do |row|
-      users << { :uid => row['uid'], :total => row['count'].to_i, :details => [] }
-    end
-    
-    WillPaginate::Collection.create( page, default_page_size, users.size ) do |pager|      
-      offset = (page-1)*default_page_size
-      result = users[offset...(offset+default_page_size)]
-      result.each do |u|
-        user = users_cltn.find_one( u[:uid], :fields => [:una] )
-        u[:name] = user['una']
-      end
-      pager.replace( result )
-    end
-  end
-        
-  # ---------------------------------------------------------------------------
-  # Fetch pagination collection for given condition
-  def self.paginate_logs( conds, page=1 )    
-    matching = logs_cltn.find( conds )    
-    WillPaginate::Collection.create( page, default_page_size, matching.count ) do |pager|
-      pager.replace( logs_cltn.find( conds, 
-        :sort  => [ ['did', 'desc'], ['tid', 'desc'] ],
-        :skip  => (page-1)*default_page_size, 
-        :limit => default_page_size ).to_a )
-    end
-  end
-            
+                          
   # ---------------------------------------------------------------------------
   # Collect various data points to power up dashboard 
   # TODO - PERF - try just using cursor vs to_a
@@ -177,37 +105,10 @@ class App < Base
         
   # ===========================================================================
   private
-      
-    # -------------------------------------------------------------------------
-    # Fetch database instance    
-    def self.db
-      return @db if @db
-      @db = connection.db( config['database'] )
-      ensure_indexes
-      @db
-    end
-  
+        
     # -------------------------------------------------------------------------
     # Makes sure we have some indexes set
     # BOZO !! Create script to set these up ?
     def self.ensure_indexes
-      logs_cltn.create_index( :fid )
-      logs_cltn.create_index( :uid )
-      logs_cltn.create_index( :did )
-      logs_cltn.create_index( :tid )
-      logs_cltn.create_index( 
-        [ 
-          [:did, Mongo::DESCENDING], 
-          [:tid, Mongo::DESCENDING] 
-        ] 
-      )
-      users_cltn.create_index( :una )
-      features_cltn.create_index( :ctx )
-      features_cltn.create_index( 
-        [ 
-          [:ctl, Mongo::ASCENDING], 
-          [:act, Mongo::ASCENDING] 
-        ]
-      )
     end
 end

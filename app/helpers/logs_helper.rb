@@ -2,13 +2,13 @@ module LogsHelper
 
   # ---------------------------------------------------------------------------
   def user_name_for( user_id )
-    user = App.users_cltn.find_one( user_id )
+    user = User.users_cltn.find_one( user_id )
     user['una']
   end
   
   # ---------------------------------------------------------------------------
   def feature_name_for( feature_id )
-    feature = App.features_cltn.find_one( feature_id )
+    feature = Feature.features_cltn.find_one( feature_id )
     if feature['ctx']
       return feature['ctx']
     end
@@ -42,14 +42,15 @@ module LogsHelper
   # ---------------------------------------------------------------------------
   # Find user name for log
   def user_name_for( user_id )
-    user = App.users_cltn.find_one( user_id )
+    user = User.users_cltn.find_one( user_id )
     user['una']
   end
   
   # ---------------------------------------------------------------------------
   # Find feature context for log entry
   def context_for( feature_id )
-    feature = App.features_cltn.find_one( feature_id )
+puts "Looking for #{feature_id.inspect}"    
+    feature = Feature.features_cltn.find_one( feature_id )
     if feature['ctl']
       return "#{feature['ctl']}##{feature['act']}"
     end

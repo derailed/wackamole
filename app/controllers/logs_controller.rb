@@ -1,12 +1,13 @@
-require 'will_paginate/array'
-
 class LogsController < ApplicationController
-  layout 'plain'
+  
+  layout 'base'
+  
+  before_filter :ensure_db
   
   # ---------------------------------------------------------------------------
   # Homey...
   def index
-    @logs = App.paginate_logs( @filter.to_conds, params[:page] ? params[:page].to_i : 1 )
+    @logs = Log.paginate_logs( @filter.to_conds, params[:page] ? params[:page].to_i : 1 )
   end
   
   # ---------------------------------------------------------------------------
@@ -14,7 +15,7 @@ class LogsController < ApplicationController
   def search
     begin
       @filter.search_terms = params[:search_filter][:search_terms]      
-      @logs = App.paginate_logs( @filter.to_conds )
+      @logs = Log.paginate_logs( @filter.to_conds )
     rescue => boom
       logger.error boom
       flash.now[:error] = boom
@@ -27,7 +28,7 @@ class LogsController < ApplicationController
   # ---------------------------------------------------------------------------
   # Fecth info about a particular log
   def show
-    @log = App.logs_cltn.find_one( Mongo::ObjectID.from_string( params[:id] ) )
+    @log = Log.find_one( Mongo::ObjectID.from_string( params[:id] ) )
     render :show, :layout => false 
   end
   
@@ -35,7 +36,18 @@ class LogsController < ApplicationController
   # Filter logs
   def filter
     @filter.from_options( params[:filter] )
-    @logs = App.paginate_logs( @filter.to_conds )
+    @logs = Log.paginate_logs( @filter.to_conds )
   end
   
+  # ===========================================================================
+  private
+  
+    # Ensure the db sticks
+    def ensure_db
+      @db = session[:mole_db]
+      Log.current_db( @db )
+      Feature.current_db( @db )
+      User.current_db( @db )
+    end
+
 end

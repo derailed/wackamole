@@ -1,3 +1,19 @@
+#filter_form fieldset {
+  border:  none;
+  display: block;
+}
+#filter_form fieldset label {
+  width:     110px;
+  display:   block;
+}
+#filter_form fieldset.inline {
+  float: left;
+}
+
+select {
+  min-width: 100px;
+}
+
 input.search {
   background:                     white url(/images/search.png) no-repeat 2px 1px;
   font-size:                      1em;

@@ -1,13 +1,14 @@
 ActionController::Routing::Routes.draw do |map|
   # Dashboard
-  map.root :controller => 'apps', :action => 'index'
+  map.root :controller => 'reports', :action => 'index'
   
   # Mission control
   map.resources :reports, :only => [:index], :collection => { :refresh => :get }
-  map.fixed 'reports/fixed/:db/:app/:env/:type', :controller => 'reports', :action => 'fixed'
+  map.fixed '/reports/fixed/:db/:app/:env/:type', :controller => 'reports', :action => 'fixed'
   
-  # Dash
+  # Apps
   map.resources :apps, :only => [:index], :collection => { :refresh => :get }
+  map.open  '/apps/open/:report_id/:env', :controller => 'apps', :action => 'open'
 
   # Users
   map.resources :users, :only => [:index], :collection => { :filter => :post, :search => :post }

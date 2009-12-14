@@ -1,0 +1,85 @@
+.mission {  
+  margin-top: 30px;
+}
+
+div.doh {
+  background: transparent url(../images/mole_error.png) no-repeat;
+  padding:    10px 10px 0px 120px;
+  margin:     50px 10px;
+  min-height: 100px; 
+}
+div.doh p {
+  text-align: left;
+  color:      #8d4c4c;
+}
+
+p.app_name {
+  font-style:    4em;
+  font-variant:  small-caps;  
+  border-top:    1px #434343 solid;
+  margin-bottom: 10px;
+}
+
+p.perf {
+  color: #0000ff;
+}
+
+p.fault {
+  color: #ff0000;
+}
+
+span.no_diff {
+  color: #c1c1c1;
+}
+
+span.diff {
+  color: #2fba00;
+}
+
+div.environment {
+  overflow:                       auto;
+  margin:                         20px 10px;
+  padding:                        10px;
+  border:                         1px #c1c1c1 solid;
+  -moz-border-radius-topleft:     7px;
+  -moz-border-radius-topright:    7px;  
+  -moz-border-radius-bottomleft:  7px;  
+  -moz-border-radius-bottomright: 7px;  
+  
+}
+
+div.environment div.env {
+  font-size: 2em;
+  width:     50%;
+  float:     left;
+}
+
+div.environment div.details {
+  float:      right;
+  width:      20%;
+  text-align: right;
+}
+
+td.fault {
+  color:      white;
+  background: red;
+}
+
+td.perf {
+  color:      white;
+  background: blue;
+}
+
+td.active {
+  background: yellow;
+}
+
+td.inactive {
+  color:      #fff;
+  background: #434343;
+}
+
+a.fixed {
+  color: orange;
+  text-decoration: none;
+}

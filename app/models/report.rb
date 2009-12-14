@@ -1,9 +1,12 @@
-class Report < Base
+class Report
+  extend MongoBase, SingleForwardable
 
-  def self.find( selector, opts={} )
-    reports_cltn.find( selector, opts )
-  end
+  def self.reports_cltn()  @reports  ||= db( 'reports_mdb', {:strict => false} ).collection( 'reports' ); end  
   
+  def_delegators :reports_cltn, :find, :find_one
+  
+  # ---------------------------------------------------------------------------
+  # Allows use to clear out perf or fault state til the next tick...  
   def self.fix_me( db, app, env, type )
     reports_cltn.update( { :db => db, :app => app }, { '$set' => { "envs.#{env}.#{type}" => 0 } } )
   end
@@ -12,6 +15,9 @@ class Report < Base
   # Retrieve reports if any...  
   def self.find_reports( now )
     reports = comb_applications( now )
+
+puts reports.to_yaml
+    
     reports.each_pair do |app_name, env_info|
       db_name = env_info[:db]
       
@@ -33,7 +39,7 @@ class Report < Base
             end
             reports_cltn.save( report, :safe => true )
           else
-            row = { :app => app_name, :db => db_name, :envs => { env => { type_name => count } } }
+            row = { :app => app_name, :envs => { env => { type_name => count } } }
             reports_cltn.insert( row, :safe => true )
           end
         end
@@ -77,7 +83,17 @@ class Report < Base
       }
 
       mole_databases.each do |db_name|
-        db      = connection.db( db_name )      
+        db      = connection.db( db_name )
+puts "CHECKING #{db_name} -- #{db.collection_names}"
+
+        # Check if this db looks like a mole db if not bail!
+        collection_check = 0
+        db.collection_names.each do |collection|
+          collection_check += 1 if %w[logs features users].include?(collection)
+        end        
+puts "Collection checks #{collection_check}"        
+        next unless collection_check == 3   
+             
         logs    = db['logs'].find( conds, :fields => ['typ', 'rti', 'fault', 'fid'] )
         feature = db['features'].find_one( {}, :fields => ['app', 'env'] )
           
@@ -117,17 +133,10 @@ class Report < Base
       end
     end
 
-    # ---------------------------------------------------------------------------
-    # Retrieve or create report db and collection
-    def self.reports_cltn
-      @reports_cltn ||= db.collection( 'reports' )
-    end
-  
-    # -------------------------------------------------------------------------
-    # Fetch database instance    
-    def self.db
-      return @db if @db
-      @db = connection.db( 'reports_mdb' )
-    end
+    # # -------------------------------------------------------------------------
+    # # Override db to access report database
+    # def self.db( db_name=nil )
+    #   super( db_name || 'reports_mdb' )
+    # end
     
 end

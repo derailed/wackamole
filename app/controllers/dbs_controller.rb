@@ -1,5 +1,6 @@
 class DbsController < ApplicationController
-  layout 'plain'
+  
+  layout 'base'
   
   def index
     dbs      = MongoMapper.connection.database_info

@@ -17,18 +17,17 @@ class ApplicationController < ActionController::Base
       unless @filter
         @filter          = SearchFilter.new
         session[:filter] = @filter
-      end
+      end      
       load_app_info
     end
     
     # -------------------------------------------------------------------------  
     # Retrieve moled app info...
     def load_app_info
-      @app_info = session[:app_info]
-      unless @app_info
-        app_name, env = App.get_app_info
-        @app_info = { :name => app_name, :env => env }
-        session[:app_info] = @app_info
-      end
+      @db = session[:mole_db]
+      App.current_db( @db ) if @db      
+      app_name, env = App.get_app_info
+      @app_info = { :name => app_name, :env => env }
+      session[:app_info] = @app_info
     end    
 end

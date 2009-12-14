@@ -11,6 +11,7 @@ class SearchFilter
     @type         = SearchFilter.mole_types.first
     @feature_id   = nil
     @time_frame   = SearchFilter.time_frames.first
+    @context      = 'All'
     @browser_type = SearchFilter.browser_types.first
   end
 
@@ -35,7 +36,7 @@ class SearchFilter
   # ---------------------------------------------------------------------------
   # Find all features  
   def features
-    features = App.features_cltn.find().to_a
+    features = Feature.features_cltn.find().to_a
     features = features.map { |f| [context_for(f), f['id']] } 
     features.sort! { |a,b| a.first <=> b.first }
     features.insert( 0, ["All", -1] )
@@ -127,7 +128,7 @@ class SearchFilter
       key    = tokens.shift
       if key
         if key == "user"
-          users = App.users_cltn.find( { :una => Regexp.new( tokens.first ) }, :fields => ['_id'] )
+          users = User.users_cltn.find( { :una => Regexp.new( tokens.first ) }, :fields => ['_id'] )
           conds[field_map( key )] = { '$in' => users.collect{ |u| u['_id'].to_s } }
         elsif tokens.size == 2
           conds["#{field_map(key)}.#{tokens.first}"] = Regexp.new( tokens.last )

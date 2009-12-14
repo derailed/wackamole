@@ -2,11 +2,14 @@ require 'will_paginate'
 require 'ostruct'
 
 class UsersController < ApplicationController
-  layout 'plain'
   
+  layout 'base'
+
+  before_filter :ensure_db
+    
   # ---------------------------------------------------------------------------
   def index
-    @users = App.paginate_top_users( @filter.to_conds, params[:page] ? params[:page].to_i : 1 )
+    @users = User.paginate_top_users( @filter.to_conds, params[:page] ? params[:page].to_i : 1 )
   end
   
   # ---------------------------------------------------------------------------
@@ -14,7 +17,7 @@ class UsersController < ApplicationController
   def search
     begin
       @filter.search_terms = params[:search_filter][:search_terms]
-      @users = App.paginate_top_users( @filter.to_conds )
+      @users = User.paginate_top_users( @filter.to_conds )
     rescue => boom
       flash.now[:error] = boom
     end
@@ -23,9 +26,20 @@ class UsersController < ApplicationController
   end
   
   # ---------------------------------------------------------------------------
+  # Filters out user's list
   def filter
     @filter.from_options( params[:filter] )
-    @users = App.paginate_top_users( @filter.to_conds )
+    @users = User.paginate_top_users( @filter.to_conds )
   end
   
+  # ===========================================================================
+  private
+  
+    # Ensure the db sticks
+    def ensure_db
+      @db = session[:mole_db]
+      App.current_db( @db )
+      User.current_db( @db )
+    end
+
 end

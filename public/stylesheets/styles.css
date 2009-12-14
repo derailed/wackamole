@@ -71,8 +71,10 @@ div#app_info {
   text-align: right;  
   font-size:  4em;
 }
-div#app_info span#env {
-  font-style: italic;
+div#app_info li#env {
+  color:        #c1c1c1;
+  font-size:    0.5em;
+  font-style:   italic;
 }
 div#app_info p {
   text-align: right;  
@@ -206,17 +208,6 @@ div#features {
   margin-bottom:                  10px;
 }
 
-#filter_form fieldset {
-  border:  none;
-  display: block;
-}
-#filter_form fieldset label {
-  width:   100px;
-  display: block;
-}
-#filter_form fieldset.inline {
-  float: left;
-}
 
 /* Titles */
 p.title {
