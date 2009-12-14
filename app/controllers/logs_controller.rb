@@ -1,9 +1,7 @@
 class LogsController < ApplicationController
   
   layout 'base'
-  
-  before_filter :ensure_db
-  
+    
   # ---------------------------------------------------------------------------
   # Homey...
   def index
@@ -39,16 +37,4 @@ class LogsController < ApplicationController
     @logs = Log.paginate_logs( @filter.to_conds )
   end
   
-  # ===========================================================================
-  private
-  
-    # Ensure the db sticks
-    def ensure_db
-      @db = session[:mole_db]
-      Log.current_db( @db )
-      Feature.current_db( @db )
-      User.current_db( @db )
-      load_app_info      
-    end
-
 end

@@ -1,5 +1,7 @@
 class User
-  extend MongoBase
+  
+  def self.logs_cltn()  @logs  ||= Mongo::Control.collection( 'logs' ) ;  end  
+  def self.users_cltn() @users ||= Mongo::Control.collection( 'users' );  end
   
   # Pagination size
   def self.default_page_size() @page_size ||= 20; end

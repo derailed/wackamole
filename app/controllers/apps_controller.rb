@@ -4,9 +4,7 @@ require 'core_ext/time'
 class AppsController < ApplicationController
   
   layout 'base'
-  
-  before_filter :ensure_db
-  
+    
   # ---------------------------------------------------------------------------
   # Home sweet home  
   def index
@@ -17,19 +15,16 @@ class AppsController < ApplicationController
   # ---------------------------------------------------------------------------
   # Show the details of an application given a report id
   def open
-    # Switch db context
-    report  = Report.find_one( Mongo::ObjectID.from_string( params[:report_id] ) )  
-    db_name = App.switch_db!( report['app'],  params[:env] )
-    
+    # Switch db connection to new one
+    report  = Report.find_one( Mongo::ObjectID.from_string( params[:report_id] ) )    
+    db_name = Mongo::Control.switch_db!( report['app'], params[:env] )
     logger.info "Now connected to db #{db_name}"
-    
-    # Stash current db name...
-    session[:mole_db] = db_name
     
     # Reset app info
     session[:app_info] = nil
     load_app_info
-    
+
+    # Reset filters    
     @filter.reset!
     
     now   = @updated_on.utc  
@@ -46,13 +41,4 @@ class AppsController < ApplicationController
     end
   end
   
-  # ===========================================================================
-  private
-  
-    # Ensure the db sticks
-    def ensure_db
-      @db = session[:mole_db]
-      App.current_db( @db ) if @db
-      load_app_info
-    end
 end

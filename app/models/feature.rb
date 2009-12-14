@@ -1,5 +1,7 @@
 class Feature
-  extend MongoBase
+  
+  def self.logs_cltn()     @logs  ||= Mongo::Control.collection( 'logs' ) ;  end  
+  def self.features_cltn() @users ||= Mongo::Control.collection( 'features' );  end  
   
   # Pagination size
   def self.default_page_size() @page_size ||= 20; end

@@ -1,19 +1,10 @@
 require 'benchmark'
 
 class App
-  extend MongoBase
   
-  # ---------------------------------------------------------------------------
-  # Switch db instance given db_name 
-  # NOTE : This assumes mole db naming convention 
-  # ie mole_{app_name in lower case}_{env}_mdb
-  def self.switch_db!( app_name, env )
-    @db = nil
-    app = app_name.gsub( /\s/, '_' ).downcase
-    db_name = "mole_%s_%s_mdb" % [app, env]
-    db( db_name )
-    db_name
-  end
+  def self.logs_cltn()     @logs  ||= Mongo::Control.collection( 'logs' ) ;  end
+  def self.users_cltn()    @users ||= Mongo::Control.collection( 'users' );  end
+  def self.features_cltn() @users ||= Mongo::Control.collection( 'features' );  end  
                             
   # ---------------------------------------------------------------------------
   # Collect various data points to power up dashboard 

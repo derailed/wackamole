@@ -1,3 +1,5 @@
+require 'mongo/control'
+
 class ApplicationController < ActionController::Base
   helper :all 
   protect_from_forgery 
@@ -18,6 +20,7 @@ class ApplicationController < ActionController::Base
         @filter          = SearchFilter.new
         session[:filter] = @filter
       end
+      load_app_info
     end
 
   # ===========================================================================    
@@ -26,8 +29,11 @@ class ApplicationController < ActionController::Base
     # -------------------------------------------------------------------------  
     # Retrieve moled app info...
     def load_app_info
-      app_name, env = Feature.get_app_info
-      @app_info     = { :name => app_name, :env => env }
-      session[:app_info] = @app_info
+      @app_info = session[:app_info]
+      unless @app_info
+        app_name, env = Feature.get_app_info
+        @app_info     = { :name => app_name, :env => env }
+        session[:app_info] = @app_info
+      end
     end    
 end

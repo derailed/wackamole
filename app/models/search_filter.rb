@@ -42,7 +42,7 @@ class SearchFilter
   # Find all features  
   def features
     features = Feature.features_cltn.find().to_a
-    features = features.map { |f| [context_for(f), f['id']] } 
+    features = features.map { |f| [context_for(f), f['_id']] } 
     features.sort! { |a,b| a.first <=> b.first }
     features.insert( 0, ["All", -1] )
   end
@@ -121,7 +121,7 @@ class SearchFilter
     
     # filter mole_features
     unless feature_id.to_s == "-1"
-      conds['fid'] = feature_id
+      conds['fid'] = Mongo::ObjectID.from_string( feature_id )
     end
                     
     # filter by date

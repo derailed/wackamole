@@ -4,9 +4,7 @@ require 'ostruct'
 class FeaturesController < ApplicationController
   
   layout 'base'
-  
-  before_filter :ensure_db
-  
+    
   # ---------------------------------------------------------------------------
   def index
     @features = Feature.paginate_top_features( @filter.to_conds, params[:page] ? params[:page].to_i : 1 )
@@ -31,13 +29,4 @@ class FeaturesController < ApplicationController
     @features = Feature.paginate_top_features( @filter.to_conds )
   end
   
-  # ===========================================================================
-  private
-  
-    # Ensure the db sticks
-    def ensure_db
-      @db = session[:mole_db]
-      Feature.current_db( @db )
-      load_app_info
-    end  
 end

@@ -1,5 +1,7 @@
 class Log
-  extend MongoBase, SingleForwardable
+  extend SingleForwardable
+  
+  def self.logs_cltn() @logs  ||= Mongo::Control.collection( 'logs' ) ;  end
   
   def_delegators :logs_cltn, :find, :find_one
     

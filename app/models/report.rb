@@ -1,7 +1,7 @@
 class Report
-  extend MongoBase, SingleForwardable
+  extend SingleForwardable
 
-  def self.reports_cltn()  @reports  ||= db( 'reports_mdb', {:strict => false} ).collection( 'reports' ); end  
+  def self.reports_cltn() @reports ||= Mongo::Control.collection( 'reports', 'reports_mdb' ); end  
   
   def_delegators :reports_cltn, :find, :find_one
   
@@ -49,12 +49,6 @@ class Report
   private
 
     # -------------------------------------------------------------------------
-    # Inspect current connection databases and weed out mole_xxx databases
-    def self.mole_databases
-      connection.database_names.select{ |db| db if db =~ /^mole_/ }
-    end
-
-    # -------------------------------------------------------------------------
     # Map rackamole types to report types  
     def self.to_type_name( type )
       case type
@@ -79,8 +73,8 @@ class Report
         :typ => { '$in'  => check_types }
       }
 
-      mole_databases.each do |db_name|
-        db      = connection.db( db_name )
+      Mongo::Control.mole_databases.each do |db_name|
+        db = Mongo::Control.get_database( db_name )
 
         # Check if this db looks like a mole db if not bail!
         collection_check = 0

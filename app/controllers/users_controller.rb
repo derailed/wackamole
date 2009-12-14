@@ -4,8 +4,6 @@ require 'ostruct'
 class UsersController < ApplicationController
   
   layout 'base'
-
-  before_filter :ensure_db
     
   # ---------------------------------------------------------------------------
   def index
@@ -32,14 +30,4 @@ class UsersController < ApplicationController
     @users = User.paginate_top_users( @filter.to_conds )
   end
   
-  # ===========================================================================
-  private
-  
-    # Ensure the db sticks
-    def ensure_db
-      @db = session[:mole_db]
-      App.current_db( @db )
-      User.current_db( @db )
-      load_app_info      
-    end
 end
