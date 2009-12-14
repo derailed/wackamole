@@ -37,10 +37,8 @@ module MongoBase
   # ---------------------------------------------------------------------------
   # Fetch database instance
   def db( db_name=nil, opts={:strict => true} )
-RAILS_DEFAULT_LOGGER.info "--- #{self} -- CHECKING DB #{db_name.inspect} -- currently #{@db ? @db.name : 'N/A'} -- opts #{opts.inspect}"
     return @db if @db
     @db = connection.db( db_name||config['database'], opts )
-RAILS_DEFAULT_LOGGER.info "--- NOW CONNECTED TO #{@db.name}"
     ensure_indexes
     @db
   end
