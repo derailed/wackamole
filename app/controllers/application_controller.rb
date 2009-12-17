@@ -31,9 +31,13 @@ class ApplicationController < ActionController::Base
     def load_app_info
       @app_info = session[:app_info]
       unless @app_info
-        app_name, env = Feature.get_app_info
-        @app_info     = { :name => app_name, :env => env }
-        session[:app_info] = @app_info
+        begin
+          app_name, env = Feature.get_app_info
+          @app_info     = { :name => app_name, :env => env }
+          session[:app_info] = @app_info
+        rescue
+          # don't care !
+        end
       end
     end    
 end

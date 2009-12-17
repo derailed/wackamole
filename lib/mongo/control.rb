@@ -78,7 +78,7 @@ module Mongo
   
       # ---------------------------------------------------------------------------
       # Fetch database instance
-      def self.db( db_name=nil, opts={:strict => true} )
+      def self.db( db_name=nil, opts={:strict => false} )
         RAILS_DEFAULT_LOGGER.debug "DB #{db_name.inspect} -- current #{@db ? @db.name : 'N/A'} --- #{opts.inspect}"        
         return @db if @db
         @db = connection.db( db_name, opts )
