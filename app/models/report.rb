@@ -8,7 +8,7 @@ class Report
   # ---------------------------------------------------------------------------
   # Allows use to clear out perf or fault state til the next tick...  
   def self.fix_me( db, app, env, type )
-    reports_cltn.update( { :db => db, :app => app }, { '$set' => { "envs.#{env}.#{type}" => 0 } } )
+    reports_cltn.update( { :db_name => db, :app => app }, { '$set' => { "envs.#{env}.#{type}" => 0 } } )
   end
   
   # ---------------------------------------------------------------------------

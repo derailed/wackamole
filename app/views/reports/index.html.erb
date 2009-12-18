@@ -31,7 +31,7 @@
                 </td>
                 <% if type != 'features' and count > 0 -%>
                   <td align='right'>
-                    <%= link_to_remote 'fixed', :url => fixed_url( report['db'], report['app'], env, type ), :html => {:class => "fixed"} -%>
+                    <%= link_to_remote 'fixed', :url => fixed_url( report['db_name'], report['app'], env, type ), :html => {:class => "fixed"} -%>
                   </td>
                 <% else -%>
                   <td>
