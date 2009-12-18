@@ -41,11 +41,11 @@
       </tr>
       <% if @log['msg'] -%>
         <tr>
-          <td class="label">Error</td>
-          <td><%=@log['msg']%></td>
+          <td class="label" valign="top">Error</td>
+          <td><%=truncate( @log['msg'], :length => 300 )%></td>
         </tr>      
         <tr>
-          <td class="label" valign="top">Stack</td>
+          <td class="label" valign="top">Stack [<%=@log['sta'].size%>]</td>
           <td><%=render :partial => 'array', :object => @log['sta']%></td>
         </tr>
       <% end -%>      

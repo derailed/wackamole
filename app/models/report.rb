@@ -1,7 +1,7 @@
 class Report
   extend SingleForwardable
 
-  def self.reports_cltn() @reports ||= Mongo::Control.collection( 'reports', 'reports_mdb' ); end  
+  def self.reports_cltn() @reports ||= Mongo::Control.collection( 'reports', 'wackamole_reports_mdb' ); end  
   
   def_delegators :reports_cltn, :find, :find_one
   
@@ -36,7 +36,7 @@ class Report
             end
             reports_cltn.save( report, :safe => true )
           else
-            row = { :app => app_name, :envs => { env => { type_name => count } } }
+            row = { :db_name => db_name, :app => app_name, :envs => { env => { type_name => count } } }
             reports_cltn.insert( row, :safe => true )
           end
         end
@@ -120,12 +120,5 @@ puts "Scanning db #{db_name}"
       else
         report[app_name] = { :db => db_name.to_s, :envs => { env => { type => 1 } }  } 
       end
-    end
-
-    # # -------------------------------------------------------------------------
-    # # Override db to access report database
-    # def self.db( db_name=nil )
-    #   super( db_name || 'reports_mdb' )
-    # end
-    
+    end    
 end

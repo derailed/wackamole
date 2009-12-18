@@ -2,9 +2,9 @@ require 'benchmark'
 
 class App
   
-  def self.logs_cltn()     @logs  ||= Mongo::Control.collection( 'logs' ) ;  end
-  def self.users_cltn()    @users ||= Mongo::Control.collection( 'users' );  end
-  def self.features_cltn() @users ||= Mongo::Control.collection( 'features' );  end  
+  def self.logs_cltn()     @logs     ||= Mongo::Control.collection( 'logs' ) ;  end
+  def self.users_cltn()    @users    ||= Mongo::Control.collection( 'users' );  end
+  def self.features_cltn() @features ||= Mongo::Control.collection( 'features' );  end  
                             
   # ---------------------------------------------------------------------------
   # Collect various data points to power up dashboard 
@@ -23,7 +23,7 @@ class App
 
     # Fetch features for this hour    
     features = day_logs.inject( Set.new ) do |set,log| 
-      set << log['fid'] if log['tid'] =~ /^#{"%02d" % now.hour}/
+      set << log['fid'].to_s if log['tid'] =~ /^#{"%02d" % now.hour}/
       set 
     end
     info[:total_features] = features_cltn.count
@@ -61,7 +61,7 @@ class App
         time_info[time][:user] += 1
       end
       case log['typ']
-        when Rackamole.feature : time_info[time][:feature] += 1
+        when Rackamole.feature : time_info[time][:feature] += 1 if features.add?( log['fid'])
         when Rackamole.perf    : time_info[time][:perf]    += 1
         when Rackamole.fault   : time_info[time][:fault]   += 1
       end

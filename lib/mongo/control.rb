@@ -1,15 +1,8 @@
 require 'mongo'
 
-puts "!!!!!!!!!!!!!!!!!!!!! Loading mongo control !!!!!!!!!!!!!!!!"
-
 module Mongo
   class Control
-    
-    # Collection accessors...
-    # def logs_cltn()     @logs     ||= db.collection( 'logs' );  end  
-    # def users_cltn()    @users    ||= db.collection( 'users' );    end
-    # def features_cltn() @features ||= db.collection( 'features' ); end
-      
+          
     # ---------------------------------------------------------------------------
     # Fetch a collection on a given database by name
     def self.collection( cltn_name, db_name=nil )

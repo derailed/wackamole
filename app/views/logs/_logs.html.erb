@@ -51,7 +51,6 @@
     );
    $( "tr[rel]" ).overlay( {
      expose: 'gray',
-     // effect: 'apple',
      onBeforeLoad: function() {  
        var wrap = this.getContent().find( '.ov_content' );
        wrap.load( this.getTrigger().attr( 'href' ) );
