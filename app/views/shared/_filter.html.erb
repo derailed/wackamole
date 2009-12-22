@@ -13,27 +13,27 @@
   	</fieldset>
 
     <fieldset class="inline">
-			<label for="range">
+			<label for="time_frame">
 			  Time range:
-  			<select id="range" name="filter[time_frame]">
+  			<select id="time_frame" name="filter[time_frame]">
   		    <%= options_for_select SearchFilter.time_frames, @filter.time_frame %>
   		  </select>  			  
 		  </label>
     </fieldset>	                
 
   	<fieldset class="inline">
-			<label for="feature">
+			<label for="type">
 			  Type:
-  			<select id="feature" name="filter[type]">
+  			<select id="type" name="filter[type]">
   		    <%= options_for_select SearchFilter.mole_types, @filter.type %>
   		  </select>						  
 		  </label>
   	</fieldset>
 
   	<fieldset class="inline">
-			<label for="feature">
+			<label for="browser_type">
 			  Browser:
-  			<select id="feature" name="filter[browser_type]">
+  			<select id="browser_type" name="filter[browser_type]">
   		    <%= options_for_select SearchFilter.browser_types, @filter.browser_type %>
   		  </select>						  
 		  </label>
