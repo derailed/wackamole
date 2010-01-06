@@ -19,7 +19,7 @@ class ReportsController < ApplicationController
   end
   
   # ---------------------------------------------------------------------------
-  # User says the issue if fixed. Clear out report and see what happens next...
+  # User says the issue is fixed. Clear out report and see what happens next...
   def fixed
     Report.fix_me( params[:db], params[:app], params[:env], params[:type] )
     

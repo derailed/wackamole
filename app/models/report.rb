@@ -75,7 +75,7 @@ class Report
 
       Mongo::Control.mole_databases.each do |db_name|
         db = Mongo::Control.get_database( db_name )
-puts "Scanning db #{db_name}"
+        
         # Check if this db looks like a mole db if not bail!
         collection_check = 0
         db.collection_names.each do |collection|

@@ -4,7 +4,7 @@ require 'core_ext/time'
 class AppsController < ApplicationController
   
   layout 'base'
-    
+  
   # ---------------------------------------------------------------------------
   # Home sweet home  
   def index

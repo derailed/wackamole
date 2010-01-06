@@ -36,7 +36,11 @@ applications live in the wild...
 
   In order to use wackamole, you must first tell it where to find the moled information. 
   In the config directory, rename the default_mongo.yml file to mongo.yml and update the configuration
-  to point to your mongo instance and database.
+  to point to your mongo instance.
+
+  NOTE: You moled database naming is important here, as Wackamole is setup to snif out the moled application
+  databases using the prefix 'mole_'. So you must name your mole databases according to this convention. ie
+  mole_myapp. 
 
 * Watch your creation live! 
 
