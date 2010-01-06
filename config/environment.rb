@@ -22,7 +22,7 @@ Rails::Initializer.run do |config|
   config.gem "mongo"  
   # config.gem "mongo_ext", :lib => 'mongo_ext'
   config.gem "rackamole"
-  config.gem "mislav-will_paginate", :lib => 'will_paginate'
+  config.gem "will_paginate"
   
   # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
   # Run "rake -D time" for a list of tasks for finding time zone names.  
