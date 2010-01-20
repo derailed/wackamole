@@ -26,6 +26,7 @@
  * GNU General Public License for more details.
  */
 (function($) {
+  
   $.fn.example = function(text, args) {
     
     /* Only calculate once whether a callback has been used. */

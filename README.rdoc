@@ -3,7 +3,7 @@
   
 == DESCRIPTION:
 
-This is a companion rails app for the Rackamole framework which provides for recording
+This is a companion sinatra app for the Rackamole framework which provides for recording
 interactions with your rack applications. Wackamole allows you to view, filter and drilldown 
 on the collected moled information, hence allowing you to observe your
 applications live in the wild...
@@ -16,34 +16,73 @@ applications live in the wild...
 * Forum:      http://groups.google.com/group/rackamole
 * Git:        git://github.com/derailed/wackamole.git
 
-== FEATURES:
+== FEATURES
 
+* Self bundled sinatra app
 * View daily activity
 * Search and filter on any info collected by the mole
 * Reports performance and exceptions that might occur in your applications
 
-== REQUIREMENTS:
+== ROAD MAP
 
-* MongoDb + mongo ruby adapter
+* Rewrite as sinatra gem - done
 
-== INSTALL:
+== DEPENDENCIES
 
-* TODO Cap deploy script needed !
+* mongo + mongo-ext
+* sinatra
+* agnostic-will_paginate
+* memcache-client
+* mongo_rack
+* main 
+
+== INSTALL
+
+* gem install wackamole
   
-== SETUP:
-  
-* Configure the app
+== USAGE
 
-  In order to use wackamole, you must first tell it where to find the moled information. 
-  In the config directory, rename the default_mongo.yml file to mongo.yml and update the configuration
-  to point to your mongo instance.
-
-  NOTE: You moled database naming is important here, as Wackamole is setup to snif out the moled application
+  IMPORTANT: You moled database naming is important here, as Wackamole is setup to snif out the moled application
   databases using the prefix 'mole_'. So you must name your mole databases according to this convention. ie
-  mole_myapp. 
-
-* Watch your creation live! 
-
-* Please checkout the forum and send us feedback and issues. This is still work in progress so your
-  feedback will be very much appreciated!  
+  mole_{app_name}_{environment}_mdb ie mole_fred_development_mdb 
   
+=== Configure It!
+
+  You will need to give wackamole some information about your rackamole configuration. 
+  In order to do so create a .wackamole directory in your home directory and create 
+  a file wackamole.yml. You will need to specify the envs, host and ports specific
+  to your configuration, but here is a sample.
+  
+  wackamole.yml  
+    development:
+      host: localhost
+      port: 27017
+    
+    beta:
+      host:     beta_host_name
+      port:     27017
+      user:     bobo
+      password: secret
+    
+=== Launch It!  
+
+  Watch your creation live! 
+
+  Please checkout the forum and send us feedback and issues. This is still work in progress so your
+  feedback will be very much appreciated!
+  
+== LICENSE:
+
+Copyright 2009-2010 LiquidRail LLC
+
+Licensed under the Apache License, Version 2.0 (the "License"); 
+you may not use this file except in compliance with the License. 
+You may obtain a copy of the License at 
+
+  http://www.apache.org/licenses/LICENSE-2.0 
+  
+Unless required by applicable law or agreed to in writing, software 
+distributed under the License is distributed on an "AS IS" BASIS, 
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+See the License for the specific language governing permissions and 
+limitations under the License.

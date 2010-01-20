@@ -1,15 +1,28 @@
-function show_logs( url, category, date_id )
+function truncate(str, limit) 
 {
-  console.log( url );
-  console.log( category );
-  console.log( date_id );
-  popup_logs( url + "?category=" + category + "&amp;date_id=" + date_id );
-  
+  var bits, i;
+  bits = str.split('');
+  if (bits.length > limit) {
+    for (i = bits.length - 1; i > -1; --i) {
+      if (i > limit) {
+        bits.length = i;
+      }
+      else if (' ' === bits[i]) {
+        bits.length = i;
+        break;
+      }
+    }
+    bits.push('...');
+  }
+  return bits.join('');
 }
 
-// popup logs window
-function popup_logs( url )
+
+function blee( url )
 {
-  win = window.open( url, 'Logs', "height=600,width=1000,status=1,resizable=1,scrollbars=1,location=1,menubar=0,toolbar=0" );
-  win.focus();
+  if( url == "/explore")
+    window.location = url;
+  else
+    $.ajax( {url: url, dataType: 'script', method: 'GET'} );
+  return false;
 }
