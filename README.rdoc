@@ -3,25 +3,25 @@
   
 == DESCRIPTION:
 
-This is a companion sinatra app for the Rackamole framework which provides for recording
-interactions with your rack applications. Wackamole allows you to view, filter and drilldown 
-on the collected moled information, hence allowing you to observe your
-applications live in the wild...
+  This is a companion sinatra app for the Rackamole framework which provides for recording
+  interactions with your rack applications. Wackamole allows you to view, filter and drilldown 
+  on the collected moled information, hence allowing you to observe your
+  applications live in the wild...
 
 == PROJECT INFORMATION
 
-* Developer:  Fernand Galiana
-* Site:       http://www.rackamole.com
-* Twitter:    http://twitter.com/rackamole
-* Forum:      http://groups.google.com/group/rackamole
-* Git:        git://github.com/derailed/wackamole.git
+  Developer:  Fernand Galiana
+  Site:       http://www.rackamole.com
+  Twitter:    http://twitter.com/rackamole
+  Forum:      http://groups.google.com/group/rackamole
+  Git:        git://github.com/derailed/wackamole.git
 
 == FEATURES
 
-* Self bundled sinatra app
-* View daily activity
-* Search and filter on any info collected by the mole
-* Reports performance and exceptions that might occur in your applications
+  o Self bundled sinatra app ( NEW !)
+  o View daily activity
+  o Search and filter on any info collected by the mole
+  o Reports performance and exceptions that might occur in your applications
 
 == ROAD MAP
 
