@@ -25,20 +25,20 @@ applications live in the wild...
 
 == ROAD MAP
 
-* Rewrite as sinatra gem - done
+  Rewrite as sinatra gem - done
 
 == DEPENDENCIES
 
-* mongo + mongo-ext
-* sinatra
-* agnostic-will_paginate
-* memcache-client
-* mongo_rack
-* main 
+  mongo + mongo-ext
+  sinatra
+  agnostic-will_paginate
+  memcache-client
+  mongo_rack
+  main 
 
 == INSTALL
 
-* gem install wackamole
+  > gem install wackamole
   
 == USAGE
 
