@@ -1,0 +1,4 @@
+<%= erb :'shared/flash.js', :layout => false %>
+
+$('#users').html( '<%= escape_javascript( partial( :'users/rows' ) ) %>')
+$('p#timestamp').html( "<%=escape_javascript(partial(:'shared/timestamp'))%>" );

@@ -1,0 +1,26 @@
+<div class="page_entries">
+  <%= page_entries_info @users, :entry_name => 'users' %>
+</div>
+
+<div id="content">
+  <table border="0" class="logs">
+    <thead>
+      <tr>
+        <th width="25%">Username</th>
+        <th align='right' width="5%">Totals</th>
+      <tr>
+    </thead>
+    <tbody>
+      <% count=0;@users.each do |row| %>
+        <% color = count % 2 == 0 ? 'transparent' : 'transparent url(/images/fade.png) repeat-x' %>
+        <tr style="background:<%=color%>">
+          <td><b><%=row[:name]%></b></td>
+          <td align="right"><b><%=row[:total]%></b></td>
+        </tr>
+      <% count+=1;end %>
+    </tbody>
+  </table>
+</div>
+<div class="pages">
+  <%= will_paginate @users, :previous_label => "&nbsp;&nbsp;", :next_label => "&nbsp;&nbsp;", :params => { :url => "/users" } %>
+</div>

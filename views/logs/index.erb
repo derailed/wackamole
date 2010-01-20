@@ -1,0 +1,13 @@
+<div id="filter">
+  <%= partial :'shared/filter' %>
+</div>
+
+<div id="logs">
+  <%= partial :'logs/rows' %>
+</div>
+
+<script>
+  $( function() {
+     $('a.logs').addClass( 'current' );
+  });     
+</script>

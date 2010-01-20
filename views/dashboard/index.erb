@@ -1,0 +1,4 @@
+<div id="dash">
+  <%= partial :'dashboard/report' %>
+</div>
+<%= periodically_call_remote :url => "/dashboard/refresh", :frequency => @refresh_rate %>

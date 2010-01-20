@@ -1,0 +1,63 @@
+<div id="filters">
+  <form id="filter_form">
+  	<fieldset id="submit">
+  	  <label>
+  	    &nbsp;
+    	  <input type="submit" name="commit" value="Filter"/>
+        <%= image_tag 'loading.gif', :border => '0', :size => '24x24', :id => 'loading' %>
+  	  </label>
+  	</fieldset>
+
+    <fieldset class="inline">
+  		<label for="time_frame">
+  		  Time range:
+  			<select id="time_frame" name="filter[time_frame]">
+  		    <%= options_for_select Wackamole::SearchFilter.time_frames, @filter.time_frame %>
+  		  </select>  			  
+  	  </label>
+    </fieldset>	                
+
+  	<fieldset class="inline">
+  		<label for="type">
+  		  Type:
+  			<select id="type" name="filter[type]">
+  		    <%= options_for_select Wackamole::SearchFilter.mole_types, @filter.type %>
+  		  </select>						  
+  	  </label>
+  	</fieldset>
+
+  	<fieldset class="inline">
+  		<label for="browser_type">
+  		  Browser:
+  			<select id="browser_type" name="filter[browser_type]">
+  		    <%= options_for_select Wackamole::SearchFilter.browser_types, @filter.browser_type %>
+  		  </select>						  
+  	  </label>
+  	</fieldset>
+
+  	<fieldset class="inline">
+  		<label for="feature">
+  		  Context:
+  			<select id="feature" name="filter[feature_id]">
+  		    <%= options_for_select @filter.features, @filter.feature_id %>
+  		  </select>						  
+  	  </label>
+  	</fieldset>
+  </form>
+</div>
+
+<%= partial :'shared/search' %>
+
+<script>
+  $( function() {
+    $('form#filter_form').submit( function() {
+      $.ajax( { beforeSend: function(request){ $('#loading' ).show(); },
+        complete:   function(request){ $('#loading' ).hide(); },
+        data:       $.param( $(this).serializeArray() ),
+        dataType:   'script',
+        type:       'post',
+        url:        '<%=@filter_path%>' }); 
+        return false;
+    });
+  });
+</script>

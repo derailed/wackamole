@@ -1,0 +1,24 @@
+<%= partial :'shared/filter' %>
+
+<div id="users">
+  <%= partial :'users/rows'%>
+</div>
+
+<script>
+  $( function() {
+    $('a.users').addClass( 'current' );
+
+    $('a.nav_link').click( function() {
+      $("a.nav_link").removeClass( "current" );   
+      $(this).addClass( 'current' );    
+      return true;
+    });
+    
+    $('.pagination a').live( 'click', function() {
+      $("#content").html( '<%=partial :"shared/wait"%>' ); 
+      $.getScript( this.href );
+      return false;
+    });  
+  });
+</script>
+

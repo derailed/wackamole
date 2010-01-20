@@ -1,0 +1,7 @@
+<p class="title">Mission Control</p>
+
+<div id="dash">
+  <%= partial :'mission/report' %>
+</div>
+
+<%= periodically_call_remote :url => '/mission/refresh', :frequency => @refresh_rate %>
