@@ -25,7 +25,7 @@
 
 == ROAD MAP
 
-  Rewrite as sinatra gem - done
+  o Rewrite as sinatra gem - done
 
 == DEPENDENCIES
 
@@ -68,8 +68,28 @@
 
   Watch your creation live! 
 
+  NOTE: By default wackamole uses mongo_rack for storing its session information.
+  This assumes that you have a local mongoDB instance running on the default port 27017.
+
+  > wackamole
+  
+    Alternatively you can use a different mongo instance to store wackamole session information
+    or use memcache by specifying the --pool options as follows:
+
+    To use the mongo session store on localhost at port 27030 with db name 'wackamole' and collection named 'sessions'
+
+    > wackamole --pool "mongo://localhost:27030/wackamole/sessions"
+
+    To use memcache session store on localhost at port 11233 with namespace 'wackamole'
+
+    > wackamole --pool "memcache://localhost:11233/wackamole"
+
+    The pool options assumes the following format:
+
+    --pool {mongo|memcache}://{host}:{port}/{db_name|namespace}/{cltn_name}
+
   Please checkout the forum and send us feedback and issues. This is still work in progress so your
-  feedback will be very much appreciated!
+  feedback is very important and will be very much appreciated!
   
 == LICENSE:
 
