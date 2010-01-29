@@ -4,10 +4,10 @@
     <th width="80%">Value</th>
   </thead>
   <tbody>  
-    <% hash.each_pair do |k,v| %>
+    <% hash.keys.sort.each do |k| %>
       <tr>
         <td class="label"><%=k%></td>
-        <td><%=v%></td>
+        <td><%=hash[k]%></td>
       </tr>
     <% end %>
   </tbody>

@@ -150,7 +150,7 @@ module Wackamole
           }
         end        
 
-        logs   = db['logs'].find( conds, :fields => ['typ', 'rti', 'fault', 'fid'] )          
+        logs   = db['logs'].find( conds, :fields => ['typ', 'rti', 'fault', 'fid'] )
         totals = 
         { 
           Rackamole.feature  => 0, 

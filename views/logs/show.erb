@@ -36,9 +36,25 @@
         </tr>
       <% end %>
       <tr>
+        <td class="label">Status</td>
+        <td><%=@log['sts']%></td>
+      </tr>      
+      <tr>
         <td class="label">Software</td>
         <td><%=@log['sof']%></td>
       </tr>
+      <% if @log['mac'] %>
+        <tr>
+          <td class="label" valign="top">Machine</td>
+          <td><%=partial :'logs/hash', :object => @log['mac']%></td>
+        </tr>
+      <% end %>
+      <% if @log['bro'] and @log['bro'].is_a?( Hash ) %>
+      <tr>
+        <td class="label" valign="top">Browser</td>
+        <td><%=partial :'logs/hash', :object => @log['bro']%></td>
+      </tr>      
+      <% end %>
       <% if @log['msg'] %>
         <tr>
           <td class="label" valign="top">Error</td>
@@ -49,6 +65,12 @@
           <td><%=partial :'logs/array', :object => @log['sta']%></td>
         </tr>
       <% end %>
+      <% if @log['hdr'] %>
+        <tr>
+          <td class="label" valign="top">Headers</td>
+          <td><%=partial :'logs/hash', :object => @log['hdr']%></td>
+        </tr>
+      <% end %>      
       <% if @log['par'] %>
         <tr>
           <td class="label" valign="top">Parameters</td>

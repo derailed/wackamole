@@ -55,7 +55,7 @@ before do
       session[:filter] = @filter
     end
     @updated_on   = Time.now
-    @refresh_rate = 15
+    @refresh_rate = 60
     
     @app_info     = session[:app_info]
     Wackamole::Control.switch_mole_db!( @app_info[:app_name].downcase, @app_info[:stage] ) if @app_info

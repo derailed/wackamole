@@ -24,7 +24,7 @@
           <td><%=format_host( log['hos'] )%></td>
           <td><%=timestamp_for log %></td>
           <td align="right"><%=request_time( log['rti'] )%></td>
-          <td align="right"><%=browser_icon( log['bro'] )%></td>
+          <td align="right"><%=browser_icon( log['bro']['name'] )%></td>
         </tr>
       <% count+=1;end %>
     </body>

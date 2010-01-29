@@ -23,10 +23,6 @@
   o Search and filter on any info collected by the mole
   o Reports performance and exceptions that might occur in your applications
 
-== ROAD MAP
-
-  o Rewrite as sinatra gem - done
-
 == DEPENDENCIES
 
   mongo + mongo-ext

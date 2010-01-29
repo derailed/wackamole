@@ -1,6 +1,6 @@
 <% if @reports.count == 0 %>
   <div class="doh">
-    <p>Unable to find a Rackamole MongoDb database on this connection.</p>
+    <p>Unable to find a Rackamole MongoDb database on this connection <%=Wackamole::Control.connection.host%>:<%=Wackamole::Control.connection.port%>.</p>
     <p>Make sure you moled database follows this naming convention</p>
     <p>mole_{<i>application name in lower case</i>}_{<i>environment</i>}_mdb</p>
   </div>

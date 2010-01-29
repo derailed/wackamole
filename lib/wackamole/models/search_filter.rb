@@ -42,8 +42,8 @@ module Wackamole
     # ---------------------------------------------------------------------------
     # Find all features  
     def features
-      features = Feature.features_cltn.find().to_a
-      features = features.map { |f| [context_for(f), f['_id']] } 
+      rows = Feature.features_cltn.find().to_a
+      features = rows.map { |f| [context_for(f), f['_id']] }   
       features.sort! { |a,b| a.first <=> b.first }
       features.insert( 0, ["All", -1] )
     end

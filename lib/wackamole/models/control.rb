@@ -114,8 +114,7 @@ module Wackamole
   
       # -----------------------------------------------------------------------
       # Fetch database instance
-      def self.db( db_name=nil, opts={:strict => true} )
-# puts "#{db_name} -- #{@db.inspect}"        
+      def self.db( db_name=nil, opts={:strict => true} ) 
         return @db if @db and !db_name
         return @db if @db and @db.name == db_name
         raise "No database specified" unless db_name

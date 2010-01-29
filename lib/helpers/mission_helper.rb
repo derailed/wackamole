@@ -4,11 +4,10 @@ module MissionHelper
     # -------------------------------------------------------------------------
     def load_report      
       @old_reports = Wackamole::Mission.find( {}, :sort => [ [:app, Mongo::ASCENDING], [:env, Mongo::ASCENDING] ] ).to_a
-      
       last_tick           = session[:last_tick]
       reset               = last_tick.nil?
       last_tick           = last_tick || Chronic.parse( '1 minute ago' )
-      session[:last_tick] = Time.now  
+      session[:last_tick] = Time.now
       @reports = Wackamole::Mission.rollups( last_tick.utc, reset )
     end
     
