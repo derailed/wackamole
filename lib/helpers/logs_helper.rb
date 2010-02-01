@@ -6,16 +6,16 @@ module LogsHelper
       user = Wackamole::User.users_cltn.find_one( user_id )
       user['una']
     end
-  
+
     # ---------------------------------------------------------------------------
-    def feature_name_for( feature_id )
+    # Find feature context for log entry
+    def context_for( feature_id )   
       feature = Wackamole::Feature.features_cltn.find_one( feature_id )
-      if feature['ctx']
-        return feature['ctx']
-      end
-      "#{feature['ctrl']}##{feature['act']}"
+      return "Unknown" unless feature      
+      return "#{feature['ctl']}##{feature['act']}" if feature['ctl']
+      feature['ctx']
     end
-  
+    
     # ---------------------------------------------------------------------------
     def human_type( type )
       case type
@@ -40,16 +40,6 @@ module LogsHelper
         ;
       end
       "N/A"
-    end
-
-    # ---------------------------------------------------------------------------
-    # Find feature context for log entry
-    def context_for( feature_id )
-      feature = Wackamole::Feature.features_cltn.find_one( feature_id )
-      if feature['ctl']
-        return "#{feature['ctl']}##{feature['act']}"
-      end
-      feature['ctx']
     end
   
     # ---------------------------------------------------------------------------

@@ -4,7 +4,7 @@
     <%=human_type @log['typ'] %>
   </p>
   <p class="title" id="feature">  
-    <%=feature_name_for @log['fid'] %>
+    <%=context_for @log['fid'] %>
   </p>
 </p>
 
@@ -38,7 +38,7 @@
       <tr>
         <td class="label">Status</td>
         <td><%=@log['sts']%></td>
-      </tr>      
+      </tr>
       <tr>
         <td class="label">Software</td>
         <td><%=@log['sof']%></td>
@@ -53,7 +53,7 @@
       <tr>
         <td class="label" valign="top">Browser</td>
         <td><%=partial :'logs/hash', :object => @log['bro']%></td>
-      </tr>      
+      </tr>
       <% end %>
       <% if @log['msg'] %>
         <tr>
