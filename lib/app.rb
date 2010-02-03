@@ -45,6 +45,11 @@ configure do
   set :con, Wackamole::Control.init_config( default_config, Sinatra::Application.environment.to_s )
 end
 
+# default route
+get "/" do                                                                                    
+  redirect "/mission"
+end
+
 # -----------------------------------------------------------------------------
 # Before filters
 before do
