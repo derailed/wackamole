@@ -58,6 +58,12 @@ before do
     @refresh_rate = 60
     
     @app_info     = session[:app_info]
-    Wackamole::Control.switch_mole_db!( @app_info[:app_name].downcase, @app_info[:stage] ) if @app_info
+    begin
+      Wackamole::Control.switch_mole_db!( @app_info[:app_name].downcase, @app_info[:stage] ) if @app_info
+    rescue => boom
+puts boom      
+      @app_info          = nil
+      session[:app_info] = nil
+    end
   end
 end

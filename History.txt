@@ -1,8 +1,12 @@
 == 0.0.1 / 2010-01-09
 
-* 1 Initial drop. Made wackamole a gem
+* Initial drop. Made wackamole a gem
 
 == 0.0.2 / 2010-01-28
 
-* 1 Bug fixes and some cleanup
-* 2 Updated details info on logs from Rackamole user_agent parsing
+* Bug fixes and some cleanup
+* Updated details info on logs from Rackamole user_agent parsing
+
+=== 0.0.3 / 2010-01-30
+
+* Bug fixes
