@@ -45,6 +45,7 @@ configure do
   set :con, Wackamole::Control.init_config( default_config, Sinatra::Application.environment.to_s )
 end
 
+# -----------------------------------------------------------------------------
 # default route
 get "/" do                                                                                    
   redirect "/mission"
@@ -66,7 +67,7 @@ before do
     begin
       Wackamole::Control.switch_mole_db!( @app_info[:app_name].downcase, @app_info[:stage] ) if @app_info
     rescue => boom
-puts boom      
+      $stderr.puts boom      
       @app_info          = nil
       session[:app_info] = nil
     end
