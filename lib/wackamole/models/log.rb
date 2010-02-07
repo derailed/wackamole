@@ -29,16 +29,18 @@ module Wackamole
       indexes       = logs_cltn.index_information
       created_count = 0
             
-      [:fid, :uid, :did, :tid].each do |name|
+      [:typ, :fid].each do |name|
         unless indexes.has_key?( "#{name}_1" )
           logs_cltn.create_index( name )
           created_count += 1
         end
       end
-      unless indexes.has_key?( 'did_-1_tid_-1' )
-        logs_cltn.create_index( [ [:did, Mongo::DESCENDING], [:tid, Mongo::DESCENDING] ] ) 
-        created_count += 1
+      unless indexes.key?( "did_-1_tid_-1_type_-1" )
+        logs_cltn.create_index( [[:did, Mongo::DESCENDING], [:tid, Mongo::DESCENDING], [:type, Mongo::DESCENDING] ] )
       end
+      unless indexes.key?( "fid_-1_did_-1" )
+        logs_cltn.create_index( [[:fid, Mongo::DESCENDING], [:did, Mongo::DESCENDING], [:type, Mongo::DESCENDING] ] )
+      end              
       created_count
     end
   end    

@@ -1,3 +1,6 @@
-$('p#timestamp').html( "<%=escape_javascript(partial(:'shared/timestamp'))%>" );
+$('span#timestamp').html( "<%=escape_javascript(partial(:'shared/timestamp'))%>" );
+$("span#timestamp").effect( 'pulsate', { times:1 }, 500 );
 
-$('div#dash').html( "<%=escape_javascript(partial(:'mission/report'))%>" );
+$('div#mission').html( "<%=escape_javascript(partial(:'mission/report'))%>" );
+
+$("span.last_tick_fault" ).effect( 'shake', { times: 3, distance: 5, direction: 'left' }, 300 );

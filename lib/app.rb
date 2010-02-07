@@ -24,6 +24,7 @@ end
 
 configure do
   set :sessions, false
+  set :logging,  true
     
   Wackamole.load_all_libs_relative_to(__FILE__, 'helpers' )
   Wackamole.load_all_libs_relative_to(__FILE__, 'controllers' )
@@ -32,7 +33,8 @@ configure do
   if defined? @@options and @@options
     if @@options[:protocol] == 'mongo'
       use Rack::Session::Mongo, 
-        :server => "%s:%d/%s/%s" % [@@options[:host], @@options[:port], @@options[:db_name], @@options[:cltn_name]]
+        :server    => "%s:%d/%s/%s" % [@@options[:host], @@options[:port], @@options[:db_name], @@options[:cltn_name]],
+        :log_level => :debug
     else
       use Rack::Session::Memcache, 
         :memcache_server => "%s:%d" % [@@options[:host], @@options[:port]],
@@ -40,15 +42,11 @@ configure do
     end
   else
     # Default is a mongo session store
-    use Rack::Session::Mongo, :server => "%s:%d/%s/%s" % ['localhost', '27017', 'wackamole_ses', 'sessions']
+    use Rack::Session::Mongo, 
+      :server => "%s:%d/%s/%s" % ['localhost', '27017', 'wackamole_ses', 'sessions'],
+      :log_level => :error
   end  
   set :con, Wackamole::Control.init_config( default_config, Sinatra::Application.environment.to_s )
-end
-
-# -----------------------------------------------------------------------------
-# default route
-get "/" do                                                                                    
-  redirect "/mission"
 end
 
 # -----------------------------------------------------------------------------
@@ -61,8 +59,7 @@ before do
       session[:filter] = @filter
     end
     @updated_on   = Time.now
-    @refresh_rate = 60
-    
+    @refresh_rate = 30
     @app_info     = session[:app_info]
     begin
       Wackamole::Control.switch_mole_db!( @app_info[:app_name].downcase, @app_info[:stage] ) if @app_info

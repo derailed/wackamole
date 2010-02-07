@@ -1,0 +1,50 @@
+<% applications = extract_applications( @pulse ) %>
+<% if applications.count == 0 %>
+  <div class="doh">
+    <p>Unable to find a Rackamole MongoDb database on this connection <%=Wackamole::Control.connection.host%>:<%=Wackamole::Control.connection.port%>.</p>
+    <p>Make sure you moled database follows this naming convention</p>
+    <p>mole_{<i>application name in lower case</i>}_{<i>environment</i>}_mdb</p>
+  </div>
+<% else %>
+  <% @.each do |report| %>
+    <div class="mission">
+      <p class="app_name"><%= report['app'] %></p>
+      <% report['envs'].keys.sort.each do |env| %>
+        <div class="environment">
+          <div class="env">
+            <%= link_to env, "/dashboard/#{report['app']}/#{env}", :class => 'site_link app_link' %>
+          </div>
+          <div class="details">
+            <table border='0' width="100%">
+            <% report['envs'][env].each do |type, count| %>
+              <% diff = compute_diff( report['app'], env, type, count )%>
+              <tr>
+                <td class="<%=assign_class( type, count, diff )%>" align="left">
+                  <%=type.capitalize %>
+                </td> 
+                <td>
+                  <%=count%> 
+                </td>
+                <td>
+                  &lsaquo;<%= delta?( diff ) %>&rsaquo;
+                </td>
+                <% if type != 'features' and count > 0%>
+                  <td align='right'>
+                    <%= link_to_remote 'fixed', 
+                      "/mission/fixed/#{report['app']}/#{env}/#{type}", 
+                      :class => "fixed" %>
+                  </td>
+                <% else %>
+                  <td>
+                    <p style="width:30px"></p>
+                  </td>
+                <% end %>
+              </tr>
+            <% end %>
+            </table>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

@@ -12,7 +12,9 @@ module Wackamole
     # TODO - PERF - try just using cursor vs to_a
     def self.collect_dashboard_info( now )    
       info    = {}
-      day_logs = logs_cltn.find( { :did => now.to_date_id.to_s }, :fields => [:typ, :fid, :tid, :did, :uid] ).to_a
+      day_logs = logs_cltn.find( { :did => now.to_date_id.to_s }, 
+        :fields => [:typ, :fid, :tid, :did, :uid], 
+        :sort => [ [:tid => Mongo::ASCENDING] ] ).to_a
         
       # Fetch user count for this hour
       users = day_logs.inject( Set.new ) do |set,log| 
@@ -44,27 +46,31 @@ module Wackamole
       end
     
       # Count all logs per hourly time period
-      times         = (0...24).to_a
-      time_info     = times.inject(OrderedHash.new) { |res,time| res[time] = { :user => 0, :feature => 0, :perf => 0, :fault => 0 };res }    
+      hours         = (0...24).to_a
+      hour_info     = hours.inject(OrderedHash.new) { |res,hour| res[hour] = { :user => 0, :feature => 0, :perf => 0, :fault => 0 };res }    
       user_per_hour = {}
       day_logs.each do |log|
         date_tokens = log['did'].match( /(\d{4})(\d{2})(\d{2})/ ).captures
-        time_tokens = log['tid'].match( /(\d{2})(\d{2})(\d{2})/ ).captures    
+        time_tokens = log['tid'].match( /(\d{2})(\d{2})(\d{2})/ ).captures
+        
         utc         = Time.utc( date_tokens[0], date_tokens[1], date_tokens[2], time_tokens[0], time_tokens[1], time_tokens[2] )
-        time        = utc.getlocal.hour
-        if user_per_hour[time]
-          unless user_per_hour[time].include? log['uid']
-            time_info[time][:user] += 1
-            user_per_hour[time] << log['uid']
+        local       = utc.localtime
+        hour        = local.hour
+        current_day = local.day
+        next if local.day != current_day
+        if user_per_hour[hour]
+          unless user_per_hour[hour].include? log['uid']
+            hour_info[hour][:user] += 1
+            user_per_hour[hour] << log['uid']
           end
         else
-          user_per_hour[time] = [ log['uid'] ]
-          time_info[time][:user] += 1
+          user_per_hour[hour] = [ log['uid'] ]
+          hour_info[hour][:user] += 1
         end
         case log['typ']
-          when Rackamole.feature : time_info[time][:feature] += 1 if features.add?( log['fid'])
-          when Rackamole.perf    : time_info[time][:perf]    += 1
-          when Rackamole.fault   : time_info[time][:fault]   += 1
+          when Rackamole.feature : hour_info[hour][:feature] += 1 if features.add?( log['fid'])
+          when Rackamole.perf    : hour_info[hour][:perf]    += 1
+          when Rackamole.fault   : hour_info[hour][:fault]   += 1
         end
       end
         
@@ -73,7 +79,7 @@ module Wackamole
       info[:fault_series]   = []
       info[:perf_series]    = []
       info[:feature_series] = []
-      time_info.values.map do |hash| 
+      hour_info.values.map do |hash| 
         info[:user_series]    << hash[:user]
         info[:fault_series]   << hash[:fault]
         info[:perf_series]    << hash[:perf]

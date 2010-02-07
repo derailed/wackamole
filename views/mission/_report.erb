@@ -1,49 +1,75 @@
-<% if @reports.count == 0 %>
+<style>
+table#mission {
+  width:  100%;
+  border: 1;
+  text-align: left;
+  min-height: 500px;
+}
+table#mission thead tr {
+  font-size: 1.2em;
+  color:     #808080;
+}
+table#mission tr.div {
+  border-bottom: 1px #c1c1c1 solid;
+}
+</style>
+
+<% applications = extract_applications( @pulse ) %>
+<% if applications.count == 0 %>
   <div class="doh">
     <p>Unable to find a Rackamole MongoDb database on this connection <%=Wackamole::Control.connection.host%>:<%=Wackamole::Control.connection.port%>.</p>
     <p>Make sure you moled database follows this naming convention</p>
     <p>mole_{<i>application name in lower case</i>}_{<i>environment</i>}_mdb</p>
   </div>
 <% else %>
-  <% @reports.each do |report| %>
-    <div class="mission">
-      <p class="app_name"><%= report['app'] %></p>
-      <% report['envs'].keys.sort.each do |env| %>
-        <div class="environment">
-          <div class="env">
-            <%= link_to env, "/dashboard/#{report['app']}/#{env}", :class => 'site_link app_link' %>
-          </div>
-          <div class="details">
-            <table border='0' width="100%">
-            <% report['envs'][env].each do |type, count| %>
-              <% diff = compute_diff( report['app'], env, type, count )%>
-              <tr>
-                <td class="<%=assign_class( type, count, diff )%>" align="left">
-                  <%=type.capitalize %>
-                </td> 
-                <td>
-                  <%=count%> 
-                </td>
-                <td>
-                  &lsaquo;<%= delta?( diff ) %>&rsaquo;
-                </td>
-                <% if type != 'features' and count > 0%>
-                  <td align='right'>
-                    <%= link_to_remote 'fixed', 
-                      "/mission/fixed/#{report['app']}/#{env}/#{type}", 
-                      :class => "fixed" %>
-                  </td>
-                <% else %>
-                  <td>
-                    <p style="width:30px"></p>
-                  </td>
-                <% end %>
-              </tr>
+  <table class="logs" id="mission">
+    <thead>
+      <tr>
+        <th width="25%">application</th>
+        <th width="10%">environment</th>
+        <th width="20%">to date</th>
+        <th width="20%">today</th>
+        <th width="20%">last tick</th>
+      </tr>
+    </thead>
+    <tbody>      
+      <% applications.each_pair do |app_name, envs| %>
+        <% envs.each do |env| %>
+          <tr class="div">
+            <td valign="top"><%= link_to app_name, "/dashboard/#{app_name}/#{env}", :class => 'site_link' %></td>
+            <td valign="top"><%= env %></td>
+            <% %w(to_date today last_tick).each do |period| %>
+              <% info = @pulse[period.to_sym][app_name][env] %>
+              <td>
+                <table border="0" width="100%">
+                  <tbody>
+                    <% info.each_pair do |type, count| %>
+                      <tr>
+                        <% clazz = ( (count > 0 and %w(last_tick today).include?(period)) ? assign_class( type, count ) : nil) %>
+                        <td width="25px">
+                          <% if( %w(last_tick today).include?( period ) and count > 0 ) %>
+                            <%= link_to Wackamole::Mission.to_type_name(type), "/dashboard/logs/#{app_name}/#{env}/#{type}", :class => "site_link" %>:
+                          <% else %>
+                            <%=Wackamole::Mission.to_type_name(type)%>:
+                          <% end %>
+                        </td>
+                        <td align='right'>
+                          <span class="<%= (clazz and count > 0 ? "#{period}_#{clazz}" : '') %>">
+                            &nbsp;<%= format_number(count) %>&nbsp;
+                          </span>
+                        </td>
+                        <!-- < if period == 'last_tick' %>
+                          <td width="5px" class="<=clazz%>">&nbsp;&nbsp;</td>
+                        < end %> -->
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </td>
             <% end %>
-            </table>
-          </div>
-        </div>
+          </tr>        
+        <% end %>
       <% end %>
-    </div>
-  <% end %>
+    </tbody>
+  </table>
 <% end %>

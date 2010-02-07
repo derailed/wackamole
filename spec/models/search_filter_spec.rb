@@ -20,6 +20,22 @@ describe Wackamole::SearchFilter do
     @filter.reset!
     check_filter( @filter, "today", "All", "", -1)
   end
+    
+  it "should retrieve the correct feature context" do
+    @filter.context_for( {'ctx' => "/blee/fred" } ).should == "/blee/fred"
+    @filter.context_for( {'ctl' => "blee", 'act' => "fred" } ).should == "blee#fred"
+  end
+  
+  it "should retrieve the correct start date" do
+    @filter.from_date_id.should_not be_nil
+  end
+  
+  it "should map id to type correctly" do
+    types = %w( Feature Perf Fault )
+    [0,1,2].each do |t|
+      @filter.send( :to_filter_type, t ).should == types[t]
+    end
+  end
   
   describe "series" do
     it "should generate the correct time_ids" do
@@ -59,7 +75,7 @@ describe Wackamole::SearchFilter do
       conds.should have(2).items
       conds.key?( :did ).should == true
       conds[:did].should == { "$gte" => @now.to_date_id.to_s }
-      conds[:bro].should == "Safari"
+      conds['bro.name'].should == "Safari"
     end
     
     it "should include mole type is specfied" do
@@ -70,7 +86,7 @@ describe Wackamole::SearchFilter do
       conds.should have(3).items
       conds.key?( :did ).should == true
       conds[:did].should == { "$gte" => @now.to_date_id.to_s }
-      conds[:bro].should == "Safari"
+      conds['bro.name'].should == "Safari"
       conds[:typ].should == Rackamole.feature
     end
 
@@ -91,6 +107,18 @@ describe Wackamole::SearchFilter do
         Wackamole::Control.db( "mole_fred_test_mdb" )
       end
       
+      it "should retrieve features correctly" do
+        features = @filter.features
+        features.should have(11).items
+        count = 0
+        features.each do |f|
+          f.should have(2).items
+          f.first.should == "All" if count == 0
+          f.first.should == "feature_#{count-1}" if count > 0
+          count += 1
+        end
+      end
+      
       it "should include user if specified" do
         @filter.search_terms = "user:blee_0@fred.test"    
         conds = @filter.to_conds
@@ -102,19 +130,19 @@ describe Wackamole::SearchFilter do
       end
       
       it "should include an adoc regexp if specified" do
-        @filter.search_terms = "key:blee"    
-        conds = @filter.to_conds
+        @filter.search_terms = "host:blee"    
+        conds = @filter.to_conds        
         conds.should have(2).items
-        conds['key'].should_not be_nil
-        conds['key'].should == /blee/
+        conds[:hos].should_not be_nil
+        conds[:hos].should == /blee/
       end
 
       it "should include an adoc regexp if specified" do
-        @filter.search_terms = "key:blee:duh"    
+        @filter.search_terms = "browser:name:duh"    
         conds = @filter.to_conds
         conds.should have(2).items
-        conds['key.blee'].should_not be_nil
-        conds['key.blee'].should == /duh/
+        conds['bro.name'].should_not be_nil
+        conds['bro.name'].should == /duh/
       end
       
       it "should raise an exception is search exp cannot be parsed" do

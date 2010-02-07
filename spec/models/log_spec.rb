@@ -26,18 +26,18 @@ describe Wackamole::Log do
       indexes = @cltn.index_information
       indexes.should have(1).item
       count = Wackamole::Log.ensure_indexes!
-      count.should == 5
+      count.should == 2
       indexes = @cltn.index_information   
-      indexes.should have(6).items
+      indexes.should have(5).items
     end
     
     it "should do nothing if indexes are already present" do
       indexes = @cltn.index_information
-      indexes.should have(6).items   
+      indexes.should have(5).items   
       count = Wackamole::Log.ensure_indexes!
       count.should == 0
       indexes = @cltn.index_information   
-      indexes.should have(6).items      
+      indexes.should have(5).items      
     end
   end
 end

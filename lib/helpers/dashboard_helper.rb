@@ -2,13 +2,13 @@ module DashboardHelper
   
   helpers do    
     
-    # -------------------------------------------------------------------------
-    # Make sure all indexes are set
-    def ensure_indexes!
-      Wackamole::Log.ensure_indexes!
-      Wackamole::User.ensure_indexes!
-      Wackamole::Feature.ensure_indexes!      
-    end
+    # # -------------------------------------------------------------------------
+    # # Make sure all indexes are set
+    # def ensure_indexes!
+    #   Wackamole::Log.ensure_indexes!
+    #   Wackamole::User.ensure_indexes!
+    #   Wackamole::Feature.ensure_indexes!      
+    # end
     
     # -------------------------------------------------------------------------  
     # Retrieve moled app info...

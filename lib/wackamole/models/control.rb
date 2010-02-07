@@ -3,6 +3,22 @@ require 'logger'
 
 module Wackamole
   class Control
+
+    # -----------------------------------------------------------------------
+    # Initialize app by reading off mongo configuration parameters if necessary
+    def self.init_config( config_file, env )
+      begin
+        config  = YAML.load_file( config_file )
+        @config = config[env]
+        raise "Invalid environment `#{env}" unless @config
+        raise "Unable to find host in - #{@config.inspect}" unless @config.has_key?('host')
+        raise "Unable to find port in - #{@config.inspect}" unless @config.has_key?('port')            
+      rescue => boom
+        @config = nil          
+        raise "Hoy! An error occur loading the config file `#{config_file} -- #{boom}"
+      end
+      @config
+    end
     
     # -------------------------------------------------------------------------
     # Defines mole db identity      
@@ -76,25 +92,6 @@ module Wackamole
         @db = nil
         db( db_name )
       end
-
-      # -----------------------------------------------------------------------
-      # Initialize app by reading off mongo configuration parameters if necessary
-# BOZO !!      
-# File.join( ENV['HOME'], %w[.wackamole wackamole.yml] )
-# 
-      def self.init_config( config_file, env )
-        begin
-          config      = YAML.load_file( config_file )
-          @config     = config[env]
-          raise "Invalid environment `#{env}" unless @config
-          raise "Unable to find host in - #{@config.inspect}" unless @config.has_key?('host')
-          raise "Unable to find port in - #{@config.inspect}" unless @config.has_key?('port')            
-        rescue => boom
-          @config = nil          
-          raise "Hoy! An error occur loading the config file `#{config_file} -- #{boom}"
-        end
-        @config
-      end
       
       def self.config
         raise "You must call init_config before using this object" unless @config
@@ -119,13 +116,39 @@ module Wackamole
         return @db if @db and @db.name == db_name
         raise "No database specified" unless db_name
         @db = connection.db( db_name, opts )
-        ensure_indexes
-        @db
       end  
     
       # -----------------------------------------------------------------------
       # Make sure the right indexes are set
-      def self.ensure_indexes
+      def self.ensure_indexes!( set=true, drop_first=false, show_info=false, clear_only=false )
+        mole_databases.each do |db_name|
+          db = db( db_name )
+          
+          puts "-"*100
+          puts "Database - #{db_name}"
+          
+          if drop_first or clear_only
+            puts "[WARNING] Dropping indexes on all Rackamole collections"
+            %w(logs features users).each do |c|            
+              db[c].drop_indexes
+            end            
+          end
+          
+          if set and !clear_only
+            puts "[INFO] Creating indexes on all Rackamole collections..."
+            Wackamole::Log.ensure_indexes!
+            Wackamole::Feature.ensure_indexes!
+            Wackamole::User.ensure_indexes!
+          end
+                       
+          if show_info
+            %w(logs features users).each do |c|
+              indexes = db[c].index_information
+              puts "\tIndexes on collection `#{c}"
+              indexes.keys.sort.each { |k| puts "\t\tIndex: %-30s -- %s" % [k,indexes[k].join( ", ")] }
+            end
+          end
+        end
       end
   end
 end

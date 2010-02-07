@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'main'
+require 'mongo'
+require File.expand_path( File.join(File.dirname(__FILE__), %w[.. lib wackamole]))
+
+Main {  
+  option('reset', 'r') {
+    default     false
+    description "Reset all indexes"    
+  }
+
+  option('set', 's') {
+    default     false
+    description "Set all indexes"    
+  }
+
+  option('clear', 'c') {
+    default     false
+    description "Clear all indexes"    
+  }
+
+  option( 'verbose', 'v') {
+    default     false
+    description "Show verbose information"    
+  }
+  
+  environment( 'WACKAMOLE_ENV' ) {
+    default 'production'
+    description 'Wackamole env to choose from in landscape yml'
+  }
+      
+  # Enter main loop  
+  def run    
+    config_file = File.join( ENV['HOME'], %w[.wackamole wackamole.yml] )
+    Wackamole::Control.init_config( config_file, params['WACKAMOLE_ENV'].value )
+    Wackamole::Control.ensure_indexes!( 
+      params[:set].value, 
+      params[:reset].value, 
+      params[:verbose].value, 
+      params[:clear].value 
+    )
+  end
+}

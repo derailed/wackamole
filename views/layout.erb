@@ -6,28 +6,28 @@
     <link rel="icon" href="/images/small_logo.png" type="image/x-icon"/>
     <link rel="shortcut icon" href="/images/small_logo.png" type="image/x-icon"/>
     <%= stylesheets %w[wackamole] %>
-    <%= javascripts %w[jquery_min jquery_ui_min jquery.tools.min jquery.example application raphael.min g.raphael.min g.dot.min] %>
+    <%= javascripts %w[jquery_min jquery_ui_min] %>
   </head>
 
   <body id="body">
     <div id="overall">      
-      <div id="logo" style="margin-bottom:50px">
-        <%= link_to image_tag( 'wackamole_logo.png', :border => 0 ), '/mission' %>
+      <div id="logo" style="margin-bottom:5px">
+        <%= link_to image_tag( 'wackamole_logo.png', :border => 0 ), '/' %>
       </div>      
       <div id="app_info">
         <% if @app_info %>        
           <ul>
-            <li>&lt;<%=@app_info[:app_name]%>&gt;</li>
+            <li>&laquo;<span><%=@app_info[:app_name]%></span>&raquo;</li>
             <li id="env"><%=@app_info[:stage]%></li>
           <ul>
         <% end %>        
-        <p id="timestamp"><%=partial :'shared/timestamp'%></p>
+        <p><span id="timestamp"><%=partial :'shared/timestamp'%></span></p>
       </div>
       <div id="main">
         <div class="flash"></div>
         <% if @app_info %>        
-          <div id='navigation'>
-            <%=link_to "mission control", "/mission"                                               , :class => "site_link land" %>&nbsp;&bull;&nbsp;
+          <div id='navigation' class='corners'>
+            <%=link_to "mission control", "/"                                                      , :class => "site_link land" %>&nbsp;&bull;&nbsp;
             <%=link_to "dashboard"      , "/dashboard/#{@app_info[:app_name]}/#{@app_info[:stage]}", :class => "site_link dash" %>&nbsp;&bull;&nbsp;            
             <%=link_to "logs"           , "/logs/1"                                                , :class => "site_link logs" %>&nbsp;&bull;&nbsp;
             <%=link_to "features"       , "/features/1"                                            , :class => "site_link features" %>&nbsp;&bull;&nbsp;

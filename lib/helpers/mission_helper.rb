@@ -1,6 +1,12 @@
 module MissionHelper
   helpers do 
 
+    def extract_applications( pulse )
+      apps = OrderedHash.new
+      pulse[:to_date].keys.sort.each { |app_name| apps[app_name] = pulse[:to_date][app_name].keys.sort }
+      apps
+    end
+    
     # -------------------------------------------------------------------------
     def load_report      
       @old_reports = Wackamole::Mission.find( {}, :sort => [ [:app, Mongo::ASCENDING], [:env, Mongo::ASCENDING] ] ).to_a
@@ -8,7 +14,11 @@ module MissionHelper
       reset               = last_tick.nil?
       last_tick           = last_tick || Chronic.parse( '1 minute ago' )
       session[:last_tick] = Time.now
-      @reports = Wackamole::Mission.rollups( last_tick.utc, reset )
+      
+      elapsed = Benchmark.realtime do
+        @reports = Wackamole::Mission.rollups( last_tick.utc, reset )
+      end
+      puts "Rollups %5.4f" % elapsed
     end
     
     # -------------------------------------------------------------------------
@@ -19,13 +29,17 @@ module MissionHelper
     
     # -------------------------------------------------------------------------
     # Assign status fg for application
-    def assign_class( type, count, diff )
+    def assign_class( type, count )
       clazz = case type
-        when "faults"   : (diff > 0 ? "fault" : "")
-        when "perfs"    : (diff > 0 ? "perf" : "")
-        when "features" : (diff > 0 ? "active" : "inactive")
-        else              ""
-      end
+        when Rackamole.fault
+          (count > 0 ? "fault" : "")
+        when Rackamole.perf
+          (count > 0 ? "perf" : "")
+        when Rackamole.feature
+          (count > 0 ? "feature" : "" )
+        else              
+          ""
+      end      
       clazz
     end
     

@@ -2,18 +2,30 @@ module LogsHelper
   
   helpers do
     # ---------------------------------------------------------------------------
-    def user_name_for( user_id )
-      user = Wackamole::User.users_cltn.find_one( user_id )
-      user['una']
+    def user_name_for( ctx, user_id )
+      return ctx[user_id] if ctx[user_id]
+      user  = Wackamole::User.users_cltn.find_one( user_id, :fields => [:una] )
+      value = user['una']
+      ctx[user_id] = value
+      value
     end
 
     # ---------------------------------------------------------------------------
     # Find feature context for log entry
-    def context_for( feature_id )   
-      feature = Wackamole::Feature.features_cltn.find_one( feature_id )
-      return "Unknown" unless feature      
-      return "#{feature['ctl']}##{feature['act']}" if feature['ctl']
-      feature['ctx']
+    def context_for( ctx, feature_id )   
+      return ctx[feature_id] if ctx[feature_id]
+      feature = Wackamole::Feature.features_cltn.find_one( feature_id, :fields => [:ctl, :act, :ctx] )
+      if feature
+        if feature['ctl']
+          value = "#{feature['ctl']}##{feature['act']}" 
+        else
+          value = feature['ctx']
+        end
+      else
+        value = "Unknown"
+      end
+      ctx[feature_id] = value
+      value
     end
     
     # ---------------------------------------------------------------------------
@@ -97,10 +109,15 @@ module LogsHelper
   
     # ---------------------------------------------------------------------------
     # Setup browser icon indicator
-    def browser_icon( browser )
-      img_name = browser
-      img_name = "unknown_browser" if img_name.nil? or img_name == "N/A"
-      image_tag "browsers/#{img_name.to_s.downcase.gsub( /\\/, '')}.png", :size => "20x20"    
+    def browser_class( browser )
+      class_name = browser['name'].downcase
+      if class_name == 'msie'
+        version = browser['version'].match( /(\d)\.\d/ ).captures.first
+        class_name = "ie_#{version.to_s}"
+      elsif class_name == "n/a"
+        class_name = 'unknown'
+      end 
+      class_name
     end
   end
 end

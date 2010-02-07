@@ -1,7 +1,7 @@
 module Wackamole
 
   # :stopdoc:
-  VERSION = '0.0.3'                                                          unless defined? Wackamole::VERSION
+  VERSION = '0.0.4'                                                          unless defined? Wackamole::VERSION
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR unless defined? Wackamole::LIBPATH
   PATH    = ::File.dirname(LIBPATH) + ::File::SEPARATOR                      unless defined? Wackamole::PATH
   # :startdoc:

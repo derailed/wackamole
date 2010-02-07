@@ -37,6 +37,7 @@ depend_on "mongo_rack"            , ">= 0.0.1"
 depend_on "main"                  , ">= 4.2.0"
 depend_on "sinatra"               , ">= 0.9.4"
 depend_on "mongo_rack"            , ">= 0.0.3"
+depend_on "rackamole"             , ">= 0.0.3"
 
 # Rake
 task :default => ['fixtures:load','spec:run']

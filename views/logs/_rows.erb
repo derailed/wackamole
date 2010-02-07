@@ -2,6 +2,7 @@
   <%= page_entries_info @logs, :entry_name => 'log' %>
 </div>
   
+<% users={}; contexts={} %>
 <div id="content">
   <table class="logs">
     <thead>
@@ -17,14 +18,14 @@
     <tbody>
       <% count=0;@logs.each do |log| %>
         <tr class="<%=row_class_for log['typ'] %>" href="<%="/logs/#{log['_id']}/show"%>" rel='#details'>
-          <td><%=context_for log['fid'] %></td>
+          <td><%=context_for( contexts, log['fid']) %></td>
           <td><%=log['met']%></td>
-          <td><%=truncate( user_name_for( log['uid'] ), 30 )%></td>
+          <td><%=truncate( user_name_for( users, log['uid'] ), 30 )%></td>
           <td><%=log['ip']%></td>
           <td><%=format_host( log['hos'] )%></td>
           <td><%=timestamp_for log %></td>
           <td align="right"><%=request_time( log['rti'] )%></td>
-          <td align="right"><%=browser_icon( log['bro']['name'] )%></td>
+          <td align="right"><div class="browser <%=browser_class( log['bro'])%>"></div></td>
         </tr>
       <% count+=1;end %>
     </body>

@@ -40,10 +40,16 @@ module Wackamole
     end
   
     # ---------------------------------------------------------------------------
+    # Set filter type  
+    def mole_type( type )
+      self.type = to_filter_type( type )
+    end
+    
+    # ---------------------------------------------------------------------------
     # Find all features  
     def features
       rows = Feature.features_cltn.find().to_a
-      features = rows.map { |f| [context_for(f), f['_id']] }   
+      features = rows.map { |f| [context_for(f), f['_id'].to_s] }   
       features.sort! { |a,b| a.first <=> b.first }
       features.insert( 0, ["All", -1] )
     end
@@ -117,7 +123,7 @@ module Wackamole
       end
     
       if browser_type != 'All'
-        conds[:bro] = browser_type
+        conds["bro.name"] = browser_type
       end
     
       # filter mole_features
@@ -135,7 +141,7 @@ module Wackamole
         if key
           if key == "user"
             users = Wackamole::User.users_cltn.find( { :una => Regexp.new( tokens.first ) }, :fields => ['_id'] )
-            conds[field_map( key )] = { '$in' => users.collect{ |u| u['_id'] } }
+            conds[field_map( 'user_id' )] = { '$in' => users.collect{ |u| u['_id'] } }
           elsif tokens.size == 2
             conds["#{field_map(key)}.#{tokens.first}"] = Regexp.new( tokens.last )
           elsif tokens.size == 1
@@ -154,16 +160,24 @@ module Wackamole
       # ---------------------------------------------------------------------------
       # Search filter key name map
       def field_map( key )
-        case key.to_sym
-          when :user    : :uid
-          when :method  : :met
-          when :host    : :hos
-          when :session : :ses
-          when :params  : :par
-          else            key
-        end
+        field = Rackamole::Store::MongoDb.field_map[key.to_sym]
+        raise "Unable to map attribute `#{key}" unless field
+        field
       end
   
+      def to_filter_type( type )
+        case type
+          when Rackamole.feature
+            'Feature'
+          when Rackamole.perf
+            'Perf'
+          when Rackamole.fault
+            'Fault'
+          else         
+            raise "Invalid rackamole type `#{type}"
+        end        
+      end
+      
       # Map named type to fixnum value
       def map_mole_type( type )
         case type

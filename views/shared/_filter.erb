@@ -1,13 +1,5 @@
-<div id="filters">
+<div id="filters" class="corners">
   <form id="filter_form">
-  	<fieldset id="submit">
-  	  <label>
-  	    &nbsp;
-    	  <input type="submit" name="commit" value="Filter"/>
-        <%= image_tag 'loading.gif', :border => '0', :size => '24x24', :id => 'loading' %>
-  	  </label>
-  	</fieldset>
-
     <fieldset class="inline">
   		<label for="time_frame">
   		  Time range:
@@ -43,6 +35,13 @@
   		  </select>						  
   	  </label>
   	</fieldset>
+  	<fieldset id="submit">
+  	  <label>
+  	    &nbsp;
+    	  <input type="submit" name="commit" value="Filter"/>
+        <%= image_tag 'loading.gif', :border => '0', :size => '24x24', :id => 'loading' %>
+  	  </label>
+  	</fieldset>  	
   </form>
 </div>
 

@@ -9,8 +9,10 @@ Main {
     validate    { |pool| pool =~ URI_MATCH }
     description "specify session server uri. Must be of the form {[mongo|memcache]}://{host}:{port}/{[database_name|namespace]}[/{collection_name}]"
   }
-  environment( 'RACK_ENV' ) {
+  option( 'environment', 'e' ) {
+    argument :required
     default 'production'
+    description 'Specifies the env to run wackamole in'
   }
   
   @@options = {}
@@ -18,9 +20,9 @@ Main {
   # Enter main loop  
   def run
     require File.expand_path( File.join(File.dirname(__FILE__), %w[.. lib wackamole]))
-    
+        
     @@options = parse_args( params[:pool].value )
-    ENV['RACK_ENV'] = params['RACK_ENV'].value
+    ENV['RACK_ENV'] = params['environment'].value
     
     Thread.new do 
       puts "-"*100
@@ -33,19 +35,19 @@ Main {
       puts "\n"*2  
       puts ">>> Opening console..."
       puts "\n"*2
-      open( "http://localhost:#{default_port}/mission" )
+      open( "http://localhost:#{default_port}" )
     end
     
     # Clearing args for franky!
     ARGV.clear
     require 'sinatra'    
     require File.join(File.dirname(__FILE__), %w[.. lib app.rb])
-    Sinatra::Application.run! :port => default_port, :environment => 'production'
+    Sinatra::Application.run! :port => default_port, :environment => params['environment'].value
   end
   
   # default wackamole port
   def default_port() 7777; end
-  
+
   # sleepy time...
   def sleep_time() 3; end
   

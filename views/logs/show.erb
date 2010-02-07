@@ -1,11 +1,7 @@
 <p id="info">
-  <%=image_tag mole_type_icon( @log['typ'] ), :border => 0 %>
-  <p class="title" id="type">
-    <%=human_type @log['typ'] %>
-  </p>
-  <p class="title" id="feature">  
-    <%=context_for @log['fid'] %>
-  </p>
+  <%=image_tag mole_type_icon( @log['typ'] ), :border => 0, :class => "info", :size => "35x35" %>  
+  <span id="type"><%=human_type @log['typ'] %></span>
+  <span id="feature"><%=context_for( {}, @log['fid'] ) %></span>
 </p>
 
 <div id="info">
@@ -19,7 +15,7 @@
       <% end %>      
       <tr>
         <td class="label">User</td>
-        <td><%=user_name_for @log['uid'] %></td>
+        <td><%=user_name_for( {}, @log['uid'] ) %></td>
       </tr>
       <tr>
         <td class="label">Method</td>

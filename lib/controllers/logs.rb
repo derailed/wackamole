@@ -2,12 +2,11 @@ module Logs
   
   # ---------------------------------------------------------------------------
   get "/logs/:page" do    
-    page       = params[:page] ? params[:page].to_i : 1
-    
+    page         = params[:page] ? params[:page].to_i : 1        
     @logs        = Wackamole::Log.paginate( @filter.to_conds, page)   
     @search_path = "/logs/search"
     @filter_path = "/logs/filter"
-    
+      
     if request.xhr?
       erb :'logs/index.js', :layout => false
     else
@@ -43,7 +42,17 @@ module Logs
     @filter = Wackamole::SearchFilter.new
     @filter.from_options( params[:filter] )
     session[:filter] = @filter
-    @logs = Wackamole::Log.paginate( @filter.to_conds )
-    erb :"logs/filter.js", :layout => false
+    
+    # elapsed = Benchmark.realtime do
+      @logs = Wackamole::Log.paginate( @filter.to_conds )
+    # end
+    # puts "Filter logs %5.4f" % elapsed
+
+    out = nil
+    # elapsed = Benchmark.realtime do
+      out = erb :"logs/filter.js", :layout => false
+    # end
+    # puts "Render logs %5.4f" % elapsed
+    out  
   end  
 end
