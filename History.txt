@@ -10,3 +10,8 @@
 === 0.0.3 / 2010-01-30
 
 * Bug fixes
+
+=== 0.0.4 / 2010-02-07
+* Revamp the ui some
+* Bug fixes
+* Add set_indexes script. Use to setup mole db indexes

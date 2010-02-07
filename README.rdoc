@@ -82,8 +82,14 @@
 
     The pool options assumes the following format:
 
-    --pool {mongo|memcache}://{host}:{port}/{db_name|namespace}/{cltn_name}
+    --pool {mongo|memcache}://{host}:{port}/{db_name|namespace}/[cltn_name]
 
+    To launch wackamole in a given environment defined in your wackamole.yml configuration.
+    
+    > wackamole -e env 
+    
+    This option defaults to production.
+    
   Please checkout the forum and send us feedback and issues. This is still work in progress so your
   feedback is very important and will be very much appreciated!
   
