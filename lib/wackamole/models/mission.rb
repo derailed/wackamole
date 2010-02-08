@@ -10,7 +10,7 @@ module Wackamole
       to_date   = count_logs
       today     = count_logs( last_tick, true )
       last_tick = count_logs( last_tick )
-      { :to_date => to_date, :today => today, :last_tick => last_tick }
+      { :to_date => to_date, :today => today, :last_tick => last_tick }      
     end
     
     # -----------------------------------------------------------------------      

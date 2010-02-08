@@ -42,7 +42,12 @@ Main {
     ARGV.clear
     require 'sinatra'    
     require File.join(File.dirname(__FILE__), %w[.. lib app.rb])
-    Sinatra::Application.run! :port => default_port, :environment => params['environment'].value
+    begin
+      Sinatra::Application.run! :port => default_port, :environment => params['environment'].value
+    rescue => boom
+      $stderr.puts "Oh snap! - Wackamole crapped out -- #{boom}"
+      boom.backtrace.each { |l| $stderr.puts l }
+    end
   end
   
   # default wackamole port

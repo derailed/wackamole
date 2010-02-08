@@ -15,3 +15,6 @@
 * Revamp the ui some
 * Bug fixes
 * Add set_indexes script. Use to setup mole db indexes
+
+=== 0.0.5 / 2010-02-08
+* Added debug

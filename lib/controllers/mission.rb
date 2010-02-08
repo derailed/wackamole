@@ -11,7 +11,7 @@ module Mission
     session[:last_tick] = Time.now
     
     @pulse = Wackamole::Mission.pulse( last_tick.utc )
-        
+              
     erb :'mission/index'
   end
   
