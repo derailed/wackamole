@@ -15,7 +15,7 @@ table#mission tr.div {
 </style>
 
 <% applications = extract_applications( @pulse ) %>
-<% if applications.count == 0 %>
+<% if applications.empty? == 0 %>
   <div class="doh">
     <p>Unable to find a Rackamole MongoDb database on this connection <%=Wackamole::Control.connection.host%>:<%=Wackamole::Control.connection.port%>.</p>
     <p>Make sure you moled database follows this naming convention</p>
