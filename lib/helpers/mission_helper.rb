@@ -15,10 +15,7 @@ module MissionHelper
       last_tick           = last_tick || Chronic.parse( '1 minute ago' )
       session[:last_tick] = Time.now
       
-      elapsed = Benchmark.realtime do
-        @reports = Wackamole::Mission.rollups( last_tick.utc, reset )
-      end
-      puts "Rollups %5.4f" % elapsed
+      @reports = Wackamole::Mission.rollups( last_tick.utc, reset )
     end
     
     # -------------------------------------------------------------------------

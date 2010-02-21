@@ -31,27 +31,25 @@ module Wackamole
     def self.count_logs( now=nil, single_day=false )
       counts = {}
       conds  = gen_conds( now, single_day )
-      # elapsed = Benchmark.realtime do
-        Wackamole::Control.mole_databases.each do |db_name|
-          db            = Wackamole::Control.db( db_name )
-          app_name, env = Wackamole::Control.extract_app_info( db_name )
-          logs_cltn     = db['logs']
-          
-          totals = { Rackamole.feature => 0, Rackamole.perf => 0, Rackamole.fault => 0 }
-          if counts[app_name]
-            counts[app_name][env] = totals
-          else
-            counts[app_name] = { env => totals }
-          end
-          row = counts[app_name][env]
-          [Rackamole.feature, Rackamole.perf, Rackamole.fault].each do |t|
-            conds[:typ] = t
-            logs  = logs_cltn.find( conds, :fields => [:_id] )
-            row[t] = logs.count
-          end
+
+      Wackamole::Control.mole_databases.each do |db_name|
+        db            = Wackamole::Control.db( db_name )
+        app_name, env = Wackamole::Control.extract_app_info( db_name )
+        logs_cltn     = db['logs']
+        
+        totals = { Rackamole.feature => 0, Rackamole.perf => 0, Rackamole.fault => 0 }
+        if counts[app_name]
+          counts[app_name][env] = totals
+        else
+          counts[app_name] = { env => totals }
         end
-      # end
-      # puts "Computing counts %d -- %5.4f" % [counts.size, elapsed]
+        row = counts[app_name][env]
+        [Rackamole.feature, Rackamole.perf, Rackamole.fault].each do |t|
+          conds[:typ] = t
+          logs  = logs_cltn.find( conds, :fields => [:_id] )
+          row[t] = logs.count
+        end
+      end
       counts       
     end
       

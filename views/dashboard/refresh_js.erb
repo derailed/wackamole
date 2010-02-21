@@ -1,3 +1,4 @@
-$('p#timestamp').html( "<%=escape_javascript(partial(:'shared/timestamp'))%>" );
+$('span#timestamp').html( "<%=escape_javascript(partial(:'shared/timestamp'))%>" );
+$("span#timestamp").effect( 'pulsate', { times:1 }, 500 );
 
 $('div#dash').html( "<%=escape_javascript(partial(:'dashboard/report'))%>" );

@@ -4,12 +4,7 @@ module Users
   # Paginate top users
   get "/users/:page" do
     page = params[:page] ? params[:page].to_i : 1
-
-puts "User filter", @filter.inspect
-elapsed = Benchmark.realtime do  
-    @users       = Wackamole::User.paginate_tops( @filter.to_conds, page )   
-end
-puts "Find users %5.4f" % elapsed
+    @users = Wackamole::User.paginate_tops( @filter.to_conds, page )   
 
     @search_path = "/users/search"
     @filter_path = "/users/filter"
@@ -41,7 +36,6 @@ puts "Find users %5.4f" % elapsed
   post "/users/filter" do    
     @filter.from_options( params[:filter] )
     session[:filter] = @filter
-puts "Setting user filter #{session[:filter].inspect}"    
     @users = Wackamole::User.paginate_tops( @filter.to_conds )
     erb :"users/filter.js", :layout => false
   end  

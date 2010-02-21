@@ -12,52 +12,40 @@ module Wackamole
     # TODO - PERF - try just using cursor vs to_a
     def self.collect_dashboard_info( now )    
       info    = {}
-      day_logs = logs_cltn.find( { :did => now.to_date_id.to_s }, 
-        :fields => [:typ, :fid, :tid, :did, :uid], 
-        :sort => [ [:tid => Mongo::ASCENDING] ] ).to_a
-        
-      # Fetch user count for this hour
-      users = day_logs.inject( Set.new ) do |set,log| 
-        set << log['uid'] if log['tid'] =~ /^#{"%02d" % now.hour}/
-        set
-      end
-      info[:total_users] = users_cltn.count
-      info[:user_load]   = users.size
-
-      # Fetch features for this hour    
-      features = day_logs.inject( Set.new ) do |set,log| 
-        set << log['fid'].to_s if log['tid'] =~ /^#{"%02d" % now.hour}/
-        set 
-      end
+      
+      info[:total_users]    = users_cltn.count
       info[:total_features] = features_cltn.count
-      info[:feature_load]   = features.size
-    
-      info[:perf_load] = day_logs.inject(0) do |count,log| 
-        if log['tid'] =~ /^#{"%02d" % now.hour}/
-          count += (log['typ'] == Rackamole.perf ? 1 : 0 ) 
-        end
-        count
-      end
-      info[:fault_load] = day_logs.inject(0) do |count,log| 
-        if log['tid'] =~ /^#{"%02d" % now.hour}/
-          count += (log['typ'] == Rackamole.fault ? 1 : 0 ) 
-        end
-        count
-      end
-    
+      info[:perf_load]      = 0
+      info[:fault_load]     = 0
+        
+      # Fetch day logs          
+      day_logs = logs_cltn.find( { :did => now.utc.to_date_id.to_s }, 
+        :fields => [:typ, :fid, :tid, :did, :uid], 
+        :sort => [ [:tid => Mongo::ASCENDING] ] )
+
       # Count all logs per hourly time period
+      users         = Set.new
+      features      = Set.new
+      local_time    = now.clone.localtime
       hours         = (0...24).to_a
       hour_info     = hours.inject(OrderedHash.new) { |res,hour| res[hour] = { :user => 0, :feature => 0, :perf => 0, :fault => 0 };res }    
       user_per_hour = {}
       day_logs.each do |log|
         date_tokens = log['did'].match( /(\d{4})(\d{2})(\d{2})/ ).captures
-        time_tokens = log['tid'].match( /(\d{2})(\d{2})(\d{2})/ ).captures
-        
-        utc         = Time.utc( date_tokens[0], date_tokens[1], date_tokens[2], time_tokens[0], time_tokens[1], time_tokens[2] )
-        local       = utc.localtime
+        time_tokens = log['tid'].match( /(\d{2})(\d{2})(\d{2})/ ).captures        
+        log_utc     = Time.utc( date_tokens[0], date_tokens[1], date_tokens[2], time_tokens[0], time_tokens[1], time_tokens[2] )
+        local       = log_utc.clone.localtime
         hour        = local.hour
-        current_day = local.day
-        next if local.day != current_day
+
+        next if hour > local_time.hour
+
+        if log_utc.hour == now.hour
+          users    << log['uid']
+          features << log['fid']
+          info[:fault_load] += 1 if log['typ'] == Rackamole.fault
+          info[:perf_load]  += 1 if log['typ'] == Rackamole.perf
+        end
+        
         if user_per_hour[hour]
           unless user_per_hour[hour].include? log['uid']
             hour_info[hour][:user] += 1
@@ -68,33 +56,22 @@ module Wackamole
           hour_info[hour][:user] += 1
         end
         case log['typ']
-          when Rackamole.feature : hour_info[hour][:feature] += 1 if features.add?( log['fid'])
+          when Rackamole.feature : hour_info[hour][:feature] += 1
           when Rackamole.perf    : hour_info[hour][:perf]    += 1
           when Rackamole.fault   : hour_info[hour][:fault]   += 1
         end
       end
-        
-      # BOZO !! LAME ASS...
-      info[:user_series]    = []
-      info[:fault_series]   = []
-      info[:perf_series]    = []
-      info[:feature_series] = []
-      hour_info.values.map do |hash| 
-        info[:user_series]    << hash[:user]
-        info[:fault_series]   << hash[:fault]
-        info[:perf_series]    << hash[:perf]
-        info[:feature_series] << hash[:feature]
+                
+      info[:user_load]    = users.size
+      info[:feature_load] = features.size
+      %w(user fault perf feature).each do |s|
+        k = "#{s}_series".to_sym
+        info[k] = []
+        hour_info.values.map do |hash| 
+          info[k] << hash[s.to_sym]
+        end
       end
       info
-    end  
-        
-    # ===========================================================================
-    private
-        
-      # -------------------------------------------------------------------------
-      # Makes sure we have some indexes set
-      # BOZO !! Create script to set these up ?
-      def self.ensure_indexes
-      end
+    end        
   end
 end

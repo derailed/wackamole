@@ -1,10 +1,27 @@
 <div id="filters" class="corners">
   <form id="filter_form">
+  	<fieldset id="submit">
+  	  <label>
+  	    &nbsp;
+    	  <input type="submit" name="commit" value="Filter"/>
+        <%= image_tag 'loading.gif', :border => '0', :size => '24x24', :id => 'loading' %>
+  	  </label>
+  	</fieldset>  	
+    
     <fieldset class="inline">
   		<label for="time_frame">
   		  Time range:
   			<select id="time_frame" name="filter[time_frame]">
   		    <%= options_for_select Wackamole::SearchFilter.time_frames, @filter.time_frame %>
+  		  </select>  			  
+  	  </label>
+    </fieldset>	                
+
+    <fieldset class="inline">
+  		<label for="hourly_frame">
+  		  Hour of Day:
+  			<select id="hourly_frame" name="filter[hour]">
+  		    <%= options_for_select Wackamole::SearchFilter.hourlies, @filter.hour %>
   		  </select>  			  
   	  </label>
     </fieldset>	                
@@ -35,13 +52,6 @@
   		  </select>						  
   	  </label>
   	</fieldset>
-  	<fieldset id="submit">
-  	  <label>
-  	    &nbsp;
-    	  <input type="submit" name="commit" value="Filter"/>
-        <%= image_tag 'loading.gif', :border => '0', :size => '24x24', :id => 'loading' %>
-  	  </label>
-  	</fieldset>  	
   </form>
 </div>
 

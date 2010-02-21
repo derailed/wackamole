@@ -3,7 +3,7 @@ require 'chronic'
 module Wackamole
   class SearchFilter
   
-    attr_accessor :time_frame, :feature_id, :type, :browser_type, :search_terms
+    attr_accessor :time_frame, :feature_id, :type, :browser_type, :search_terms, :hour
 
     # ---------------------------------------------------------------------------
     # Ctor
@@ -18,6 +18,7 @@ module Wackamole
       @time_frame   = SearchFilter.time_frames.first
       @browser_type = SearchFilter.browser_types.first
       @type         = SearchFilter.mole_types.first
+      @hour         = SearchFilter.hourlies.first
       @search_terms = ""
     end
   
@@ -31,6 +32,12 @@ module Wackamole
     # Available time frames
     def self.time_frames
       @time_frames ||= ['today', '2 days', '1 week', '2 weeks', '1 month', '3 months', '6 months', '1 year' ]
+    end
+
+    # ---------------------------------------------------------------------------
+    # Available hours    
+    def self.hourlies
+      @hourlies ||= ['all'] + (1..23).to_a
     end
 
     # ---------------------------------------------------------------------------
@@ -107,7 +114,6 @@ module Wackamole
     def from_options( options )
       return unless options
       options.each_pair do |k,v|
-        # value = k.index( /_id$/) ? v.to_i : v
         self.send( "#{k}=", v )
       end
     end
@@ -134,6 +140,13 @@ module Wackamole
       # filter by date
       time = Chronic.parse( time_frame + ( time_frame == SearchFilter.time_frames.first ? "" : " ago" ) )
       conds[:did] = { '$gte' => time.to_date_id.to_s }
+      
+      unless self.hour == 'all'
+        now     = Time.now
+        current = "%4d/%02d/%02d %02d:%02d:%02d" % [now.year, now.month, now.day, self.hour, 0, 0]    
+        time = Chronic.parse( current ).utc
+        conds[:tid] = /^#{"%02d"%time.hour}.+/
+      end
       
       unless search_terms.empty?
         tokens = search_terms.split( ":" ).collect{ |c| c.strip }

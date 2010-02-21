@@ -3,10 +3,7 @@ module Features
   # ---------------------------------------------------------------------------
   # paginate top features
   get "/features/:page" do
-    page = params[:page] ? params[:page].to_i : 1
-        
-puts @filter.inspect
-        
+    page         = params[:page] ? params[:page].to_i : 1        
     @features    = Wackamole::Feature.paginate_tops( @filter.to_conds, page )   
     @search_path = "/features/search"
     @filter_path = "/features/filter"
@@ -38,7 +35,6 @@ puts @filter.inspect
   post "/features/filter" do
     @filter.from_options( params[:filter] )
     session[:filter] = @filter
-puts "Setting #{session[:filter].inspect}"        
     @features = Wackamole::Feature.paginate_tops( @filter.to_conds )
     erb :"features/filter.js", :layout => false
   end  

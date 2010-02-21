@@ -1,1 +1,1 @@
-<%= @updated_on.strftime( "%m/%d/%y %H:%M:%S") %>
+<%= @updated_on.clone.localtime.strftime( "%m/%d/%y %H:%M:%S") %>

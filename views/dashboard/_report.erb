@@ -10,11 +10,23 @@
       <div id="feature_load" class="load"></div>        
     <li>
       <p class="status">Performance</p>
-      <p class="result"><%=pluralize( @info[:perf_load], 'issue' )%></p>        
+      <p class="result">
+        <% if @info[:perf_load] > 0 %>
+          <%= link_to pluralize( @info[:perf_load], 'issue' ), "/dashboard/logs/#{Rackamole.perf}/", :class => "site_link" %>
+        <% else %>
+          <%=pluralize( @info[:perf_load], 'issue' )%>
+        <% end %>
+      </p>  
     </li>
     <li>
       <p class="status">Uncaught Exceptions</p>
-      <p class="result"><%=pluralize( @info[:fault_load], 'issue' )%></p>
+      <p class="result">
+        <% if @info[:fault_load] > 0 %>
+          <%= link_to pluralize( @info[:fault_load], 'issue' ), "/dashboard/logs/#{Rackamole.fault}/", :class => "site_link" %>
+        <% else %>
+          <%=pluralize( @info[:fault_load], 'issue' )%>
+        <% end %>
+      </p>
     </li>
   </ul>
 </div>
@@ -47,72 +59,43 @@
       <% end %>
     </li>
     <li>
-      <p id="features">Features</p>
+      <p id="features">Logs</p>
       <% unless zeroed_series?( @info[:feature_series] ) %>
         <div class="heat" id="svg_features"></div>
       <% else %>
-        <p class="no_report">No Features reported.</p>
+        <p class="no_report">No Logs reported.</p>
       <% end %>
     </li>
   </ul>
 </div>
 
-<script>
-  function gen_load( name, value, total )
-  {
-    var p      = Raphael( name, 300, 20 );
-    var range  = Math.ceil( ((value/total)*100)/10 );
-    var x      = 2;
-    var y      = 2;
-    var spacer = 5;
-        
-    for( var i=1; i <= range; i++ )
-    {
-      var l = p.rect( x, y, 10, 16, 2 );
-      l.attr( 'fill', 'green' );
-      l.attr( 'gradient', '45-#0f0-#fff' );
-      l.attr( 'stroke-width', 0 );
-      x += 10 + spacer;
-
-    }
-    var text = p.text( 230, 10, Math.ceil((value/total)*100) + '% (' + value + " of " + total + ')' );
-    text.attr( 'fill'     , '#434343' );  
-    text.attr( 'font-size', 15 );      
-  }
-
-  function gen_heat_map( id, series, symbol )
-  {
-    var r = Raphael( id ), 
-      xs    = <%= (0..23).to_a.to_json %>,
-      ys    = <%= y = [];24.times{ y << 1 };y.to_json %>,
-      axisy = <%= %w[Mon].to_json %>,
-      axisx = <%= %w[12am 1 2 3 4 5 6 7 8 9 10 11 12 1 2 3 4 5 6 7 8 9 10 11].to_json %>;
-            
-    r.g.dotchart(0, -10, 620, 60, xs, ys, series, {symbol: symbol, max: 10, heat: true, axis: "0 0 1 0", axisxstep: 23, axisystep: 1, axisxlabels: axisx, axisxtype: " ", axisytype: " ", axisylabels: axisy}).hover(function () {
-      this.tag = this.tag || r.g.tag(this.x, this.y, this.value, 0, this.r + 2).insertBefore(this);
-      this.tag.show();
-    }, function () {
-      this.tag && this.tag.hide();
-    });      
-  }
-    
+<script>    
   $( function() {
     $('a.dash').addClass( 'current' );
     
+    var xs = <%= (0..23).to_a.to_json %>,
+      ys    = <%= y = [];24.times{ y << 1 };y.to_json %>,
+      axisy = <%= %w[Mon].to_json %>,
+      axisx = <%= %w[12am 1 2 3 4 5 6 7 8 9 10 11 12 1 2 3 4 5 6 7 8 9 10 11].to_json %>;
+    
     gen_load( 'user_load'   , <%=@info[:user_load]%>, <%=@info[:total_users]%> );
     gen_load( 'feature_load', <%=@info[:feature_load]%>, <%=@info[:total_features]%> );
-      
+          
     <% unless zeroed_series?( @info[:fault_series] ) %>
-      gen_heat_map( 'svg_faults'  , <%=@info[:fault_series].to_json%>  , 'cross' );
+      var url = "/dashboard/logs/<%=Rackamole.fault%>/";
+      gen_heat_map( url, 'svg_faults', <%=@info[:fault_series].to_json%>, 'cross'  , xs, ys, axisx, axisy );
     <% end %>
     <% unless zeroed_series?( @info[:perf_series] ) %>
-      gen_heat_map( 'svg_perf'    , <%=@info[:perf_series].to_json%>   , 'diamond' );
+      var url = "/dashboard/logs/<%=Rackamole.perf%>/";
+      gen_heat_map( url, 'svg_perf', <%=@info[:perf_series].to_json%>, 'diamond', xs, ys, axisx, axisy );
     <% end %>
     <% unless zeroed_series?( @info[:user_series] ) %>
-      gen_heat_map( 'svg_users'   , <%=@info[:user_series].to_json%>   , 'disc' );
+      var url = "/dashboard/users/";
+      gen_heat_map( url, 'svg_users', <%=@info[:user_series].to_json%>, 'disc', xs, ys, axisx, axisy );
     <% end %>
-    <% unless zeroed_series?( @info[:user_series] ) %>
-      gen_heat_map( 'svg_features', <%=@info[:feature_series].to_json%>, 'flower' );
+    <% unless zeroed_series?( @info[:feature_series] ) %>
+      var url = "/dashboard/logs/<%=Rackamole.feature%>/";
+      gen_heat_map( url, 'svg_features', <%=@info[:feature_series].to_json%>, 'flower', xs, ys, axisx, axisy );
     <% end %>
   });
 </script>

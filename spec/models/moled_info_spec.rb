@@ -6,7 +6,7 @@ describe Wackamole::MoledInfo do
     Wackamole::Control.init_config( File.join(File.dirname(__FILE__), %w[.. config test.yml]), 'test' )
     Wackamole::Control.connection.should_not be_nil
     Wackamole::Control.db( "mole_fred_test_mdb" )
-    @test_time = Chronic.parse( "2010/01/01 01:00:00" ).utc     
+    @test_time = Chronic.parse( "2010/01/01 01:00:00" )
   end
   
   it "should gather dashboard info correctly" do

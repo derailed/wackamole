@@ -549,16 +549,16 @@ ul#summary li p{
 
 
 p#perfs {
-  background: transparent url(/images/perf_small.png) no-repeat 2px 2px;
+  background: transparent url(/images/perf_small.png) no-repeat 1px 2px;
 }
 p#faults {
-  background: transparent url(/images/fault_small.png) no-repeat 2px 2px;
+  background: transparent url(/images/fault_small.png) no-repeat 1px 2px;
 }
 p#users {
-  background: transparent url(/images/users.png) no-repeat 2px 2px;
+  background: transparent url(/images/users.png) no-repeat 1px 2px;
 }
 p#features {
-  background: transparent url(/images/feature.png) no-repeat 2px 2px;
+  background: transparent url(/images/feature.png) no-repeat 1px 2px;
 }
 
 div.section ul li p.result {

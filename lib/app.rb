@@ -46,7 +46,7 @@ configure do
       :server => "%s:%d/%s/%s" % ['localhost', '27017', 'wackamole_ses', 'sessions'],
       :log_level => :error
   end  
-  set :con, Wackamole::Control.init_config( default_config, Sinatra::Application.environment.to_s )
+  Wackamole::Control.init_config( default_config, Sinatra::Application.environment.to_s )
 end
 
 # -----------------------------------------------------------------------------

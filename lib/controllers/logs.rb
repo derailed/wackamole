@@ -21,7 +21,7 @@ module Logs
       @filter.search_terms = params[:search_filter][:search_terms]
       @logs = Wackamole::Log.paginate( @filter.to_conds )
     rescue => boom
-      puts boom
+      # puts boom
       flash_it!( :error, boom )
       @logs = [].paginate
     end
@@ -43,16 +43,7 @@ module Logs
     @filter.from_options( params[:filter] )
     session[:filter] = @filter
     
-    # elapsed = Benchmark.realtime do
-      @logs = Wackamole::Log.paginate( @filter.to_conds )
-    # end
-    # puts "Filter logs %5.4f" % elapsed
-
-    out = nil
-    # elapsed = Benchmark.realtime do
-      out = erb :"logs/filter.js", :layout => false
-    # end
-    # puts "Render logs %5.4f" % elapsed
-    out  
+    @logs = Wackamole::Log.paginate( @filter.to_conds )
+    erb :"logs/filter.js", :layout => false
   end  
 end

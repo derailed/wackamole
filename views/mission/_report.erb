@@ -28,7 +28,7 @@ table#mission tr.div {
         <th width="25%">application</th>
         <th width="10%">environment</th>
         <th width="20%">to date</th>
-        <th width="20%">today</th>
+        <th width="20%">24 hours</th>
         <th width="20%">last tick</th>
       </tr>
     </thead>
@@ -48,7 +48,7 @@ table#mission tr.div {
                         <% clazz = ( (count > 0 and %w(last_tick today).include?(period)) ? assign_class( type, count ) : nil) %>
                         <td width="25px">
                           <% if( %w(last_tick today).include?( period ) and count > 0 ) %>
-                            <%= link_to Wackamole::Mission.to_type_name(type), "/dashboard/logs/#{app_name}/#{env}/#{type}", :class => "site_link" %>:
+                            <%= link_to Wackamole::Mission.to_type_name(type), "/mission/logs/#{app_name}/#{env}/#{type}", :class => "site_link" %>:
                           <% else %>
                             <%=Wackamole::Mission.to_type_name(type)%>:
                           <% end %>
