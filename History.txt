@@ -18,3 +18,10 @@
 
 === 0.0.5 / 2010-02-08
 * Added debug
+
+=== 0.0.6 / 2010-02-08
+* Bug fixes
+
+=== 0.0.7 /2010-02-21
+* Added drilldown on dashboard
+* Bug fixes and clean up
