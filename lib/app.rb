@@ -19,7 +19,7 @@ end
 # Configurations
 
 configure :production do
-  set :logging, false  
+  set :logging, true
 end
 
 configure do

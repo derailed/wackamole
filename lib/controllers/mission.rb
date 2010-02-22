@@ -10,7 +10,7 @@ module Mission
     last_tick           ||= Chronic.parse( "#{@refresh_rate} seconds ago" )
     session[:last_tick] = Time.now
     
-    @pulse = Wackamole::Mission.pulse( last_tick )
+    @pulse = Wackamole::Mission.pulse( last_tick.utc )
               
     erb :'mission/index'
   end
@@ -21,7 +21,7 @@ module Mission
     last_tick           ||= Chronic.parse( "#{@refresh_rate} seconds ago" )
     session[:last_tick] = Time.now
       
-    @pulse = Wackamole::Mission.pulse( last_tick )
+    @pulse = Wackamole::Mission.pulse( last_tick.utc )
 
     erb :'/mission/refresh_js', :layout => false
   end

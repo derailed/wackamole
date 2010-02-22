@@ -9,7 +9,7 @@ module Wackamole
     def self.pulse( last_tick )
       count_to_date   = count_logs
       count_today     = count_logs( last_tick, true )
-      count_last_tick = count_logs( last_tick.clone.utc )
+      count_last_tick = count_logs( last_tick )
       { :to_date => count_to_date, :today => count_today, :last_tick => count_last_tick }      
     end
     
@@ -18,11 +18,14 @@ module Wackamole
     def self.gen_conds( now, single_day )
       conds = {}
       if now
+        if single_day
+          now = Time.local( now.year, now.month, now.day, 0, 0, 0 ).utc
+        end
         date_id     = now.to_date_id.to_s
         time_id     = now.to_time_id
-        conds[:did] = single_day ? {'$gte' => date_id } : date_id
-        conds[:tid] = {'$gte' => time_id} unless single_day
-      end      
+        conds[:did] = date_id
+        conds[:tid] = {'$gte' => time_id}
+      end
       conds
     end
     
