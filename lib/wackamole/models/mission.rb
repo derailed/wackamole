@@ -20,7 +20,7 @@ module Wackamole
       if now
         date_id     = now.to_date_id.to_s
         time_id     = now.to_time_id
-        conds[:did] = date_id
+        conds[:did] = single_day ? {'$gte' => date_id } : date_id
         conds[:tid] = {'$gte' => time_id} unless single_day
       end      
       conds
