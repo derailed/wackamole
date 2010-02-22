@@ -7,10 +7,10 @@ module Wackamole
     # -----------------------------------------------------------------------
     # Pick up moled application pulse
     def self.pulse( last_tick )
-      to_date   = count_logs
-      today     = count_logs( last_tick, true )
-      last_tick = count_logs( last_tick )
-      { :to_date => to_date, :today => today, :last_tick => last_tick }      
+      count_to_date   = count_logs
+      count_today     = count_logs( last_tick, true )
+      count_last_tick = count_logs( last_tick.clone.utc )
+      { :to_date => count_to_date, :today => count_today, :last_tick => count_last_tick }      
     end
     
     # -----------------------------------------------------------------------      
@@ -22,7 +22,7 @@ module Wackamole
         time_id     = now.to_time_id
         conds[:did] = date_id
         conds[:tid] = {'$gte' => time_id} unless single_day
-      end
+      end      
       conds
     end
     

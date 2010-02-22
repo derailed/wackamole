@@ -25,3 +25,6 @@
 === 0.0.7 /2010-02-21
 * Added drilldown on dashboard
 * Bug fixes and clean up
+
+=== 0.0.8 /2010-02-21
+* Fix bug on mission and local time

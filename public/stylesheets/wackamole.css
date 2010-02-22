@@ -585,6 +585,20 @@ div.load svg {
   margin-top: 30px;
 }
 
+table#mission {
+  width:  100%;
+  border: 1;
+  text-align: left;
+  min-height: 500px;
+}
+table#mission thead tr {
+  font-size: 1.2em;
+  color:     #808080;
+}
+table#mission tr.div {
+  border-bottom: 1px #c1c1c1 solid;
+}
+
 div.doh {
   background: transparent url(../images/mole_error.png) no-repeat;
   padding:    10px 10px 0px 120px;
@@ -668,7 +682,6 @@ span.today_perf {
 span.today_feature {
   color: #87b76c;
 }
-
 
 a.fixed {
   color: orange;
