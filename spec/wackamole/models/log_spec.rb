@@ -1,18 +1,18 @@
-require File.join(File.dirname(__FILE__), %w[.. spec_helper])
+require File.join(File.dirname(__FILE__), %w[.. .. spec_helper])
 require 'chronic'
 
 describe Wackamole::Log do
   before( :all ) do
-    Wackamole::Control.init_config( File.join(File.dirname(__FILE__), %w[.. config test.yml]), 'test' )
+    Wackamole::Control.init_config( File.join(File.dirname(__FILE__), %w[.. .. config test.yml]), 'test' )
     Wackamole::Control.connection.should_not be_nil
-    Wackamole::Control.db( "mole_fred_test_mdb" )
+    Wackamole::Control.db( "mole_app1_test_mdb" )
   end
     
   it "should paginate logs correctly" do
     cltn = Wackamole::Log.paginate( {}, 1, 5 )
-    cltn.total_entries.should == 21
+    cltn.total_entries.should == 15
     cltn.size.should          == 5
-    cltn.total_pages.should   == 5 
+    cltn.total_pages.should   == 3
   end
   
   describe "indexes" do

@@ -2,15 +2,25 @@ require 'chronic'
 
 module Mission
   # ---------------------------------------------------------------------------
-  get '/' do
-    # reset app info
+  get '/mission' do
+    clear_flash!
+    
+     # reset app info
     session[:app_info] = @app_info = nil
   
+    # Support store like mongodb where not allowed to peruse connection
+    # in which case just show the dashboard
+    if Wackamole::Control.single_app?
+      app_name, stage = Wackamole::Control.app_info
+      redirect "/dashboard/#{app_name}/#{stage}"
+      return
+    end
+    
     last_tick           = session[:last_tick]
     last_tick           ||= Chronic.parse( "#{@refresh_rate} seconds ago" )
     session[:last_tick] = Time.now
     
-    @pulse = Wackamole::Mission.pulse( last_tick.utc )
+    @pulse = Wackamole::Mission.pulse( last_tick )
               
     erb :'mission/index'
   end
@@ -21,7 +31,7 @@ module Mission
     last_tick           ||= Chronic.parse( "#{@refresh_rate} seconds ago" )
     session[:last_tick] = Time.now
       
-    @pulse = Wackamole::Mission.pulse( last_tick.utc )
+    @pulse = Wackamole::Mission.pulse( last_tick )
 
     erb :'/mission/refresh_js', :layout => false
   end

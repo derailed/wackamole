@@ -1,0 +1,28 @@
+<center>
+  <div id="dialog"> 
+    <div id="inner_box" style="clear:both">
+      <form id="login" action="/session/create" method="post">
+        <div>
+      	  <label for="username">Login</label>
+          <input id="username" type="text" name="login[username]"-%>
+        </div>
+        <div>
+          <label for="password">Password</label>
+          <input id="password" type="password" name="login[password]"-%>
+        </div>
+        <div>
+          <input type="submit" name="commit" value="Log In"/>
+        </div>
+      </form>
+      <% if session[:flash] and session[:flash][:error] %>
+        <div class="flash_error corners">
+          <%= session[:flash][:error] %>
+        </div>      
+      <% end %>
+      </div>
+    </div>
+    <div id="copyright">
+       &copy; 2010 liquidrail, llc.
+    </div>
+  </div>
+</center>

@@ -91,7 +91,8 @@ PROJ = OpenStruct.new(
 
   # Rspec
   :spec => OpenStruct.new(
-    :files => FileList['spec/**/*_spec.rb'],
+    :files    => FileList['spec/wackamole/**/*_spec.rb'],
+    :ui_files => FileList['spec/ui/*_spec.rb'],
     :opts => []
   ),
 

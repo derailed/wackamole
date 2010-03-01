@@ -17,12 +17,23 @@ module Wackamole
       tops.sort{ |a,b| b['count'] <=> a['count'] }.each do |row|
         users << { :uid => row['uid'], :total => row['count'].to_i, :details => [] }
       end
+
+      # BOZO !! Not too wise to fetch all users. allow for now and reconsider    
+      all_users = users_cltn.find( {}, :fields => [:_id] )
+      user_ids  = all_users.map{ |f| f['_id'] }
+      total_users = []
+      tops.each do |row|
+        total_users << row
+        user_ids.delete( row['uid'] )
+      end
+      user_ids.each { |u| total_users << {'uid' => u, 'count' => 0} }
     
       WillPaginate::Collection.create( page, page_size, users.size ) do |pager|      
         offset = (page-1)*page_size
         result = users[offset...(offset+page_size)]
         result.each do |u|
-          user = users_cltn.find_one( u[:uid] ) #, :fields => [:una] )
+          # BOZO !! should group that call to retrieve all matching users
+          user = users_cltn.find_one( u[:uid], :fields => [:una] )
           raise "Unable to find user with id `#{u[:uid].inspect}" unless user
           u[:name] = user['una']
         end

@@ -9,25 +9,47 @@
     <%= javascripts %w[jquery_min jquery_ui_min] %>
   </head>
 
+<style>
+span#version {
+  position:    relative;
+  top:        -12px;
+  left:        32px;
+  font-weight: bold;
+  color:       #316071;
+}
+a.logout {
+  font-size: 0.8em;
+}
+</style>
   <body id="body">
     <div id="overall">      
-      <div id="logo" style="margin-bottom:5px">
-        <%= link_to image_tag( 'wackamole_logo.png', :border => 0 ), '/' %>
+      <div id="logo">
+        <span id="version"><%=Wackamole.version%></span>        
+        <%= link_to image_tag( 'wackamole_logo.png', :border => 0 ), '/mission' %>
       </div>      
-      <div id="app_info">
+      <div id="app_info">        
+        <% if console_auth? and !root_path? %>
+          <%= link_to "log out", "/session/delete", :class => "site_link logout" %>
+        <% end %>                
+        
         <% if @app_info %>        
           <ul>
             <li>&laquo;<span><%=@app_info[:app_name]%></span>&raquo;</li>
             <li id="env"><%=@app_info[:stage]%></li>
           <ul>
         <% end %>        
-        <p><span id="timestamp"><%=partial :'shared/timestamp'%></span></p>
+        <% unless root_path? %>
+          <p><span id="timestamp"><%=partial :'shared/timestamp'%></span></p>
+        <% end %>
       </div>
-      <div id="main">
+      <div id="main">     
         <div class="flash"></div>
-        <% if @app_info %>        
+        
+        <% if @app_info %>
           <div id='navigation' class='corners'>
-            <%=link_to "mission control", "/"                                                      , :class => "site_link land" %>&nbsp;&bull;&nbsp;
+            <% unless Wackamole::Control.single_app? %>
+              <%=link_to "mission control", "/mission", :class => "site_link land" %>&nbsp;&bull;&nbsp;
+            <% end %>
             <%=link_to "dashboard"      , "/dashboard/#{@app_info[:app_name]}/#{@app_info[:stage]}", :class => "site_link dash" %>&nbsp;&bull;&nbsp;            
             <%=link_to "logs"           , "/logs/1"                                                , :class => "site_link logs" %>&nbsp;&bull;&nbsp;
             <%=link_to "features"       , "/features/1"                                            , :class => "site_link features" %>&nbsp;&bull;&nbsp;
@@ -38,10 +60,21 @@
         <%= yield %>
       </div>
       
-      <div id="footer" style="text-align:right">
-        <%= link_to image_tag( 'powered_by.png', :border => 0 ), "http://www.rackamole.com", :target => "#" %>
-      </div>
+      <% unless root_path? %>
+        <div id="footer" style="text-align:right">
+          <%= link_to image_tag( 'powered_by.png', :border => 0 ), "http://www.rackamole.com", :target => "#" %>
+        </div>
+      <% end %>
 
     </div>
   </body>
 </html>
+
+<script>
+ $( function() {
+// console.log( "Flash " + $('div.flash').html().length + " == " +  $('div.flash').html() + '==' );
+
+   if ( $('div.flash') && $('div.flash').html() && $('div.flash').html().length > 1 )
+     $('div.flash').fadeOut( 2000 );
+ });
+</script>

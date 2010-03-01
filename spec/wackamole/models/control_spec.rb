@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), %w[.. spec_helper])
+require File.join(File.dirname(__FILE__), %w[.. .. spec_helper])
 
 describe Wackamole::Control do
   describe 'errors' do
@@ -11,21 +11,21 @@ describe Wackamole::Control do
     end
   
     it "should raise an error if invalid config file" do
-      config_file = File.join(File.dirname(__FILE__), %w[.. config blee.yml])    
+      config_file = File.join(File.dirname(__FILE__), %w[.. .. config blee.yml])    
       lambda {
         Wackamole::Control.init_config( config_file, 'test' )
       }.should raise_error( /Hoy! An error occur loading the config file `#{config_file} -- No such file or directory/ )
     end
   
     it "should raise an error if a bogus env is requested" do
-      config_file = File.join(File.dirname(__FILE__), %w[.. config test.yml])    
+      config_file = File.join(File.dirname(__FILE__), %w[.. .. config test.yml])    
       lambda {
         Wackamole::Control.init_config( config_file, 'production' )
       }.should raise_error( /Hoy! An error occur loading the config file `#{config_file} -- Invalid environment `production/ )
     end
   
     it "should raise an error if invalid config file content" do
-      config_file = File.join(File.dirname(__FILE__), %w[.. config bogus_test.yml])
+      config_file = File.join(File.dirname(__FILE__), %w[.. .. config bogus_test.yml])
       lambda {
         Wackamole::Control.init_config( config_file, 'test' )
       }.should raise_error( /Hoy! An error occur loading the config file `#{config_file} -- Unable to find host in -/ )
@@ -35,19 +35,19 @@ describe Wackamole::Control do
   describe 'connection' do
     before :all do
       Wackamole::Control.reset!        
-      Wackamole::Control.init_config( File.join(File.dirname(__FILE__), %w[.. config test.yml]), 'test' )
+      Wackamole::Control.init_config( File.join(File.dirname(__FILE__), %w[.. .. config test.yml]), 'test' )
       Wackamole::Control.connection.should_not be_nil
     end
     
     describe "#collection" do
       it "should find a collection correctly" do
-        cltn = Wackamole::Control.collection( 'features', "mole_fred_development_mdb" )
-        cltn.count.should == 10
-        feature = cltn.find_one()
-        feature['app'].should == "fred"
-        feature['env'].should == "development"
-        feature['did'].should == Fixtures.test_time_id.to_s
-        feature['ctx'].should match( /feature_\d{1}/ )
+        cltn = Wackamole::Control.collection( 'features', "mole_app1_test_mdb" )
+        cltn.count.should == 6
+        feature = cltn.find_one()  
+        feature['app'].should == "app1"
+        feature['env'].should == "test"
+        feature['did'].should == Time.now.utc.to_date_id.to_s
+        feature['ctx'].should match( /\// )
       end
     end
     
@@ -55,7 +55,7 @@ describe Wackamole::Control do
       it "should correctly identify mole dbs" do
         # gen_bogus_dbs
         mole_dbs = Wackamole::Control.mole_databases        
-        mole_dbs.should have(3).items
+        mole_dbs.should have(2).items
       end
       
       it "should extra app/env correctly" do
@@ -69,20 +69,20 @@ describe Wackamole::Control do
       end
       
       it "should connect to a mole databases correctly" do
-        %w[test production development].each do |env|
-          Wackamole::Control.db( "mole_fred_#{env}_mdb" )
+        %w[app1 app2].each do |app|
+          Wackamole::Control.db( "mole_#{app}_test_mdb" )
           feature = Wackamole::Control.collection( 'features' ).find_one()
-          feature['app'].should == "fred"
-          feature['env'].should == env
+          feature['app'].should == app
+          feature['env'].should == "test"
         end
       end    
       
       it "should switch mole dbs correctly" do
-        %w[test production development].each do |env|
-          Wackamole::Control.switch_mole_db!( "fred", env )
+        %w[app1 app2].each do |app|
+          Wackamole::Control.switch_mole_db!( app, "test" )
           feature = Wackamole::Control.collection( 'features' ).find_one()
-          feature['app'].should == "fred"
-          feature['env'].should == env
+          feature['app'].should == app
+          feature['env'].should == "test"
         end        
       end  
       

@@ -49,12 +49,21 @@
   a file wackamole.yml. You will need to specify the envs, host and ports specific
   to your configuration, but here is a sample.
   
-  wackamole.yml  
+  wackamole.yml
+  
+    # New ! Optionally you can specify login name and password for the Wackamole web app.
+    console_auth: &auth
+      auth:
+        user:     admin
+        password: admin
+  
     development:
-      host: localhost
-      port: 27017
+      <<:   *auth    
+      host:  localhost
+      port:  27017
     
     beta:
+      <<:      *auth    
       host:     beta_host_name
       port:     27017
       user:     bobo

@@ -79,7 +79,8 @@ module LogsHelper
      
     # ---------------------------------------------------------------------------
     # Trim out extra host info if any
-    def format_host( host )    
+    def format_host( host )
+      return "n/a" unless host or host.empty?      
       return host.split( "." ).first if host.index( /\./ )
       host
     end

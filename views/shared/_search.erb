@@ -1,6 +1,6 @@
 <div id="search">
   <form id="search_form">
-    <input id="search_term" class="search" type="text" size="50" name="search_filter[search_terms]"/>
+    <input id="search_term" class="search" type="text" size="50" name="search_filter[search_terms]" value="<%=@filter.search_terms%>"/>
     <%= image_tag 'loading.gif', :border => 0, :size => "20x20", :id => "search_loader" %>
 	  <input type="submit" value="Search" style="display: none;" name="commit"/>
   </form>

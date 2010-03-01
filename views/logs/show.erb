@@ -18,6 +18,9 @@
         <td><%=user_name_for( {}, @log['uid'] ) %></td>
       </tr>
       <tr>
+        <td class="label">Timestamp</td>
+        <td><%=timestamp_for @log%></td>
+      <tr>
         <td class="label">Method</td>
         <td><%=@log['met']%></td>
       </tr>

@@ -34,6 +34,19 @@ module Wackamole
       @time_frames ||= ['today', '2 days', '1 week', '2 weeks', '1 month', '3 months', '6 months', '1 year' ]
     end
 
+    def self.time_frames_in_days
+      @time_frame_in_days ||= {
+        'today'    => 1,
+        '2 days'   => 2,
+        '1 week'   => 7,
+        '2 weeks'  => 14, 
+        '1 month'  => 30,
+        '3 months' => 90,
+        '6 months' => 180,
+        '1 year'   => 360 
+      }
+    end
+    
     # ---------------------------------------------------------------------------
     # Available hours    
     def self.hourlies
@@ -45,7 +58,7 @@ module Wackamole
     def self.mole_types
       @types ||= %w[All Feature Perf Fault]
     end
-  
+    
     # ---------------------------------------------------------------------------
     # Set filter type  
     def mole_type( type )
@@ -118,10 +131,39 @@ module Wackamole
       end
     end
   
+    def self.time_conds( local_now, days, current_hour=0 )
+      conds = {}
+    
+      if current_hour == 0 and days == 0
+        from_utc = Time.local( local_now.year, local_now.month, local_now.day, 0, 0, 1 ).utc
+        to_utc   = Time.local( local_now.year, local_now.month, local_now.day, 23, 59, 59 ).utc
+
+        from_date_id = from_utc.to_date_id.to_s
+        to_date_id   = to_utc.to_date_id.to_s          
+        
+        if from_date_id != to_date_id
+          from_time_id = from_utc.to_time_id.to_s
+          to_time_id   = to_utc.to_time_id.to_s        
+          conds['$where'] = "((this.did == '#{from_date_id}' && this.tid >= '#{from_time_id}') || ( this.did == '#{to_date_id}' && this.tid <= '#{to_time_id}') )"
+        else        
+          conds[:did] = from_date_id
+        end
+      else
+        date         = Chronic.parse( "#{days == 1 ? "now" : "#{days} days ago"}" )
+        current      = "%4d/%02d/%02d %02d:%02d:%02d" % [date.year, date.month, date.day, current_hour, 0, 1]
+        time         = Chronic.parse( current ).utc
+        conds[:did]  = { '$gte' => time.to_date_id.to_s }         
+        conds[:tid]  = /^#{"%02d"%time.hour}.+/ unless current_hour == 0
+      end
+      conds
+    end
+  
     # ---------------------------------------------------------------------------
     # Spews filter conditions
     def to_conds
-      conds = {}
+      current_hour = self.hour
+      current_hour = 0 if self.hour == SearchFilter.hourlies.first
+      conds = SearchFilter.time_conds( Time.now, SearchFilter.time_frames_in_days[self.time_frame], current_hour )
     
       # filter mole_types
       if type != 'All'
@@ -136,19 +178,8 @@ module Wackamole
       unless feature_id.to_s == "-1"
         conds[:fid] = Mongo::ObjectID.from_string( feature_id )
       end
-                    
-      # filter by date
-      time = Chronic.parse( time_frame + ( time_frame == SearchFilter.time_frames.first ? "" : " ago" ) )
-      conds[:did] = { '$gte' => time.to_date_id.to_s }
-      
-      unless self.hour == 'all'
-        now     = Time.now
-        current = "%4d/%02d/%02d %02d:%02d:%02d" % [now.year, now.month, now.day, self.hour, 0, 0]    
-        time = Chronic.parse( current ).utc
-        conds[:tid] = /^#{"%02d"%time.hour}.+/
-      end
-      
-      unless search_terms.empty?
+                                
+      if search_terms and !search_terms.empty?
         tokens = search_terms.split( ":" ).collect{ |c| c.strip }
         key    = tokens.shift
         if key

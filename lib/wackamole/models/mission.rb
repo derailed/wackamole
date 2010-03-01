@@ -15,16 +15,18 @@ module Wackamole
     
     # -----------------------------------------------------------------------      
     # generates mole logs conditons
-    def self.gen_conds( now, single_day )
+    def self.gen_conds( now, single_day )      
       conds = {}
       if now
         if single_day
-          now = Time.local( now.year, now.month, now.day, 0, 0, 0 ).utc
+          conds = SearchFilter.time_conds( now, 1 )
+        else
+          now = now.clone.utc
+          date_id     = now.to_date_id.to_s
+          time_id     = now.to_time_id
+          conds[:did] = { '$gte' => date_id }
+          conds[:tid] = { '$gte' => time_id }
         end
-        date_id     = now.to_date_id.to_s
-        time_id     = now.to_time_id
-        conds[:did] = date_id
-        conds[:tid] = {'$gte' => time_id}
       end
       conds
     end
@@ -53,7 +55,7 @@ module Wackamole
           row[t] = logs.count
         end
       end
-      counts       
+      counts
     end
       
     # =========================================================================

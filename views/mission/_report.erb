@@ -19,7 +19,7 @@
     <tbody>      
       <% applications.each_pair do |app_name, envs| %>
         <% envs.each do |env| %>
-          <tr class="div">
+          <tr class="app_info" id="<%=app_name%>_<%=env%>">
             <td valign="top"><%= link_to app_name, "/dashboard/#{app_name}/#{env}", :class => 'site_link' %></td>
             <td valign="top"><%= env %></td>
             <% %w(to_date today last_tick).each do |period| %>
@@ -32,7 +32,7 @@
                         <% clazz = ( (count > 0 and %w(last_tick today).include?(period)) ? assign_class( type, count ) : nil) %>
                         <td width="25px">
                           <% if( %w(last_tick today).include?( period ) and count > 0 ) %>
-                            <%= link_to Wackamole::Mission.to_type_name(type), "/mission/logs/#{app_name}/#{env}/#{type}", :class => "site_link" %>:
+                            <%= link_to Wackamole::Mission.to_type_name(type), "/mission/logs/#{app_name}/#{env}/#{type}", :class => "site_link", :id => "#{app_name}_#{env}_#{type}" %>:
                           <% else %>
                             <%=Wackamole::Mission.to_type_name(type)%>:
                           <% end %>

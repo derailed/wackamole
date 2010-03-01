@@ -7,7 +7,7 @@ URI_MATCH = /(mongo|memcache):\/\/(.+?)\:(\d+)\/(\w+)\/{0,1}(\w*)/
 Main {  
   option( 'pool=[pool]', 'p' ) {
     validate    { |pool| pool =~ URI_MATCH }
-    description "specify session server uri. Must be of the form {[mongo|memcache]}://{host}:{port}/{[database_name|namespace]}[/{collection_name}]"
+    description "specify session server uri. Must be of the form {[mongo|memcache]}://{host}:{port}/{[database_name|namespace]}[/{collection_name}]. Defaults to local memcached on default port"
   }
   option( 'environment', 'e' ) {
     argument :required
@@ -26,7 +26,7 @@ Main {
     
     Thread.new do 
       puts "-"*100
-      puts "Initializing Wackamole -- Version #{Wackamole::VERSION}"
+      puts "Initializing Wackamole -- Version #{Wackamole::VERSION} -- Landscape #{params['environment']}"
       puts "-"*100      
       puts "\n"*2
       puts ">>> Waiting for Franky to warm up..."

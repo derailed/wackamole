@@ -29,7 +29,7 @@ div#overall {
 div#logo {
   float:         left;
   width:         45%;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 div#main {
@@ -291,10 +291,10 @@ a.fault {
 div.flash {
   display:                        none;
   width:                          95%;
+  text-align:                     center;
   padding:                        10px;
   font-size:                      1.5em;
   color:                          #fff;
-  border:                         1px #92b948 solid;
   -moz-border-radius-bottomleft:  20px;
   -moz-border-radius-topleft:     0px;
   -moz-border-radius-bottomright: 0px;
@@ -595,7 +595,7 @@ table#mission thead tr {
   font-size: 1.2em;
   color:     #808080;
 }
-table#mission tr.div {
+table#mission tr.app_info {
   border-bottom: 1px #c1c1c1 solid;
 }
 
@@ -718,4 +718,61 @@ div.ie_8 {
 }
 div.unknown {
   background-position: -154px 0;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Login */
+
+div#dialog {
+  font-size:   1.5em;
+  padding-top: 30px;
+}
+
+div#inner_box {
+  width:                          400px;    
+  background:                     #eee;
+  height:                         190px;
+  -moz-border-radius:             7px;
+  -webkit-border-radius:          7px;  
+  -moz-box-shadow:                0 0 90px 0px #000;
+  -webkit-box-shadow:             0 0 90px #000;
+  margin-top:                     40px;
+  padding:                        30px;
+}
+
+form#login div {
+  margin-bottom: 10px;  
+}
+
+form#login label {
+  color:      #1d1d1d;
+  display:    block;
+  width:      260px;
+  text-align: left;
+}
+
+form#login input {
+  width:                              250px;  
+  font-size:                          1.0em;
+  font-weight: bold;  
+}
+
+form#login input[type='text'] {
+  padding: 5px;
+  color:      #1d1d1d;
+  background: transparent url(../images/fade.png);
+}
+
+form#login input[type='password'] {
+  padding: 5px;
+  background: transparent url(../images/fade.png);
+}
+
+form#login input[type='submit'] {
+  width:                 100px;
+}
+
+div#copyright {
+  margin-top:4px;
+  color:#4974FF;
 }

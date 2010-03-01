@@ -1,3 +1,5 @@
+require 'data/fixtures'
+
 namespace :fixtures do
 
   # A prerequisites task that all other tasks depend upon
@@ -5,7 +7,7 @@ namespace :fixtures do
 
   desc 'Populate fixture data'
   task :load do |t|
-    Fixtures.load_data    
+    Fixtures.new.populate    
   end  
 
 # task 'gem:release' => 'svn:create_tag'

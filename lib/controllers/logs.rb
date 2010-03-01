@@ -22,6 +22,7 @@ module Logs
       @logs = Wackamole::Log.paginate( @filter.to_conds )
     rescue => boom
       # puts boom
+      @filter.search_terms = nil
       flash_it!( :error, boom )
       @logs = [].paginate
     end

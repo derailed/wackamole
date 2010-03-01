@@ -1,14 +1,21 @@
 if HAVE_SPEC_RAKE_SPECTASK and not PROJ.spec.files.to_a.empty?
 require 'spec/rake/verify_rcov'
-require 'spec/data/fixtures'
+require 'data/fixtures'
 
 namespace :spec do
-
+  
   desc 'Run all specs with basic output'
   Spec::Rake::SpecTask.new(:run) do |t|
     t.ruby_opts = PROJ.ruby_opts
     t.spec_opts = PROJ.spec.opts
     t.spec_files = PROJ.spec.files
+    t.libs += PROJ.libs
+  end
+
+  Spec::Rake::SpecTask.new(:run_ui) do |t|
+    t.ruby_opts = PROJ.ruby_opts
+    t.spec_opts = PROJ.spec.opts
+    t.spec_files = PROJ.spec.ui_files
     t.libs += PROJ.libs
   end
 
@@ -30,6 +37,7 @@ namespace :spec do
       t.rcov = true
       t.rcov_dir = PROJ.rcov.dir       
       t.rcov_opts = PROJ.rcov.opts + ['--exclude', 'spec']
+      # t.rcov_opts = t.rcov_opts + ['--include', 'lib/helpers/*.rb']      
     end
 
     RCov::VerifyTask.new(:verify) do |t| 
@@ -45,7 +53,13 @@ namespace :spec do
 end  # namespace :spec
 
 desc 'Alias to spec:run'
-task :spec => 'spec:run'
+task :spec     => 'spec:run'
+
+desc 'Alias to ui run'
+task :ui       => 'spec:run_ui'
+
+desc 'Alias to fixtures'
+task :fixtures => 'spec:fixtures'
 
 task :clobber => 'spec:clobber_rcov' if HAVE_RCOV
 

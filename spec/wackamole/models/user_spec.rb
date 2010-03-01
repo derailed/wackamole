@@ -1,18 +1,18 @@
-require File.join(File.dirname(__FILE__), %w[.. spec_helper])
+require File.join(File.dirname(__FILE__), %w[.. .. spec_helper])
 require 'chronic'
 
 describe Wackamole::User do
   before( :all ) do
-    Wackamole::Control.init_config( File.join(File.dirname(__FILE__), %w[.. config test.yml]), 'test' )
+    Wackamole::Control.init_config( File.join(File.dirname(__FILE__), %w[.. .. config test.yml]), 'test' )
     Wackamole::Control.connection.should_not be_nil
-    Wackamole::Control.db( "mole_fred_test_mdb" )
+    Wackamole::Control.db( "mole_app1_test_mdb" )
   end
   
   it "should paginate a user collection correctly" do
     cltn = Wackamole::User.paginate_tops( {}, 1, 2 )
-    cltn.total_entries.should == 7
+    cltn.total_entries.should == 2
     cltn.size.should == 2
-    cltn.total_pages.should == 4
+    cltn.total_pages.should == 1
   end
   
   describe "indexes" do

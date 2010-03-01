@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), %w[.. spec_helper])
+require File.join(File.dirname(__FILE__), %w[.. .. spec_helper])
 
 describe Wackamole::SearchFilter do    
   before( :each ) do
@@ -102,25 +102,25 @@ describe Wackamole::SearchFilter do
     
     describe "search terms" do
       before( :all ) do
-        Wackamole::Control.init_config( File.join(File.dirname(__FILE__), %w[.. config test.yml]), 'test' )
+        Wackamole::Control.init_config( File.join(File.dirname(__FILE__), %w[.. .. config test.yml]), 'test' )
         Wackamole::Control.connection.should_not be_nil
-        Wackamole::Control.db( "mole_fred_test_mdb" )
+        Wackamole::Control.db( "mole_app1_test_mdb" )
       end
       
       it "should retrieve features correctly" do
         features = @filter.features
-        features.should have(11).items
+        features.should have(7).items
         count = 0
+        expected = %w(All / /error /normal /params/10 /post /slow)
         features.each do |f|
           f.should have(2).items
-          f.first.should == "All" if count == 0
-          f.first.should == "feature_#{count-1}" if count > 0
+          f.first.should == expected[count]
           count += 1
         end
       end
       
       it "should include user if specified" do
-        @filter.search_terms = "user:blee_0@fred.test"    
+        @filter.search_terms = "user:fernand"    
         conds = @filter.to_conds
         conds.should have(2).items
         conds[:uid].should_not be_nil

@@ -1,4 +1,7 @@
 require 'rubygems'
+require 'sinatra'
+require 'forwardable'
+require 'rack/test'
 require 'mongo'
 require 'rackamole'
 gem     'agnostic-will_paginate'

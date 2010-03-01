@@ -8,7 +8,7 @@ module Wackamole
     # Initialize app by reading off mongo configuration parameters if necessary
     def self.init_config( config_file, env )
       begin
-        config  = YAML.load_file( config_file )
+        config  = YAML.load_file( config_file )        
         @config = config[env]
         raise "Invalid environment `#{env}" unless @config
         raise "Unable to find host in - #{@config.inspect}" unless @config.has_key?('host')
@@ -81,6 +81,7 @@ module Wackamole
       def self.mole_db?( db_name )
         return false unless db_name =~ molex
         db    = connection.db( db_name )
+        db.authenticate( config['username'], config['password'] )
         cltns = db.collection_names
         return ((%w[users features logs] & cltns).size == 3)
       end
@@ -98,6 +99,19 @@ module Wackamole
         @config
       end
     
+      #
+      def self.single_app?
+        config['db_name']
+      end
+      
+      #
+      def self.app_info
+        if config['db_name']
+          return extract_app_info( config['db_name'] )
+        end
+        nil
+      end
+      
       # -----------------------------------------------------------------------
       # Connects to mongo instance if necessary...
       def self.connection( log=false )

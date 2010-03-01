@@ -28,3 +28,7 @@
 
 === 0.0.8 /2010-02-21
 * Fix bug on mission and local time
+
+=== 0.0.9 /2010-02-28
+* Added console authentication - see README for info
+* Added support for auth on mongo instance - see README for info

@@ -19,7 +19,12 @@ module Wackamole
       info[:fault_load]     = 0
         
       # Fetch day logs          
-      day_logs = logs_cltn.find( { :did => now.utc.to_date_id.to_s }, 
+      day_range = Set.new
+      utc_time  = now.clone.utc
+      day_range << (utc_time - (24*60*60)).to_date_id.to_s
+      day_range << utc_time.to_date_id.to_s
+      conds = SearchFilter.time_conds( now, 1 )
+      day_logs = logs_cltn.find( conds, 
         :fields => [:typ, :fid, :tid, :did, :uid], 
         :sort => [ [:tid => Mongo::ASCENDING] ] )
 
@@ -36,10 +41,10 @@ module Wackamole
         log_utc     = Time.utc( date_tokens[0], date_tokens[1], date_tokens[2], time_tokens[0], time_tokens[1], time_tokens[2] )
         local       = log_utc.clone.localtime
         hour        = local.hour
-
+        
         next if hour > local_time.hour
 
-        if log_utc.hour == now.hour
+        if log_utc.hour == utc_time.hour
           users    << log['uid']
           features << log['fid']
           info[:fault_load] += 1 if log['typ'] == Rackamole.fault

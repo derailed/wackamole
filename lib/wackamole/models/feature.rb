@@ -21,12 +21,21 @@ module Wackamole
     def self.paginate_tops( conds, page=1, page_size=default_page_size )
       tops = logs_cltn.group( [:fid], conds, { :count => 0 }, 'function(obj,prev) { prev.count += 1}', true )
     
+      all_features = features_cltn.find( {}, :fields => [:_id] )
+      feature_ids  = all_features.map{ |f| f['_id'] }
+      total_features = []
+      tops.each do |row|
+        total_features << row
+        feature_ids.delete( row['fid'] )
+      end
+      feature_ids.each { |f| total_features << {'fid' => f, 'count' => 0} }
+
       features = []
-      tops.sort{ |a,b| b['count'] <=> a['count'] }.each do |row|
+      total_features.sort{ |a,b| b['count'] <=> a['count'] }.each do |row|
         features << { :fid => row['fid'], :total => row['count'].to_i }
       end
     
-      WillPaginate::Collection.create( page, page_size, features.size ) do |pager|      
+      WillPaginate::Collection.create( page, page_size, features.size ) do |pager|
         offset = (page-1)*page_size
         result = features[offset...(offset+page_size)]
         result.each do |u|

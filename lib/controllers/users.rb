@@ -23,8 +23,9 @@ module Users
       @filter.search_terms = params[:search_filter][:search_terms]      
       @users = Wackamole::User.paginate_tops( @filter.to_conds )
     rescue => boom
-      logger.error boom
-      flash[:error] = boom
+      puts boom
+      @filter.search_terms = nil      
+      flash_it!( :error, boom )
       @users = [].paginate
     end
 

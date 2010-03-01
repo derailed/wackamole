@@ -12,7 +12,7 @@
       <p class="status">Performance</p>
       <p class="result">
         <% if @info[:perf_load] > 0 %>
-          <%= link_to pluralize( @info[:perf_load], 'issue' ), "/dashboard/logs/#{Rackamole.perf}/", :class => "site_link" %>
+          <%= link_to pluralize( @info[:perf_load], 'issue' ), "/dashboard/logs/#{Rackamole.perf}/#{@updated_on.hour}/", :class => "site_link" %>
         <% else %>
           <%=pluralize( @info[:perf_load], 'issue' )%>
         <% end %>
@@ -22,7 +22,7 @@
       <p class="status">Uncaught Exceptions</p>
       <p class="result">
         <% if @info[:fault_load] > 0 %>
-          <%= link_to pluralize( @info[:fault_load], 'issue' ), "/dashboard/logs/#{Rackamole.fault}/", :class => "site_link" %>
+          <%= link_to pluralize( @info[:fault_load], 'issue' ), "/dashboard/logs/#{Rackamole.fault}/#{@updated_on.hour}/", :class => "site_link" %>
         <% else %>
           <%=pluralize( @info[:fault_load], 'issue' )%>
         <% end %>
@@ -59,7 +59,7 @@
       <% end %>
     </li>
     <li>
-      <p id="features">Logs</p>
+      <p id="features">Features</p>
       <% unless zeroed_series?( @info[:feature_series] ) %>
         <div class="heat" id="svg_features"></div>
       <% else %>

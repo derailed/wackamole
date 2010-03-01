@@ -5,6 +5,7 @@ require 'mongo'
 gem     'agnostic-will_paginate'
 require 'will_paginate'
 require 'mongo_rack'
+require 'rack-flash'
 require 'rackamole'
 require File.expand_path( File.join( File.dirname(__FILE__), 'wackamole.rb' ) )
 
@@ -18,9 +19,9 @@ end
 # -----------------------------------------------------------------------------
 # Configurations
 
-configure :production do
-  set :logging, true
-end
+# configure :production do
+#   set :logging, true
+# end
 
 configure do
   set :sessions, false
@@ -29,6 +30,8 @@ configure do
   Wackamole.load_all_libs_relative_to(__FILE__, 'helpers' )
   Wackamole.load_all_libs_relative_to(__FILE__, 'controllers' )
  
+  # use Rack::Flash, :accessorize => [:notice, :error]
+  
   #Pick up command line args if any?  
   if defined? @@options and @@options
     if @@options[:protocol] == 'mongo'
@@ -41,18 +44,34 @@ configure do
         :namespace       => @@options[:namespace]
     end
   else
+    # Default is local memcache on default port.
+    use Rack::Session::Memcache, 
+      :memcache_server => "%s:%d" % ['localhost', 11211],
+      :namespace       => 'wackamole'
+    
     # Default is a mongo session store
-    use Rack::Session::Mongo, 
-      :server => "%s:%d/%s/%s" % ['localhost', '27017', 'wackamole_ses', 'sessions'],
-      :log_level => :error
+    # use Rack::Session::Mongo, 
+    #   :server => "%s:%d/%s/%s" % ['localhost', '27017', 'wackamole_ses', 'sessions'],
+    #   :log_level => :error
   end  
   Wackamole::Control.init_config( default_config, Sinatra::Application.environment.to_s )
 end
 
 # -----------------------------------------------------------------------------
 # Before filters
-before do
+before do  
+puts "Requesting #{request.path}"
   unless request.path =~ /\.[css gif png js]/
+    if console_auth?
+      unless request.path == '/' or request.path == '/session/create' or request.path == '/session/delete'
+  puts "Checking other paths #{request.path}"
+        unless authenticated?
+  puts "Redirected!!!!!"        
+          redirect '/'
+        end
+      end
+    end
+        
     @filter = session[:filter]
     unless @filter
       @filter = Wackamole::SearchFilter.new
