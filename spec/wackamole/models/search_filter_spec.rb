@@ -2,7 +2,9 @@ require File.join(File.dirname(__FILE__), %w[.. .. spec_helper])
 
 describe Wackamole::SearchFilter do    
   before( :each ) do
-    @filter = Wackamole::SearchFilter.new
+    @filter    = Wackamole::SearchFilter.new
+    now        = Time.now    
+    @test_time = Chronic.parse( "%d/%2d/%2d 17:00:00" % [now.year,now.month,now.day] )
   end
   
   it "should initialize with the correct defaults" do
@@ -64,8 +66,8 @@ describe Wackamole::SearchFilter do
     it "should spews default filter query conds correctly" do
       conds = @filter.to_conds
       conds.should have(1).item
-      conds.key?( :did ).should == true
-      conds[:did].should == { "$gte" => @now.to_date_id.to_s }
+      conds.key?( '$where' ).should == true
+      conds['$where'].should == "((this.did == '#{@test_time.to_date_id}' && this.tid >= '070001') || ( this.did == '#{(@test_time+24*60*60).to_date_id}' && this.tid <= '065959') )"
     end
     
     it "should include browser if specified correctly" do
@@ -73,8 +75,6 @@ describe Wackamole::SearchFilter do
       conds = @filter.to_conds
       time = Chronic.parse( "now" ).utc
       conds.should have(2).items
-      conds.key?( :did ).should == true
-      conds[:did].should == { "$gte" => @now.to_date_id.to_s }
       conds['bro.name'].should == "Safari"
     end
     
@@ -84,8 +84,6 @@ describe Wackamole::SearchFilter do
       conds = @filter.to_conds
       time = Chronic.parse( "now" ).utc  
       conds.should have(3).items
-      conds.key?( :did ).should == true
-      conds[:did].should == { "$gte" => @now.to_date_id.to_s }
       conds['bro.name'].should == "Safari"
       conds[:typ].should == Rackamole.feature
     end
@@ -95,8 +93,6 @@ describe Wackamole::SearchFilter do
       conds = @filter.to_conds
       time = Chronic.parse( "now" ).utc
       conds.should have(2).items
-      conds.key?( :did ).should == true
-      conds[:did].should == { "$gte" => @now.to_date_id.to_s }
       conds[:fid].should == Mongo::ObjectID.from_string( "4b25b0049983a8a193000010" )
     end
     

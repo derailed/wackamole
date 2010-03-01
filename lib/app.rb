@@ -60,13 +60,10 @@ end
 # -----------------------------------------------------------------------------
 # Before filters
 before do  
-puts "Requesting #{request.path}"
   unless request.path =~ /\.[css gif png js]/
     if console_auth?
       unless request.path == '/' or request.path == '/session/create' or request.path == '/session/delete'
-  puts "Checking other paths #{request.path}"
         unless authenticated?
-  puts "Redirected!!!!!"        
           redirect '/'
         end
       end

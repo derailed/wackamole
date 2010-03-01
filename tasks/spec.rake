@@ -58,8 +58,8 @@ task :spec     => 'spec:run'
 desc 'Alias to ui run'
 task :ui       => 'spec:run_ui'
 
-desc 'Alias to fixtures'
-task :fixtures => 'spec:fixtures'
+# desc 'Alias to fixtures'
+# task :fixtures => 'spec:fixtures'
 
 task :clobber => 'spec:clobber_rcov' if HAVE_RCOV
 

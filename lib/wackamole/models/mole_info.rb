@@ -19,15 +19,14 @@ module Wackamole
       info[:fault_load]     = 0
         
       # Fetch day logs          
-      day_range = Set.new
-      utc_time  = now.clone.utc
-      day_range << (utc_time - (24*60*60)).to_date_id.to_s
-      day_range << utc_time.to_date_id.to_s
-      conds = SearchFilter.time_conds( now, 1 )
+      utc_time = now.clone.utc
+puts utc_time      
+      conds = SearchFilter.time_conds( now, 0 )
       day_logs = logs_cltn.find( conds, 
         :fields => [:typ, :fid, :tid, :did, :uid], 
         :sort => [ [:tid => Mongo::ASCENDING] ] )
-
+puts conds.inspect
+puts day_logs.count
       # Count all logs per hourly time period
       users         = Set.new
       features      = Set.new

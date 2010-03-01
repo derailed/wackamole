@@ -17,13 +17,13 @@ describe Wackamole::MoledInfo do
     info[:user_load].should      == 2
     info[:total_features].should == 6
     info[:feature_load].should   == 1
-    info[:fault_load].should     == 2
-    info[:perf_load].should      == 4
+    info[:fault_load].should     == 1
+    info[:perf_load].should      == 2
     
     info[:user_series].should    == series_for( [[17,2]] )
-    info[:feature_series].should == series_for( [[17,4]] )
-    info[:fault_series].should   == series_for( [[17,2]] )
-    info[:perf_series].should    == series_for( [[17,4]] )
+    info[:feature_series].should == series_for( [[17,2]] )
+    info[:fault_series].should   == series_for( [[17,1]] )
+    info[:perf_series].should    == series_for( [[17,2]] )
   end  
   
   def series_for( slots )

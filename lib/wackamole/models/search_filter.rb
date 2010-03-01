@@ -36,8 +36,8 @@ module Wackamole
 
     def self.time_frames_in_days
       @time_frame_in_days ||= {
-        'today'    => 1,
-        '2 days'   => 2,
+        'today'    => 0,
+        '2 days'   => 1,
         '1 week'   => 7,
         '2 weeks'  => 14, 
         '1 month'  => 30,
@@ -131,6 +131,8 @@ module Wackamole
       end
     end
   
+    # -------------------------------------------------------------------------
+    # compute query time factors
     def self.time_conds( local_now, days, current_hour=0 )
       conds = {}
     
@@ -146,7 +148,7 @@ module Wackamole
           to_time_id   = to_utc.to_time_id.to_s        
           conds['$where'] = "((this.did == '#{from_date_id}' && this.tid >= '#{from_time_id}') || ( this.did == '#{to_date_id}' && this.tid <= '#{to_time_id}') )"
         else        
-          conds[:did] = from_date_id
+          conds[:did] = to_date_id
         end
       else
         date         = Chronic.parse( "#{days == 1 ? "now" : "#{days} days ago"}" )

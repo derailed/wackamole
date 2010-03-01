@@ -129,5 +129,4 @@ class Fixtures
     mole_collections.each { |cltn| db.drop_collection( cltn ) }
   end
 end
-
-Fixtures.new.populate
+# Fixtures.new.populate

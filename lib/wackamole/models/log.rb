@@ -14,6 +14,7 @@ module Wackamole
     # ---------------------------------------------------------------------------
     # Fetch all logs matching the given condition
     def self.paginate( conds, page=1, page_size=default_page_size )
+puts conds.inspect      
       matching = logs_cltn.find( conds )    
       WillPaginate::Collection.create( page, page_size, matching.count ) do |pager|
         pager.replace( logs_cltn.find( conds, 

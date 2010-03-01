@@ -1,4 +1,3 @@
 <% if @flash and !@flash.empty? %>
-<% puts "FLASH TEXT " + (@flash[:error] ? @flash[:error] : @flash[:info]) %>
   <%=(@flash[:error] ? @flash[:error] : @flash[:info]) %>
 <% end %>
