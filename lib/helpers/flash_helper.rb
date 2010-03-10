@@ -13,7 +13,6 @@ module FlashHelper
      @flash = session[:flash] || OrderedHash.new
      @flash[type] = msg
      session[:flash] = @flash
-puts @flash.inspect     
    end
  end
 end

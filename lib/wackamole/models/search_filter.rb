@@ -141,7 +141,7 @@ module Wackamole
         to_utc   = Time.local( local_now.year, local_now.month, local_now.day, 23, 59, 59 ).utc
 
         from_date_id = from_utc.to_date_id.to_s
-        to_date_id   = to_utc.to_date_id.to_s          
+        to_date_id   = to_utc.to_date_id.to_s
         
         if from_date_id != to_date_id
           from_time_id = from_utc.to_time_id.to_s

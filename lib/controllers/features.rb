@@ -22,7 +22,7 @@ module Features
       @filter.search_terms = params[:search_filter][:search_terms]      
       @features = Wackamole::Feature.paginate_tops( @filter.to_conds )
     rescue => boom
-      puts boom      
+      # puts boom      
       flash_it!( :error, boom )
       @filter.search_terms = nil      
       @features = [].paginate

@@ -20,13 +20,10 @@ module Wackamole
         
       # Fetch day logs          
       utc_time = now.clone.utc
-puts utc_time      
       conds = SearchFilter.time_conds( now, 0 )
       day_logs = logs_cltn.find( conds, 
         :fields => [:typ, :fid, :tid, :did, :uid], 
         :sort => [ [:tid => Mongo::ASCENDING] ] )
-puts conds.inspect
-puts day_logs.count
       # Count all logs per hourly time period
       users         = Set.new
       features      = Set.new

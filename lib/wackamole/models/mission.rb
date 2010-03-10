@@ -19,7 +19,7 @@ module Wackamole
       conds = {}
       if now
         if single_day
-          conds = SearchFilter.time_conds( now, 1 )
+          conds = SearchFilter.time_conds( now, 0 )
         else
           now = now.clone.utc
           date_id     = now.to_date_id.to_s
