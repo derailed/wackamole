@@ -5,7 +5,6 @@ require 'mongo'
 gem     'agnostic-will_paginate'
 require 'will_paginate'
 require 'mongo_rack'
-require 'rack-flash'
 require 'rackamole'
 require File.expand_path( File.join( File.dirname(__FILE__), 'wackamole.rb' ) )
 
@@ -29,8 +28,6 @@ configure do
     
   Wackamole.load_all_libs_relative_to(__FILE__, 'helpers' )
   Wackamole.load_all_libs_relative_to(__FILE__, 'controllers' )
- 
-  # use Rack::Flash, :accessorize => [:notice, :error]
   
   #Pick up command line args if any?  
   if defined? @@options and @@options
