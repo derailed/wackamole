@@ -1,54 +1,54 @@
-<% applications = extract_applications( @pulse ) %>
-<% if applications.empty? == 0 %>
+<% if @zones.empty? == 0 %>
   <div class="doh">
-    <p>Unable to find a Rackamole MongoDb database on this connection <%=Wackamole::Control.connection.host%>:<%=Wackamole::Control.connection.port%>.</p>
-    <p>Make sure you moled database follows this naming convention</p>
-    <p>mole_{<i>application name in lower case</i>}_{<i>environment</i>}_mdb</p>
+    <p>Unable to locate zone information please double check your zones file in ~/.wackamole/zones.yml/p>
   </div>
 <% else %>
   <table class="logs" id="mission">
     <thead>
-      <tr>
-        <th width="25%">application</th>
-        <th width="10%">environment</th>
+      <tr>  
+        <th width="20%">application</th>
+        <th width="10%">zone</th>
+        <th width="10%">env</th>
         <th width="20%">to date</th>
         <th width="20%">today</th>
         <th width="20%">last tick</th>
       </tr>
     </thead>
     <tbody>      
-      <% applications.each_pair do |app_name, envs| %>
-        <% envs.each do |env| %>
-          <tr class="app_info" id="<%=app_name%>_<%=env%>">
-            <td valign="top"><%= link_to app_name, "/dashboard/#{app_name}/#{env}", :class => 'site_link' %></td>
-            <td valign="top"><%= env %></td>
-            <% %w(to_date today last_tick).each do |period| %>
-              <% info = @pulse[period.to_sym][app_name][env] %>
-              <td>
-                <table border="0" width="100%">
-                  <tbody>
-                    <% info.each_pair do |type, count| %>
-                      <tr>
-                        <% clazz = ( (count > 0 and %w(last_tick today).include?(period)) ? assign_class( type, count ) : nil) %>
-                        <td width="25px">
-                          <% if( %w(last_tick today).include?( period ) and count > 0 ) %>
-                            <%= link_to Wackamole::Mission.to_type_name(type), "/mission/logs/#{app_name}/#{env}/#{type}", :class => "site_link", :id => "#{app_name}_#{env}_#{type}" %>:
-                          <% else %>
-                            <%=Wackamole::Mission.to_type_name(type)%>:
-                          <% end %>
-                        </td>
-                        <td align='right'>
-                          <span class="<%= (clazz and count > 0 ? "#{period}_#{clazz}" : '') %>">
-                            &nbsp;<%= format_number(count) %>&nbsp;
-                          </span>
-                        </td>
-                      </tr>
-                    <% end %>
-                  </tbody>
-                </table>
-              </td>
+      <% @zones.each_pair do |zone, app_info| %>
+        <% app_info.each_pair do |app_name, env_info| %>
+          <% env_info.each_pair do |env_name, totals| %>
+            <tr class="app_info" id="<%=zone%>" >                
+              <td valign="top"><%= link_to app_name, "/dashboard/#{zone}/#{app_name}/#{env_name}", :class => 'site_link' %></td>
+              <td valign="top"><%= zone %></td>              
+              <td valign="top"><%= env_name %></td>                                  
+              <% %w(to_date today last_tick).each do |period| %>
+                <td>
+                  <table border="0" width="100%">
+                    <tbody>
+                      <% totals[period.to_sym].each_pair do |type, count| %>
+                        <tr>
+                          <% clazz = ( (count > 0 and %w(last_tick today).include?(period)) ? assign_class( type, count ) : nil) %>
+                          <td width="25px">
+                            <% if( %w(last_tick today).include?( period ) and count > 0 ) %>
+                              <%= link_to Wackamole::Mission.to_type_name(type), "/mission/logs/#{zone}/#{app_name}/#{env_name}/#{type}", :class => "site_link", :id => "#{app_name}_#{env}_#{type}" %>:
+                            <% else %>
+                              <%=Wackamole::Mission.to_type_name(type)%>:
+                            <% end %>
+                          </td>
+                          <td align='right'>
+                            <span class="<%= (clazz and count > 0 ? "#{period}_#{clazz}" : '') %>">
+                              &nbsp;<%= format_number(count) %>&nbsp;
+                            </span>
+                          </td>
+                        </tr>
+                      <% end %>
+                    </tbody>            
+                  </table>                  
+                </td>              
             <% end %>
-          </tr>        
+            </tr>          
+          <% end %>
         <% end %>
       <% end %>
     </tbody>

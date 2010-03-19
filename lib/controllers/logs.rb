@@ -47,4 +47,25 @@ module Logs
     @logs = Wackamole::Log.paginate( @filter.to_conds )
     erb :"logs/filter.js", :layout => false
   end  
+  
+  # ---------------------------------------------------------------------------
+  # Show logs for a given user
+  get "/logs/user/:username" do
+    @filter = session[:filter]
+    @filter.search_terms = "user:#{params[:username]}"
+    session[:filter] = @filter
+        
+    redirect '/logs/1'
+  end
+  
+  # ---------------------------------------------------------------------------
+  # Show logs for a given feature
+  get "/logs/feature/:feature_id" do
+    @filter = session[:filter]
+    @filter.feature_id = params[:feature_id]
+    session[:filter] = @filter
+        
+    redirect '/logs/1'
+  end
+  
 end

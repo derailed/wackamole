@@ -15,6 +15,12 @@ module MainHelper
  helpers do   
     include WillPaginate::ViewHelpers::Base   
     
+    # Change mole context and reset connection if need be
+    def switch_context!( zone, app, stage )
+      session[:context] = "#{zone}.#{app}.#{stage}"    
+      Wackamole::Control.current_db( zone, app, stage, true )
+    end
+
     def pluralize( count, name )
       count.to_s + " " + name + (count.to_i > 1 ? "s" : "")
     end

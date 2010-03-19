@@ -12,6 +12,7 @@ require File.expand_path( File.join(File.dirname(__FILE__), %w[data fixtures]))
 require File.expand_path( File.join(File.dirname(__FILE__), %w[.. lib wackamole]))
 
 # BOZO !! To run test you'll need to start a mongo instance
+# BOZO !! Rake task pleeease!!
 # mongod --dbpath /data/wackamole/ --port 27777
 Spec::Runner.configure do |config|
 end

@@ -32,6 +32,17 @@ div#logo {
   margin-bottom: 5px;
 }
 
+span#version {
+  position:    relative;
+  top:        -12px;
+  left:        32px;
+  font-weight: bold;
+  color:       #316071;
+}
+a.logout {
+  font-size: 0.8em;
+}
+
 div#main {
   clear:      both;
   margin:     40px 10px 10px 20px;
@@ -63,6 +74,17 @@ div#navigation {
   background: #c1c1c1 url(../images/fade.png) repeat-x;  
 }
 
+a.nav_link {
+  color:           #646464;
+  font-weight:     bold;  
+  text-decoration: none;
+}
+a.nav_link:hover {
+  color        : #1779ff;
+  border-bottom: 1px #1779ff solid;
+  text-decoration: none;  
+}
+
 a.site_link {
   color:           #646464;
   font-weight:     bold;
@@ -80,26 +102,31 @@ a.current {
   border-bottom: 5px #646464 solid;
 }
 
-div#app_info {
+div#links {
   text-align: right;  
-  font-size:  2em;
 }
-div#app_info li {
-  color:#3968ff;
-}
-div#app_info li span {
-  color:#666;
-}
-div#app_info li#env {
-  color:        #c1c1c1;
-  font-size:    0.5em;
-  font-style:   italic;
-}
-div#app_info p {
+div#links p {
   text-align: right;
-  font-size:  1.0em;
+  margin-top: 5px;  
 }
 span#timestamp {
+}
+
+ul#app_info {
+  font-size:  1.5em;
+  margin-top: 10px;
+}
+ul#app_info li {
+}
+ul#app_info span.zone {
+  color:     #fe9500;
+}
+ul#app_info span.app {
+  color:      #666;
+}
+ul#app_info span.stage {
+  color:        #c6e496;
+  font-style:   italic;
 }
 
 #header {

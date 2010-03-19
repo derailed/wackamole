@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), %w[.. .. spec_helper])
 describe Wackamole::SearchFilter do    
   before( :each ) do
     @filter    = Wackamole::SearchFilter.new
-    now        = Time.now    
+    now        = Time.now
     @test_time = Chronic.parse( "%d/%2d/%2d 17:00:00" % [now.year,now.month,now.day] )
   end
   
@@ -67,7 +67,7 @@ describe Wackamole::SearchFilter do
       conds = @filter.to_conds
       conds.should have(1).item
       conds.key?( '$where' ).should == true
-      conds['$where'].should == "((this.did == '#{@test_time.to_date_id}' && this.tid >= '070001') || ( this.did == '#{(@test_time+24*60*60).to_date_id}' && this.tid <= '065959') )"
+      conds['$where'].should == "((this.did == '#{@test_time.to_date_id}' && this.tid >= '060001') || ( this.did == '#{(@test_time+24*60*60).to_date_id}' && this.tid <= '055959') )"
     end
     
     it "should include browser if specified correctly" do
@@ -98,9 +98,8 @@ describe Wackamole::SearchFilter do
     
     describe "search terms" do
       before( :all ) do
-        Wackamole::Control.init_config( File.join(File.dirname(__FILE__), %w[.. .. config test.yml]), 'test' )
-        Wackamole::Control.connection.should_not be_nil
-        Wackamole::Control.db( "mole_app1_test_mdb" )
+        Wackamole::Control.init_config( File.join(File.dirname(__FILE__), %w[.. .. config test.yml]) )
+        Wackamole::Control.current_db( "test", "app1", "test", true )
       end
       
       it "should retrieve features correctly" do

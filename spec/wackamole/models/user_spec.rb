@@ -3,9 +3,8 @@ require 'chronic'
 
 describe Wackamole::User do
   before( :all ) do
-    Wackamole::Control.init_config( File.join(File.dirname(__FILE__), %w[.. .. config test.yml]), 'test' )
-    Wackamole::Control.connection.should_not be_nil
-    Wackamole::Control.db( "mole_app1_test_mdb" )
+    Wackamole::Control.init_config( File.join(File.dirname(__FILE__), %w[.. .. config test.yml]) )
+    Wackamole::Control.current_db( "test", "app1", "test", true )
   end
   
   it "should paginate a user collection correctly" do

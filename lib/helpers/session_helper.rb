@@ -3,17 +3,20 @@ module SessionHelper
     
     # Check credentials against config file
     def authenticate( creds )
-      env = Sinatra::Application.environment.to_s
       config = YAML.load_file( default_config )
-      conf  = config[env]      
-      ((creds['username'] == conf['auth']['user']) and (creds['password'] == conf['auth']['password']))
+      auth   = config['console_auth']
+      
+      # No auth. Let it go
+      return true unless auth
+      
+      # Validate creds      
+      ((creds['username'] == auth['user']) and (creds['password'] == auth['password']))
     end
     
+    # Check if auth is defined
     def console_auth?
-      env = Sinatra::Application.environment.to_s
       config = YAML.load_file( default_config )
-      conf  = config[env]
-      conf['auth']
+      config['console_auth']
     end
     
     # Check if session has auth

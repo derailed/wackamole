@@ -9,54 +9,46 @@
     <%= javascripts %w[jquery_min jquery_ui_min] %>
   </head>
 
-<style>
-span#version {
-  position:    relative;
-  top:        -12px;
-  left:        32px;
-  font-weight: bold;
-  color:       #316071;
-}
-a.logout {
-  font-size: 0.8em;
-}
-</style>
   <body id="body">
     <div id="overall">      
       <div id="logo">
         <span id="version"><%=Wackamole.version%></span>        
         <%= link_to image_tag( 'wackamole_logo.png', :border => 0 ), '/mission' %>
       </div>      
-      <div id="app_info">        
+      <div id="links">        
         <% if console_auth? and !root_path? %>
           <%= link_to "log out", "/session/delete", :class => "site_link logout" %>
         <% end %>                
         
-        <% if @app_info %>        
-          <ul>
-            <li>&laquo;<span><%=@app_info[:app_name]%></span>&raquo;</li>
-            <li id="env"><%=@app_info[:stage]%></li>
-          <ul>
-        <% end %>        
         <% unless root_path? %>
           <p><span id="timestamp"><%=partial :'shared/timestamp'%></span></p>
         <% end %>
+        
+        <% if @app_info and authenticated? %>
+          <ul id="app_info">
+            <li>zone<span class="zone"><%=@app_info[:zone]%></span></li>
+            <li><span class="app"><%=@app_info[:app]%></span><span class="stage"><%=@app_info[:stage]%></span></li>
+          </ul>
+        <% end %>                
       </div>
       <div id="main">     
         <div class="flash"></div>
         
-        <% if @app_info %>
+        <% if @app_info and authenticated? %>
           <div id='navigation' class='corners'>
             <% unless Wackamole::Control.single_app? %>
               <%=link_to "mission control", "/mission", :class => "site_link land" %>&nbsp;&bull;&nbsp;
             <% end %>
-            <%=link_to "dashboard"      , "/dashboard/#{@app_info[:app_name]}/#{@app_info[:stage]}", :class => "site_link dash" %>&nbsp;&bull;&nbsp;            
-            <%=link_to "logs"           , "/logs/1"                                                , :class => "site_link logs" %>&nbsp;&bull;&nbsp;
-            <%=link_to "features"       , "/features/1"                                            , :class => "site_link features" %>&nbsp;&bull;&nbsp;
-            <%=link_to "users"          , "/users/1"                                               , :class => "site_link users" %>
+            <%=link_to "dashboard", "/dashboard/#{@app_info[:zone]}/#{@app_info[:app]}/#{@app_info[:stage]}", 
+              :class => "site_link dash" %>&nbsp;&bull;&nbsp;            
+            <%=link_to "logs", "/logs/1", 
+              :class => "site_link logs" %>&nbsp;&bull;&nbsp;
+            <%=link_to "features", "/features/1", 
+              :class => "site_link features" %>&nbsp;&bull;&nbsp;
+            <%=link_to "users", "/users/1", 
+              :class => "site_link users" %>
           </div>
-        <% end %>
-                
+        <% end %>  
         <%= yield %>
       </div>
       

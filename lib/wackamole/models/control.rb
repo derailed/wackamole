@@ -1,34 +1,38 @@
 require 'mongo'
 require 'logger'
 
+# BOZO !! Refact and clean up duds
 module Wackamole
   class Control
 
     # -----------------------------------------------------------------------
     # Initialize app by reading off mongo configuration parameters if necessary
-    def self.init_config( config_file, env )
+    def self.init_config( config_file )
       begin
-        config  = YAML.load_file( config_file )        
-        @config = config[env]
-        raise "Invalid environment `#{env}" unless @config
-        raise "Unable to find host in - #{@config.inspect}" unless @config.has_key?('host')
-        raise "Unable to find port in - #{@config.inspect}" unless @config.has_key?('port')            
+        @config = YAML.load_file( config_file )
+        raise "Unable to find zones definition" unless @config['zones']
       rescue => boom
         @config = nil          
         raise "Hoy! An error occur loading the config file `#{config_file} -- #{boom}"
       end
       @config
     end
+
+    # -------------------------------------------------------------------------
+    # List all available zones    
+    def self.zones
+      @config['zones'].keys
+    end
     
     # -------------------------------------------------------------------------
     # Defines mole db identity      
-    def self.molex() @molex || /mole_(.*)?_(.*)?_mdb/; end
+    def self.molex() @molex ||= /mole_(.*)?_(.*)?_mdb/; end
         
     # -------------------------------------------------------------------------
     # Fetch a collection on a given database by name
     def self.collection( cltn_name, db_name=nil, opts={:strict => true} )
-      # reset_db!( db_name ) if db_name
-      db( db_name, opts ).collection( cltn_name )
+      raise "Unable to locate current database" unless @db
+      @db.collection( cltn_name )
     end
       
     # -------------------------------------------------------------------------
@@ -39,23 +43,40 @@ module Wackamole
     end
       
     # -------------------------------------------------------------------------
-    # Switch db instance given db_name 
-    # NOTE : This assumes mole db naming convention 
-    # ie mole_{app_name in lower case}_{env}_mdb
-    def self.switch_mole_db!( app_name, env )
-      raise "You must specify an app name and environment" unless app_name and env      
-      app = app_name.gsub( /\s/, '_' ).downcase
-      db_name = to_mole_db( app_name, env )
-      raise "Invalid mole database #{db_name}" unless mole_db?( db_name )      
-      reset_db!( db_name )
-      @db
+    # Makes sure we're in the right context
+    def self.ensure_db( context )
+      tokens = context.split( "." )
+      current_db( *tokens )
     end
+        
+    # -------------------------------------------------------------------------
+    # Set current database
+    def self.current_db( zone, app_name, env, reset=false )
+      return @db if @db and !reset
+      app     = app_name.gsub( /\s/, '_' ).downcase
+      db_name = to_mole_db( app_name, env )
+      
+      @db = connection( zone ).db( db_name )
+    end
+    
+    # # -------------------------------------------------------------------------
+    # # Switch db instance given db_name 
+    # # NOTE : This assumes mole db naming convention 
+    # # ie mole_{app_name in lower case}_{env}_mdb
+    # def self.switch_mole_db!( zone, app_name, env )
+    #   raise "You must specify an app name and environment" unless app_name and env      
+    #   app = app_name.gsub( /\s/, '_' ).downcase
+    #   db_name = to_mole_db( app_name, env )
+    #   raise "Invalid mole database #{db_name}" unless mole_db?( zone, db_name )
+    #   reset_db!( zone, db_name )
+    #   @db
+    # end
     
     # -------------------------------------------------------------------------
     # Inspect current connection databases and weed out mole_xxx databases
-    def self.mole_databases
-      connection.database_names.select do |db_name|
-        db_name if mole_db?( db_name )
+    def self.mole_databases( zone )
+      connection( zone ).database_names.select do |db_name|
+        db_name if mole_db?( zone, db_name )
       end
     end
   
@@ -78,9 +99,9 @@ module Wackamole
 
       # -----------------------------------------------------------------------
       # Checks if this is a mole database  
-      def self.mole_db?( db_name )
+      def self.mole_db?( zone, db_name )
         return false unless db_name =~ molex
-        db    = connection.db( db_name )
+        db    = connection( zone ).db( db_name )
         db.authenticate( config['username'], config['password'] ) if config['usernane'] and config['password']
         cltns = db.collection_names
         return ((%w[users features logs] & cltns).size == 3)
@@ -88,7 +109,7 @@ module Wackamole
       
       # -----------------------------------------------------------------------
       # Ensures we have the right db connection
-      def self.reset_db!( db_name )
+      def self.reset_db!( zone, db_name )
         return if @db and @db.name == db_name
         @db = nil
         db( db_name )
@@ -114,22 +135,28 @@ module Wackamole
       
       # -----------------------------------------------------------------------
       # Connects to mongo instance if necessary...
-      def self.connection( log=false )
+      def self.connection( zone, log=false )
+        @connections ||= {}
+        
+        return @connections[zone] if @connections[zone]
+        
         logger = nil
         if log
           logger       = Logger.new($stdout)
           logger.level = Logger::DEBUG
         end
-        @connection ||= Mongo::Connection.new( config['host'], config['port'], :logger => logger )
+
+        host = config['zones'][zone]['host']
+        port = config['zones'][zone]['port']
+        @connections[zone] = Mongo::Connection.new( host, port, :logger => logger )
+        @connections[zone]
       end      
   
       # -----------------------------------------------------------------------
       # Fetch database instance
-      def self.db( db_name=nil, opts={:strict => true} ) 
-        return @db if @db and !db_name
-        return @db if @db and @db.name == db_name
+      def self.db( zone, db_name=nil, opts={:strict => true} ) 
         raise "No database specified" unless db_name
-        @db = connection.db( db_name, opts )
+        connection( zone ).db( db_name, opts )
       end  
     
       # -----------------------------------------------------------------------

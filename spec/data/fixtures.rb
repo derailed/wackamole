@@ -12,12 +12,12 @@ class Fixtures
   end
 
   def self.load_test_dbs
-    con = Wackamole::Control.connection
+    con = Wackamole::Control.connection( 'test' )
     %w[development test production].each{ |env| create_valid_mole_db( con, "fred", env) }
   end
   
   def self.load_bogus_dbs
-    con = Wackamole::Control.connection
+    con = Wackamole::Control.connection( 'test' )
     %w[mole_blee_mdb zorg_blee_dev_mdb].each do |db_name|
       create_db( con, db_name )
     end

@@ -4,6 +4,9 @@ module Users
   # Paginate top users
   get "/users/:page" do
     page = params[:page] ? params[:page].to_i : 1
+    
+    Wackamole::Control.ensure_db( session[:context] )
+        
     @users = Wackamole::User.paginate_tops( @filter.to_conds, page )   
 
     @search_path = "/users/search"
@@ -40,4 +43,5 @@ module Users
     @users = Wackamole::User.paginate_tops( @filter.to_conds )
     erb :"users/filter.js", :layout => false
   end  
+  
 end

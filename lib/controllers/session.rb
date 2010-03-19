@@ -4,7 +4,6 @@ module Session
   # Check auth
   get "/" do
     if console_auth?
-      # clear_flash!      
       erb :'session/login'
     else 
       redirect '/mission'

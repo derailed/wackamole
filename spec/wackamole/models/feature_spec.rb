@@ -3,9 +3,8 @@ require 'chronic'
 
 describe Wackamole::Feature do
   before( :all ) do
-    Wackamole::Control.init_config( File.join(File.dirname(__FILE__), %w[.. .. config test.yml]), 'test' )
-    Wackamole::Control.connection.should_not be_nil
-    Wackamole::Control.db( "mole_app1_test_mdb" )
+    Wackamole::Control.init_config( File.join(File.dirname(__FILE__), %w[.. .. config test.yml]) )
+    Wackamole::Control.current_db( "test", "app1", "test", true )
   end
   
   it "retrieve an app info correctly" do
@@ -30,23 +29,23 @@ describe Wackamole::Feature do
       @cltn.drop_indexes
     end
     
-    it "should set up indexes correctly" do
-      indexes = @cltn.index_information
-      indexes.should have(1).item      
-      count = Wackamole::Feature.ensure_indexes!  
-      count.should == 3
-      indexes = @cltn.index_information
-      indexes.should have(3).items
-    end
-    
-    it "should do nothing if indexes are already present" do
-      indexes = @cltn.index_information
-      indexes.should have(3).items   
-      count = Wackamole::Feature.ensure_indexes!
-      count.should == 1
-      indexes = @cltn.index_information
-      indexes.should have(3).items      
-    end
+    # it "should set up indexes correctly" do
+    #   indexes = @cltn.index_information
+    #   indexes.should have(1).item      
+    #   count = Wackamole::Feature.ensure_indexes!  
+    #   count.should == 3
+    #   indexes = @cltn.index_information
+    #   indexes.should have(3).items
+    # end
+    # 
+    # it "should do nothing if indexes are already present" do
+    #   indexes = @cltn.index_information
+    #   indexes.should have(3).items   
+    #   count = Wackamole::Feature.ensure_indexes!
+    #   count.should == 1
+    #   indexes = @cltn.index_information
+    #   indexes.should have(3).items      
+    # end
   end
   
 end

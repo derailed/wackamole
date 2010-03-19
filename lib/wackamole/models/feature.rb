@@ -19,7 +19,7 @@ module Wackamole
     # ---------------------------------------------------------------------------
     # Paginate top features
     def self.paginate_tops( conds, page=1, page_size=default_page_size )
-      tops = logs_cltn.group( [:fid], conds, { :count => 0 }, 'function(obj,prev) { prev.count += 1}', true )
+      tops = logs_cltn.group( [:fid], conds, { :count => 0 }, 'function(obj,prev) { prev.count += 1}' )
     
       all_features = features_cltn.find( {}, :fields => [:_id] )
       feature_ids  = all_features.map{ |f| f['_id'] }

@@ -5,8 +5,12 @@ module Dashboard
   
   # ---------------------------------------------------------------------------
   # Show application dashboard
-  get '/dashboard/:app_name/:stage' do    
-    Wackamole::Control.switch_mole_db!( params[:app_name].downcase, params[:stage] )
+  get '/dashboard/:zone/:app/:stage' do
+    zone  = params[:zone]
+    app   = params[:app]
+    stage = params[:stage]
+
+    switch_context!( zone, app, stage )
     
     @info = Wackamole::MoledInfo.collect_dashboard_info( @updated_on )
 
@@ -22,6 +26,7 @@ module Dashboard
   # ---------------------------------------------------------------------------
   # Refresh dashboard
   get '/dashboard/refresh' do
+    Wackamole::Control.ensure_db( session[:context] )    
     @info = Wackamole::MoledInfo.collect_dashboard_info( @updated_on )
 
     erb :'dashboard/refresh_js', :layout => false

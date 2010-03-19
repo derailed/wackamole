@@ -12,7 +12,7 @@ set :public, File.join( File.dirname(__FILE__), %w[.. public] )
 set :views , File.join( File.dirname(__FILE__), %w[.. views] )
 
 def default_config
-  File.join( ENV['HOME'], %w[.wackamole wackamole.yml] )    
+  File.join( ENV['HOME'], %w[.wackamole zones.yml] )    
 end
 
 # -----------------------------------------------------------------------------
@@ -51,7 +51,7 @@ configure do
     #   :server => "%s:%d/%s/%s" % ['localhost', '27017', 'wackamole_ses', 'sessions'],
     #   :log_level => :error
   end  
-  Wackamole::Control.init_config( default_config, Sinatra::Application.environment.to_s )
+  Wackamole::Control.init_config( default_config )
 end
 
 # -----------------------------------------------------------------------------
@@ -74,12 +74,14 @@ before do
     @updated_on   = Time.now
     @refresh_rate = 30
     @app_info     = session[:app_info]
-    begin
-      Wackamole::Control.switch_mole_db!( @app_info[:app_name].downcase, @app_info[:stage] ) if @app_info
-    rescue => boom
-      $stderr.puts boom      
-      @app_info          = nil
-      session[:app_info] = nil
-    end
+    Wackamole::Control.ensure_db( session[:context] ) if session[:context]
+
+    # begin
+    #   Wackamole::Control.switch_mole_db!( @app_info[:app].downcase, @app_info[:stage] ) if @app_info
+    # rescue => boom
+    #   $stderr.puts boom      
+    #   @app_info          = nil
+    #   session[:app_info] = nil
+    # end
   end
 end

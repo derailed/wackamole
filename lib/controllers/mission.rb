@@ -20,8 +20,8 @@ module Mission
     last_tick           ||= Chronic.parse( "#{@refresh_rate} seconds ago" )
     session[:last_tick] = Time.now
     
-    @pulse = Wackamole::Mission.pulse( last_tick )
-              
+    @zones = Wackamole::Mission.pulse( last_tick )
+
     erb :'mission/index'
   end
   
@@ -31,19 +31,18 @@ module Mission
     last_tick           ||= Chronic.parse( "#{@refresh_rate} seconds ago" )
     session[:last_tick] = Time.now
       
-    @pulse = Wackamole::Mission.pulse( last_tick )
+    @zones = Wackamole::Mission.pulse( last_tick )
 
     erb :'/mission/refresh_js', :layout => false
   end
 
   # ---------------------------------------------------------------------------
-  get '/mission/logs/:app_name/:stage/:type' do
-    Wackamole::Control.switch_mole_db!( params[:app_name].downcase, params[:stage] )
+  get '/mission/logs/:zone/:app/:stage/:type' do
+    switch_context!( params[:zone], params[:app], params[:stage] )
     
     # Set app info
-    @app_info = Wackamole::Feature.get_app_info
-    session[:app_info] = @app_info
-
+    load_app_info
+    
     # Reset filter    
     filter = Wackamole::SearchFilter.new
     filter.mole_type( params[:type].to_i )

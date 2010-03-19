@@ -13,9 +13,14 @@ module DashboardHelper
     # -------------------------------------------------------------------------  
     # Retrieve moled app info...
     def load_app_info
-      @app_info = Wackamole::Feature.get_app_info
+      tokens = session[:context].split( "." )
+      
+      @app_info = {}
+      @app_info[:zone]  = tokens[0]
+      @app_info[:app]   = tokens[1]
+      @app_info[:stage] = tokens[2]
       session[:app_info] = @app_info
-    end    
+    end
     
     # -------------------------------------------------------------------------
     # Loads the application details
