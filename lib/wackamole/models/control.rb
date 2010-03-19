@@ -81,7 +81,7 @@ module Wackamole
       def self.mole_db?( db_name )
         return false unless db_name =~ molex
         db    = connection.db( db_name )
-        db.authenticate( config['username'], config['password'] )
+        db.authenticate( config['username'], config['password'] ) if config['usernane'] and config['password']
         cltns = db.collection_names
         return ((%w[users features logs] & cltns).size == 3)
       end

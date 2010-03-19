@@ -19,14 +19,16 @@ Main {
     
   # Enter main loop  
   def run
+puts params[:pool].inspect
+puts params[:environment].inspect
     require File.expand_path( File.join(File.dirname(__FILE__), %w[.. lib wackamole]))
         
     @@options = parse_args( params[:pool].value )
-    ENV['RACK_ENV'] = params['environment'].value
+    ENV['RACK_ENV'] = params[:environment].value
     
     Thread.new do 
       puts "-"*100
-      puts "Initializing Wackamole -- Version #{Wackamole::VERSION} -- Landscape #{params['environment']}"
+      puts "Initializing Wackamole -- Version #{Wackamole::VERSION} -- Landscape #{params[:environment].value}"
       puts "-"*100      
       puts "\n"*2
       puts ">>> Waiting for Franky to warm up..."
