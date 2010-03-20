@@ -12,7 +12,7 @@ module Wackamole
     # ---------------------------------------------------------------------------
     # Find all users matching criteria and returns pagination collection
     def self.paginate_tops( conds, page=1, page_size=default_page_size )
-      tops = logs_cltn.group( [:uid], conds, { :count => 0 }, 'function(obj,prev) { prev.count += 1}', true )    
+      tops = logs_cltn.group( [:uid], conds, { :count => 0 }, 'function(obj,prev) { prev.count += 1}' )    
       users = []
       tops.sort{ |a,b| b['count'] <=> a['count'] }.each do |row|
         users << { :uid => row['uid'], :total => row['count'].to_i, :details => [] }

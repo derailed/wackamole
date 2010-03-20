@@ -19,7 +19,8 @@ end
 # Configurations
 
 # configure :production do
-#   set :logging, true
+#   set :logging,  true
+#   set :sessions, true
 # end
 
 configure do

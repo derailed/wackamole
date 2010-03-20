@@ -39,7 +39,7 @@ module Logs
   
   # ---------------------------------------------------------------------------
   # Filter logs
-  post "/logs/filter" do    
+  post "/logs/filter" do   
     @filter = Wackamole::SearchFilter.new
     @filter.from_options( params[:filter] )
     session[:filter] = @filter
@@ -51,7 +51,6 @@ module Logs
   # ---------------------------------------------------------------------------
   # Show logs for a given user
   get "/logs/user/:username" do
-    @filter = session[:filter]
     @filter.search_terms = "user:#{params[:username]}"
     session[:filter] = @filter
         
@@ -61,7 +60,6 @@ module Logs
   # ---------------------------------------------------------------------------
   # Show logs for a given feature
   get "/logs/feature/:feature_id" do
-    @filter = session[:filter]
     @filter.feature_id = params[:feature_id]
     session[:filter] = @filter
         
