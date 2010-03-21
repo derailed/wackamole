@@ -151,7 +151,7 @@ module Wackamole
           conds[:did] = to_date_id
         end
       else
-        date         = Chronic.parse( "#{days == 1 ? "now" : "#{days} days ago"}" )
+        date         = Chronic.parse( "#{days == 0 ? "now" : "#{days} days ago"}" )
         current      = "%4d/%02d/%02d %02d:%02d:%02d" % [date.year, date.month, date.day, current_hour, 0, 1]
         time         = Chronic.parse( current ).utc
         conds[:did]  = { '$gte' => time.to_date_id.to_s }         

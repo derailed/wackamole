@@ -44,12 +44,14 @@
   
 === Configure It!
 
+  !!! WARNING File format change from 0.1.2 on !!!
+  
   You will need to give wackamole some information about your rackamole configuration. 
-  In order to do so create a .wackamole directory in your home directory and create 
-  a file wackamole.yml. You will need to specify the envs, host and ports specific
+  In order to do so, create a .wackamole directory in your home directory and create 
+  a file zones.yml. You will need to specify the envs, host and ports specific
   to your configuration, but here is a sample.
   
-  wackamole.yml
+  zones.yml
   
     # New ! Optionally you can specify login name and password for the Wackamole web app.
     console_auth: &auth
@@ -57,24 +59,22 @@
         user:     admin
         password: admin
   
-    development:
-      <<:   *auth    
-      host:  localhost
-      port:  27017
-    
-    beta:
-      <<:      *auth    
-      host:     beta_host_name
-      port:     27017
-      user:     bobo
-      password: secret
+    zones:
+      local:
+        host:  localhost
+        port:  27017
+        
+      staging:
+        host:     beta_host_name
+        port:     27017
+        user:     bobo
+        password: secret
     
 === Launch It!  
 
   Watch your creation live! 
 
-  NOTE: By default wackamole uses mongo_rack for storing its session information.
-  This assumes that you have a local mongoDB instance running on the default port 27017.
+  NOTE: By default wackamole uses memcache for storing its session information.
 
   > wackamole
   
@@ -95,7 +95,7 @@
 
     To launch wackamole in a given environment defined in your wackamole.yml configuration.
     
-    > wackamole -e env 
+    > wackamole -e env
     
     This option defaults to production.
     

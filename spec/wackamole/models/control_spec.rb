@@ -40,7 +40,7 @@ describe Wackamole::Control do
         feature = cltn.find_one()  
         feature['app'].should == "app1"
         feature['env'].should == "test"
-        feature['did'].should == Time.now.utc.to_date_id.to_s
+        feature['did'].should == Time.now.to_date_id.to_s
         feature['ctx'].should match( /\// )
       end
     end

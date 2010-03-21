@@ -13,6 +13,12 @@
           <td><%=@log['pat']%></td>
         </tr>
       <% end %>      
+      <% if @log['msg'] %>
+        <tr>
+          <td class="label" valign="top">Error</td>
+          <td><%=truncate( @log['msg'], 300 )%></td>
+        </tr>      
+      <% end %>
       <tr>
         <td class="label">User</td>
         <td><%=user_name_for( {}, @log['uid'] ) %></td>
@@ -55,10 +61,6 @@
       </tr>
       <% end %>
       <% if @log['msg'] %>
-        <tr>
-          <td class="label" valign="top">Error</td>
-          <td><%=truncate( @log['msg'], 300 )%></td>
-        </tr>      
         <tr>
           <td class="label" valign="top">Stack [<%=@log['sta'].size%>]</td>
           <td><%=partial :'logs/array', :object => @log['sta']%></td>
