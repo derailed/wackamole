@@ -20,22 +20,20 @@ module Wackamole
       # Fetch day logs          
       utc_time = now.clone.utc
       conds = SearchFilter.time_conds( now, 0 )
-# puts conds.inspect      
+    
       day_logs = logs_cltn.find( conds, 
         :fields => [:typ, :fid, :tid, :did, :uid], 
         :sort => [ [:tid => Mongo::ASCENDING] ] )
-# puts "Found logs #{day_logs.count}"        
       # Count all logs per hourly time period
       users         = Set.new
       features      = Set.new
       local_time    = now.clone.localtime
       hours         = (0...24).to_a
-      hour_info     = hours.inject(OrderedHash.new) { |res,hour| res[hour] = { :user => 0, :feature => 0, :perf => 0, :fault => 0 };res }    
+      hour_info     = hours.inject(BSON::OrderedHash.new) { |res,hour| res[hour] = { :user => 0, :feature => 0, :perf => 0, :fault => 0 };res }    
       user_per_hour = {}
       day_logs.each do |log|
         date_tokens = log['did'].match( /(\d{4})(\d{2})(\d{2})/ ).captures
         time_tokens = log['tid'].match( /(\d{2})(\d{2})(\d{2})/ ).captures
-# puts "#{log['did']} - #{log['tid']} - #{log['uid']}"
         log_utc     = Time.utc( date_tokens[0], date_tokens[1], date_tokens[2], time_tokens[0], time_tokens[1], time_tokens[2] )
         local       = log_utc.clone.localtime
         hour        = local.hour

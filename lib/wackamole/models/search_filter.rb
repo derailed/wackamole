@@ -178,7 +178,7 @@ module Wackamole
     
       # filter mole_features
       unless feature_id.to_s == "-1"
-        conds[:fid] = Mongo::ObjectID.from_string( feature_id )
+        conds[:fid] = BSON::ObjectID.from_string( feature_id )
       end
                                 
       if search_terms and !search_terms.empty?

@@ -2,7 +2,7 @@ module MissionHelper
   helpers do 
 
     def extract_applications( pulse )
-      apps = OrderedHash.new
+      apps = BSON::OrderedHash.new
       pulse[:to_date].keys.sort.each { |app_name| apps[app_name] = pulse[:to_date][app_name].keys.sort }
       apps
     end

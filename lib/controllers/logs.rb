@@ -33,7 +33,7 @@ module Logs
   # ---------------------------------------------------------------------------
   # Fecth info about a particular log
   get "/logs/:id/show" do
-    @log = Wackamole::Log.find_one( Mongo::ObjectID.from_string( params[:id] ) )
+    @log = Wackamole::Log.find_one( BSON::ObjectID.from_string( params[:id] ) )
     erb :"logs/show", :layout => false 
   end
   

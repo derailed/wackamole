@@ -93,7 +93,7 @@ describe Wackamole::SearchFilter do
       conds = @filter.to_conds
       time = Chronic.parse( "now" ).utc
       conds.should have(2).items
-      conds[:fid].should == Mongo::ObjectID.from_string( "4b25b0049983a8a193000010" )
+      conds[:fid].should == BSON::ObjectID.from_string( "4b25b0049983a8a193000010" )
     end
     
     describe "search terms" do

@@ -30,12 +30,13 @@ PROJ.rdoc.include = %w[.rb]
 
 # Dependencies
 depend_on "rack"                  , ">= 1.1.0"
-depend_on "mongo"                 , ">= 0.18.1"
-depend_on "mongo_ext"             , ">= 0.18.1"
+depend_on "mongo"                 , ">= 1.0.1"
+depend_on "bson"                  , ">= 1.0.1"
+depend_on "bson_ext"              , ">= 1.0.1"
 depend_on "agnostic-will_paginate", ">= 3.0.0"
 depend_on "memcache-client"       , ">= 1.5.0"
 depend_on "main"                  , ">= 4.2.0"
-depend_on "sinatra"               , ">= 0.9.4"
+depend_on "sinatra"               , ">= 1.0"
 depend_on "mongo_rack"            , ">= 0.0.3"
 depend_on "rackamole"             , ">= 0.0.3"
 

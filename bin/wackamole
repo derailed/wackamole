@@ -19,8 +19,6 @@ Main {
     
   # Enter main loop  
   def run
-puts params[:pool].inspect
-puts params[:environment].inspect
     require File.expand_path( File.join(File.dirname(__FILE__), %w[.. lib wackamole]))
         
     @@options = parse_args( params[:pool].value )
