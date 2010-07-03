@@ -1,6 +1,6 @@
 if HAVE_SPEC_RAKE_SPECTASK and not PROJ.spec.files.to_a.empty?
 require 'spec/rake/verify_rcov'
-require 'data/fixtures'
+require File.expand_path( File.join( File.dirname(__FILE__) , %w[.. data fixtures] ) )
 
 namespace :spec do
   

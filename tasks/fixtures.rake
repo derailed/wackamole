@@ -1,4 +1,4 @@
-require 'data/fixtures'
+require File.expand_path( File.join( File.dirname(__FILE__) , %w[.. data fixtures] ) )
 
 namespace :fixtures do
 

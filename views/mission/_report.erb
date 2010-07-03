@@ -31,7 +31,7 @@
                           <% clazz = ( (count > 0 and %w(last_tick today).include?(period)) ? assign_class( type, count ) : nil) %>
                           <td width="25px">
                             <% if( %w(last_tick today).include?( period ) and count > 0 ) %>
-                              <%= link_to Wackamole::Mission.to_type_name(type), "/mission/logs/#{zone}/#{app_name}/#{env_name}/#{type}", :class => "site_link", :id => "#{app_name}_#{env}_#{type}" %>:
+                              <%= link_to Wackamole::Mission.to_type_name(type), "/mission/logs/#{zone}/#{app_name}/#{env_name}/#{type}", :class => "site_link", :id => "#{app_name}_#{env_name}_#{type}" %>:
                             <% else %>
                               <%=Wackamole::Mission.to_type_name(type)%>:
                             <% end %>

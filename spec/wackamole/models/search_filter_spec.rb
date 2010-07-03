@@ -1,10 +1,10 @@
-require File.join(File.dirname(__FILE__), %w[.. .. spec_helper])
+require File.expand_path( File.join(File.dirname(__FILE__), %w[.. .. spec_helper] ) )
 
 describe Wackamole::SearchFilter do    
   before( :each ) do
     @filter    = Wackamole::SearchFilter.new
     now        = Time.now
-    @test_time = Chronic.parse( "%d/%2d/%2d 17:00:00" % [now.year,now.month,now.day] )
+    @test_time = Time.local( now.year, now.month, now.day, 17, 0, 0 )
   end
   
   it "should initialize with the correct defaults" do

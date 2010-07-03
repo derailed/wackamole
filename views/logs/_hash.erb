@@ -7,7 +7,7 @@
     <% hash.keys.sort.each do |k| %>
       <tr>
         <td class="label"><%=k%></td>
-        <td><%=hash[k]%></td>
+        <td><%=hash[k].gsub( /,/, "<br/>")%></td>
       </tr>
     <% end %>
   </tbody>

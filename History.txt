@@ -41,3 +41,6 @@
 === 0.1.3
 * Updated to mongo 1.0.1
   NOTE: mongo ruby driver api changed broke OrderedHash
+
+=== 0.1.4
+  Fixed issues with ruby 1.9

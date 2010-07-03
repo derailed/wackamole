@@ -1,12 +1,10 @@
-require 'rubygems'
 require 'sinatra'
 require 'forwardable'
 require 'mongo'
-gem     'agnostic-will_paginate'
 require 'will_paginate'
 require 'mongo_rack'
 require 'rackamole'
-# require 'memcache/event_machine'
+
 require File.expand_path( File.join( File.dirname(__FILE__), 'wackamole.rb' ) )
 
 set :public, File.join( File.dirname(__FILE__), %w[.. public] )
@@ -19,14 +17,16 @@ end
 # -----------------------------------------------------------------------------
 # Configurations
 
-# configure :production do
-   set :logging,  false
-#   set :sessions, true
-# end
+configure :production do
+  set :logging, false
+end
+
+configure :development do
+  set :logging, true
+end
 
 configure do
   set :sessions, false
-  set :logging,  false
     
   Wackamole.load_all_libs_relative_to(__FILE__, 'helpers' )
   Wackamole.load_all_libs_relative_to(__FILE__, 'controllers' )

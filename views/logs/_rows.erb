@@ -52,6 +52,7 @@
     );
    $( "tr[rel]" ).overlay( {
      expose: 'gray',
+     top:   40,
      onBeforeLoad: function() {  
        var wrap = this.getContent().find( '.ov_content' );
        wrap.load( this.getTrigger().attr( 'href' ) );

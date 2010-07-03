@@ -57,9 +57,14 @@ module Wackamole
           hour_info[hour][:user] += 1
         end
         case log['typ']
-          when Rackamole.feature : hour_info[hour][:feature] += 1
-          when Rackamole.perf    : hour_info[hour][:perf]    += 1
-          when Rackamole.fault   : hour_info[hour][:fault]   += 1
+          when Rackamole.feature
+            hour_info[hour][:feature] += 1
+          when Rackamole.perf
+            hour_info[hour][:perf]    += 1
+          when Rackamole.fault
+            hour_info[hour][:fault]   += 1
+          else
+            ;
         end
       end
                 

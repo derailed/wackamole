@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), %w[.. .. spec_helper])
+require File.expand_path( File.join(File.dirname(__FILE__), %w[.. .. spec_helper] ) )
 require 'chronic'
 
 describe Wackamole::MoledInfo do
@@ -6,7 +6,7 @@ describe Wackamole::MoledInfo do
     Wackamole::Control.init_config( File.join(File.dirname(__FILE__), %w[.. .. config test.yml]) )
     Wackamole::Control.current_db( "test", "app1", "test", true )
     now = Time.now-24*60*60
-    @test_time = Chronic.parse( "%d/%2d/%2d 18:00:01" % [now.year,now.month,now.day] )
+    @test_time = Time.local( now.year, now.month, now.day, 18, 0, 1 )    
   end
   
   it "should gather dashboard info correctly" do
